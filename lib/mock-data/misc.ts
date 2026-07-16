@@ -48,12 +48,12 @@ export interface GalleryPost {
 }
 
 export const galleryPosts: GalleryPost[] = [
-  { id: "g-1", image: "/products/legacy.svg", caption: "Legacy, poured in gold light.", likes: 482 },
-  { id: "g-2", image: "/products/noir.svg", caption: "Noir after dark.", likes: 611 },
-  { id: "g-3", image: "/products/royale.svg", caption: "Royale — wear the crown.", likes: 356 },
-  { id: "g-4", image: "/products/reserve.svg", caption: "Reserve, held back for a reason.", likes: 298 },
-  { id: "g-5", image: "/products/elite.svg", caption: "Elite. For the inner circle.", likes: 402 },
-  { id: "g-6", image: "/products/legacy.svg", caption: "The Billionaire Collection, in full.", likes: 733 },
+  { id: "g-1", image: "/products/legacy.png", caption: "Legacy, poured in gold light.", likes: 482 },
+  { id: "g-2", image: "/products/noir.png", caption: "Noir after dark.", likes: 611 },
+  { id: "g-3", image: "/products/royale.png", caption: "Royale — wear the crown.", likes: 356 },
+  { id: "g-4", image: "/products/reserve.jpeg", caption: "Reserve, held back for a reason.", likes: 298 },
+  { id: "g-5", image: "/products/elite.jpeg", caption: "Elite. For the inner circle.", likes: 402 },
+  { id: "g-6", image: "/products/legacy.png", caption: "The Billionaire Collection, in full.", likes: 733 },
 ];
 
 export const mockUser: User = {

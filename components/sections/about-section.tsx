@@ -6,7 +6,7 @@ export function AboutSection() {
     <section className="bg-charcoal py-24">
       <div className="mx-auto grid max-w-7xl items-center gap-16 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div className="relative order-2 aspect-[4/5] overflow-hidden rounded-md bg-matte-black lg:order-1">
-          <Image src="/products/legacy.svg" alt="R&G Scents craftsmanship" fill className="object-contain p-12" />
+          <Image src="/products/legacy.png" alt="R&G Scents craftsmanship" fill className="object-contain p-12" />
         </div>
         <div className="order-1 lg:order-2">
           <Eyebrow>About R&amp;G Scents</Eyebrow>

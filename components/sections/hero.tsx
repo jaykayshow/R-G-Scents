@@ -64,7 +64,7 @@ export function Hero() {
         >
           <div className="absolute inset-0 rounded-full bg-gold/10 blur-3xl" />
           <Image
-            src="/products/noir.svg"
+            src="/products/noir.png"
             alt="R&G Scents — Noir, The Billionaire Collection"
             fill
             priority

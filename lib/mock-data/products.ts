@@ -14,7 +14,7 @@ export const products: Product[] = [
     gender: "Men",
     price: 285,
     compareAtPrice: 340,
-    images: ["/products/legacy.svg"],
+    images: ["/products/legacy.png"],
     notes: {
       top: ["Bergamot", "Black Pepper", "Cardamom"],
       middle: ["Smoked Oud", "Leather", "Saffron"],
@@ -56,7 +56,7 @@ export const products: Product[] = [
       "Reserve is quiet confidence in a bottle. Cardamom and pink pepper open into a heart of tonka bean and iris, resting on a base of vanilla, cashmere musk, and sandalwood. Understated, warm, and unmistakably expensive — the fragrance equivalent of a well-cut suit.",
     gender: "Men",
     price: 265,
-    images: ["/products/reserve.svg"],
+    images: ["/products/reserve.jpeg"],
     notes: {
       top: ["Pink Pepper", "Cardamom", "Bitter Orange"],
       middle: ["Tonka Bean", "Iris", "Cedarwood"],
@@ -98,7 +98,7 @@ export const products: Product[] = [
       "Royale is crisp authority — bergamot, bright neroli, and a sliver of blue lotus over an aromatic heart of iris and lavender. The base settles into vetiver, ambergris, and soft musk, giving it the polish of ceremony without ever feeling heavy. Built for the man who enters a room, not the one who waits to be noticed.",
     gender: "Men",
     price: 295,
-    images: ["/products/royale.svg"],
+    images: ["/products/royale.png"],
     notes: {
       top: ["Bergamot", "Neroli", "Blue Lotus"],
       middle: ["Iris", "Lavender", "Violet Leaf"],
@@ -140,7 +140,7 @@ export const products: Product[] = [
       "Elite is the unexpected one — bright pink pepper and juicy fig lead into a heart of Turkish rose and jasmine sambac, before melting into creamy sandalwood and soft musk. Unisex by design, it's worn by those who don't need to follow the rules to belong at the table.",
     gender: "Unisex",
     price: 255,
-    images: ["/products/elite.svg"],
+    images: ["/products/elite.jpeg"],
     notes: {
       top: ["Pink Pepper", "Fig", "Mandarin"],
       middle: ["Turkish Rose", "Jasmine Sambac", "Peony"],
@@ -182,7 +182,7 @@ export const products: Product[] = [
       "Noir is a late-night fragrance for men who own the room after midnight. Espresso and dark cacao intertwine with a heart of incense and black leather, resting on a base of patchouli, oud, and dark musk. Intense, magnetic, and deliberately unforgettable.",
     gender: "Men",
     price: 310,
-    images: ["/products/noir.svg"],
+    images: ["/products/noir.png"],
     notes: {
       top: ["Espresso", "Dark Cacao", "Pink Pepper"],
       middle: ["Incense", "Black Leather", "Clove"],

@@ -22,7 +22,7 @@ export const blogPosts: BlogPost[] = [
     category: "Fragrance Tips",
     author: "R&G Scents Editorial",
     date: "2026-06-01",
-    image: "/products/legacy.svg",
+    image: "/products/legacy.png",
   },
   {
     slug: "power-dressing-and-scent",
@@ -35,7 +35,7 @@ export const blogPosts: BlogPost[] = [
     category: "Lifestyle",
     author: "R&G Scents Editorial",
     date: "2026-05-12",
-    image: "/products/royale.svg",
+    image: "/products/royale.png",
   },
   {
     slug: "inside-the-billionaire-collection",
@@ -48,7 +48,7 @@ export const blogPosts: BlogPost[] = [
     category: "Brand Story",
     author: "R&G Scents Editorial",
     date: "2026-04-22",
-    image: "/products/noir.svg",
+    image: "/products/noir.png",
   },
 ];
 

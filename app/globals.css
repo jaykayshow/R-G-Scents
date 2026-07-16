@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --color-matte-black: #0a0a0a;
+  --color-charcoal: #1a1816;
+  --color-dark-grey: #121212;
+  --color-dark-brown: #2b1d13;
+  --color-gold: #c9a24b;
+  --color-gold-light: #e6cd8a;
+  --color-champagne: #efe3c3;
+  --color-white: #fbfaf7;
+  --color-ivory: #f6f3ea;
+
+  --background: var(--color-matte-black);
+  --foreground: var(--color-white);
+}
+
+@theme inline {
+  --color-matte-black: var(--color-matte-black);
+  --color-charcoal: var(--color-charcoal);
+  --color-dark-grey: var(--color-dark-grey);
+  --color-dark-brown: var(--color-dark-brown);
+  --color-gold: var(--color-gold);
+  --color-gold-light: var(--color-gold-light);
+  --color-champagne: var(--color-champagne);
+  --color-ivory: var(--color-ivory);
+  --color-brand-white: var(--color-white);
+
+  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  --animate-fade-in: fade-in 0.6s ease-out both;
+  --animate-gold-shimmer: gold-shimmer 3s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes gold-shimmer {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-matte-black);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

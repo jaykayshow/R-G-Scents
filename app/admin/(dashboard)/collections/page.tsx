@@ -36,12 +36,12 @@ export default function AdminCollectionsPage() {
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {collections.map((collection) => (
-          <div key={collection.slug} className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-            <div className="relative aspect-square overflow-hidden rounded-sm bg-white/5">
+          <div key={collection.slug} className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+            <div className="relative aspect-square overflow-hidden rounded-sm bg-overlay/5">
               <Image src={collection.heroImage} alt={collection.name} fill className="object-contain p-6" />
             </div>
-            <h3 className="mt-4 font-serif text-lg text-brand-white">{collection.name}</h3>
-            <p className="mt-1 text-sm text-white/50 line-clamp-2">{collection.description}</p>
+            <h3 className="mt-4 font-serif text-lg text-fg">{collection.name}</h3>
+            <p className="mt-1 text-sm text-overlay/50 line-clamp-2">{collection.description}</p>
             <Button variant="secondary" size="sm" className="mt-4 w-full" onClick={() => setEditing(collection)}>
               <Pencil size={13} /> Edit
             </Button>
@@ -52,7 +52,7 @@ export default function AdminCollectionsPage() {
       <Modal open={!!editing} onClose={() => setEditing(null)}>
         {editing && (
           <>
-            <h3 className="mb-6 font-serif text-xl text-brand-white">Edit {editing.name}</h3>
+            <h3 className="mb-6 font-serif text-xl text-fg">Edit {editing.name}</h3>
             <div className="space-y-4">
               <div>
                 <Label htmlFor="name">Display Name</Label>

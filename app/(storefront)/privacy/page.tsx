@@ -29,13 +29,13 @@ export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
       <Eyebrow>Legal</Eyebrow>
-      <h1 className="mt-3 font-serif text-4xl font-semibold text-brand-white">Privacy Policy</h1>
-      <p className="mt-3 text-xs text-white/40">Last updated: July 15, 2026</p>
+      <h1 className="mt-3 font-serif text-4xl font-semibold text-fg">Privacy Policy</h1>
+      <p className="mt-3 text-xs text-overlay/40">Last updated: July 15, 2026</p>
       <div className="mt-10 space-y-8">
         {sections.map((section) => (
           <div key={section.title}>
-            <h2 className="font-serif text-xl text-brand-white">{section.title}</h2>
-            <p className="mt-2 text-sm leading-relaxed text-white/60">{section.body}</p>
+            <h2 className="font-serif text-xl text-fg">{section.title}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-overlay/60">{section.body}</p>
           </div>
         ))}
       </div>

@@ -53,61 +53,61 @@ export default function AdminAnalyticsPage() {
         <StatCard label="Total Visitors" value={totals.visitors.toLocaleString()} icon={UsersIcon} tone="neutral" />
       </div>
 
-      <div className="mt-6 rounded-md border border-white/10 bg-white/[0.02] p-5">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Revenue &amp; Orders Trend</h2>
+      <div className="mt-6 rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Revenue &amp; Orders Trend</h2>
         <RevenueTrendChart data={dailyMetrics} height={320} />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Top Products by Revenue</h2>
+        <div className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Top Products by Revenue</h2>
           <TopProductsChart data={topProducts} height={280} />
         </div>
-        <div className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Traffic Sources</h2>
+        <div className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Traffic Sources</h2>
           <TrafficSourcesChart data={trafficSources} height={280} />
         </div>
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Weekly Breakdown</h2>
+        <div className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Weekly Breakdown</h2>
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-xs uppercase tracking-wider text-white/40">
+              <tr className="border-b border-overlay/10 text-xs uppercase tracking-wider text-overlay/40">
                 <th className="py-2 font-semibold">Week</th>
                 <th className="py-2 font-semibold">Revenue</th>
                 <th className="py-2 font-semibold">Orders</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-overlay/5">
               {weeklyMetrics().map((week) => (
                 <tr key={week.week}>
-                  <td className="py-3 text-white/70">{week.week}</td>
-                  <td className="py-3 text-brand-white">{formatCurrency(week.revenue)}</td>
-                  <td className="py-3 text-white/70">{week.orders}</td>
+                  <td className="py-3 text-overlay/70">{week.week}</td>
+                  <td className="py-3 text-fg">{formatCurrency(week.revenue)}</td>
+                  <td className="py-3 text-overlay/70">{week.orders}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <div className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Traffic Source Detail</h2>
+        <div className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Traffic Source Detail</h2>
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-xs uppercase tracking-wider text-white/40">
+              <tr className="border-b border-overlay/10 text-xs uppercase tracking-wider text-overlay/40">
                 <th className="py-2 font-semibold">Source</th>
                 <th className="py-2 font-semibold">Sessions</th>
                 <th className="py-2 font-semibold">Conv. Rate</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-overlay/5">
               {trafficSources.map((source) => (
                 <tr key={source.source}>
-                  <td className="py-3 text-white/70">{source.source}</td>
-                  <td className="py-3 text-brand-white">{source.sessions.toLocaleString()}</td>
-                  <td className="py-3 text-white/70">{source.conversionRate}%</td>
+                  <td className="py-3 text-overlay/70">{source.source}</td>
+                  <td className="py-3 text-fg">{source.sessions.toLocaleString()}</td>
+                  <td className="py-3 text-overlay/70">{source.conversionRate}%</td>
                 </tr>
               ))}
             </tbody>
@@ -115,7 +115,7 @@ export default function AdminAnalyticsPage() {
         </div>
       </div>
 
-      <p className="mt-6 text-xs text-white/30">
+      <p className="mt-6 text-xs text-overlay/30">
         Data reflects the 30-day period ending {formatDate(dailyMetrics[dailyMetrics.length - 1].date)}.
       </p>
     </div>

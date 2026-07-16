@@ -75,10 +75,10 @@ export function DataTable<T>({
   }
 
   return (
-    <div className="overflow-x-auto rounded-md border border-white/10">
+    <div className="overflow-x-auto rounded-md border border-overlay/10">
       <table className="w-full min-w-[720px] text-left text-sm">
         <thead>
-          <tr className="border-b border-white/10 bg-white/[0.03] text-xs uppercase tracking-wider text-white/40">
+          <tr className="border-b border-overlay/10 bg-overlay/[0.03] text-xs uppercase tracking-wider text-overlay/40">
             {selectable && (
               <th className="w-10 px-4 py-3">
                 <input
@@ -94,7 +94,7 @@ export function DataTable<T>({
                 {col.sortValue ? (
                   <button
                     onClick={() => toggleSort(col)}
-                    className="flex items-center gap-1.5 hover:text-white/70"
+                    className="flex items-center gap-1.5 hover:text-overlay/70"
                   >
                     {col.label}
                     <ArrowUpDown size={11} className={sortKey === col.key ? "text-gold" : ""} />
@@ -106,10 +106,10 @@ export function DataTable<T>({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-white/5">
+        <tbody className="divide-y divide-overlay/5">
           {sortedRows.length === 0 ? (
             <tr>
-              <td colSpan={columns.length + (selectable ? 1 : 0)} className="px-4 py-10 text-center text-white/40">
+              <td colSpan={columns.length + (selectable ? 1 : 0)} className="px-4 py-10 text-center text-overlay/40">
                 {emptyMessage}
               </td>
             </tr>
@@ -121,7 +121,7 @@ export function DataTable<T>({
                   key={id}
                   onClick={() => onRowClick?.(row)}
                   className={cn(
-                    "transition-colors hover:bg-white/[0.03]",
+                    "transition-colors hover:bg-overlay/[0.03]",
                     onRowClick && "cursor-pointer"
                   )}
                 >
@@ -136,7 +136,7 @@ export function DataTable<T>({
                     </td>
                   )}
                   {columns.map((col) => (
-                    <td key={col.key} className={cn("px-4 py-3 text-white/80", col.className)}>
+                    <td key={col.key} className={cn("px-4 py-3 text-overlay/80", col.className)}>
                       {col.render ? col.render(row) : String((row as Record<string, unknown>)[col.key] ?? "")}
                     </td>
                   ))}

@@ -21,12 +21,12 @@ export function StarRating({
             <Star
               key={i}
               size={size}
-              className={filled ? "fill-gold text-gold" : "fill-transparent text-white/25"}
+              className={filled ? "fill-gold text-gold" : "fill-transparent text-overlay/25"}
             />
           );
         })}
       </div>
-      {showValue && <span className="text-xs text-white/60">{rating.toFixed(1)}</span>}
+      {showValue && <span className="text-xs text-overlay/60">{rating.toFixed(1)}</span>}
     </div>
   );
 }

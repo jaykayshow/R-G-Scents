@@ -16,7 +16,7 @@ export function SocialLoginButtons() {
         type="button"
         onClick={() => handleClick("Google")}
         aria-label="Continue with Google"
-        className="flex items-center justify-center gap-2 rounded-sm border border-white/15 py-3 text-sm font-semibold text-white/80 transition-colors hover:border-gold hover:text-gold"
+        className="flex items-center justify-center gap-2 rounded-sm border border-overlay/15 py-3 text-sm font-semibold text-overlay/80 transition-colors hover:border-gold hover:text-gold"
       >
         <span className="font-serif text-base">G</span>
       </button>
@@ -24,7 +24,7 @@ export function SocialLoginButtons() {
         type="button"
         onClick={() => handleClick("Apple")}
         aria-label="Continue with Apple"
-        className="flex items-center justify-center gap-2 rounded-sm border border-white/15 py-3 text-sm font-semibold text-white/80 transition-colors hover:border-gold hover:text-gold"
+        className="flex items-center justify-center gap-2 rounded-sm border border-overlay/15 py-3 text-sm font-semibold text-overlay/80 transition-colors hover:border-gold hover:text-gold"
       >
         <Apple size={17} />
       </button>
@@ -32,7 +32,7 @@ export function SocialLoginButtons() {
         type="button"
         onClick={() => handleClick("Facebook")}
         aria-label="Continue with Facebook"
-        className="flex items-center justify-center gap-2 rounded-sm border border-white/15 py-3 text-sm font-semibold text-white/80 transition-colors hover:border-gold hover:text-gold"
+        className="flex items-center justify-center gap-2 rounded-sm border border-overlay/15 py-3 text-sm font-semibold text-overlay/80 transition-colors hover:border-gold hover:text-gold"
       >
         <span className="font-serif text-base">f</span>
       </button>

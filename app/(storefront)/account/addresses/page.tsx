@@ -63,14 +63,14 @@ export default function AddressesPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="font-serif text-xl text-brand-white">Saved Addresses</h2>
+        <h2 className="font-serif text-xl text-fg">Saved Addresses</h2>
         <Button size="sm" onClick={() => setModalOpen(true)}>
           <Plus size={14} /> Add Address
         </Button>
       </div>
 
       {addresses.length === 0 ? (
-        <Card className="p-8 text-center text-sm text-white/50">No saved addresses yet.</Card>
+        <Card className="p-8 text-center text-sm text-overlay/50">No saved addresses yet.</Card>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2">
           {addresses.map((address) => (
@@ -78,7 +78,7 @@ export default function AddressesPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <MapPin size={16} className="text-gold" />
-                  <span className="text-sm font-semibold text-brand-white">{address.label}</span>
+                  <span className="text-sm font-semibold text-fg">{address.label}</span>
                 </div>
                 {address.isDefault && (
                   <span className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-gold">
@@ -86,7 +86,7 @@ export default function AddressesPage() {
                   </span>
                 )}
               </div>
-              <p className="mt-3 text-sm text-white/70">
+              <p className="mt-3 text-sm text-overlay/70">
                 {address.fullName}<br />
                 {address.line1}{address.line2 ? `, ${address.line2}` : ""}<br />
                 {address.city}, {address.state}, {address.country}<br />
@@ -104,7 +104,7 @@ export default function AddressesPage() {
                 )}
                 <button
                   onClick={() => removeAddress(address.id)}
-                  className="flex items-center gap-1 text-xs text-white/40 hover:text-red-300"
+                  className="flex items-center gap-1 text-xs text-overlay/40 hover:text-red-300"
                 >
                   <Trash2 size={12} /> Remove
                 </button>
@@ -114,8 +114,8 @@ export default function AddressesPage() {
         </div>
       )}
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} className="relative z-10 w-full max-w-lg overflow-y-auto rounded-md border border-white/10 bg-charcoal p-8">
-        <h3 className="mb-6 font-serif text-xl text-brand-white">Add New Address</h3>
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} className="relative z-10 w-full max-w-lg overflow-y-auto rounded-md border border-overlay/10 bg-surface p-8">
+        <h3 className="mb-6 font-serif text-xl text-fg">Add New Address</h3>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>

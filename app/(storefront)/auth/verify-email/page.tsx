@@ -42,14 +42,14 @@ function VerifyEmailContent() {
         {verified ? (
           <>
             <ShieldCheck size={40} className="mx-auto text-gold" />
-            <p className="mt-4 text-sm text-white/70">
+            <p className="mt-4 text-sm text-overlay/70">
               Verified — welcome to R&amp;G Scents. Redirecting to your account...
             </p>
           </>
         ) : (
           <>
             <MailCheck size={40} className="mx-auto text-gold" />
-            <p className="mt-4 text-sm leading-relaxed text-white/70">
+            <p className="mt-4 text-sm leading-relaxed text-overlay/70">
               Click the link in your email to activate your account. In this preview environment, you
               can simulate that click below.
             </p>

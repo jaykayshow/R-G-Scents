@@ -52,14 +52,14 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-white/10 bg-charcoal">
+    <footer className="border-t border-overlay/10 bg-surface">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link href="/" className="font-serif text-2xl font-bold text-brand-white">
+            <Link href="/" className="font-serif text-2xl font-bold text-fg">
               R&amp;G <span className="text-gold">SCENTS</span>
             </Link>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/50">
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-overlay/50">
               Luxury is not worn. It is remembered. Discover The Billionaire Collection —
               timeless fragrances crafted for men who leave a legacy.
             </p>
@@ -74,7 +74,7 @@ export function Footer() {
                   type="button"
                   onClick={() => showToast(`${name} page coming soon.`, "info")}
                   aria-label={name}
-                  className="rounded-full border border-white/15 p-2.5 text-white/60 transition-colors hover:border-gold hover:text-gold"
+                  className="rounded-full border border-overlay/15 p-2.5 text-overlay/60 transition-colors hover:border-gold hover:text-gold"
                 >
                   <Icon size={16} />
                 </button>
@@ -90,7 +90,7 @@ export function Footer() {
               <ul className="space-y-3">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <Link href={link.href} className="text-sm text-white/60 hover:text-brand-white">
+                    <Link href={link.href} className="text-sm text-overlay/60 hover:text-fg">
                       {link.label}
                     </Link>
                   </li>
@@ -100,9 +100,9 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-10">
-          <h4 className="font-serif text-lg text-brand-white">Become a Billionaire Insider</h4>
-          <p className="mt-2 max-w-md text-sm text-white/50">
+        <div className="mt-12 border-t border-overlay/10 pt-10">
+          <h4 className="font-serif text-lg text-fg">Become a Billionaire Insider</h4>
+          <p className="mt-2 max-w-md text-sm text-overlay/50">
             Exclusive launches, private discounts, and early access — delivered straight to your inbox.
           </p>
           {submitted ? (
@@ -115,7 +115,7 @@ export function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email address"
-                className="w-full rounded-sm border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-brand-white placeholder:text-white/35 focus:border-gold focus:outline-none"
+                className="w-full rounded-sm border border-overlay/15 bg-overlay/[0.03] px-4 py-2.5 text-sm text-fg placeholder:text-overlay/35 focus:border-gold focus:outline-none"
               />
               <Button type="submit" size="sm">
                 <Send size={14} />
@@ -124,7 +124,7 @@ export function Footer() {
           )}
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-xs text-white/40 sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-overlay/10 pt-8 text-xs text-overlay/40 sm:flex-row">
           <p>&copy; {new Date().getFullYear()} R&amp;G Scents. All rights reserved.</p>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-gold">Privacy</Link>

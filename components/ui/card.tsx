@@ -4,7 +4,7 @@ export function Card({ children, className }: { children: React.ReactNode; class
   return (
     <div
       className={cn(
-        "rounded-md border border-white/10 bg-white/[0.03] backdrop-blur-sm",
+        "rounded-md border border-overlay/10 bg-overlay/[0.03] backdrop-blur-sm",
         className
       )}
     >

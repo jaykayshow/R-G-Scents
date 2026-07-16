@@ -12,6 +12,11 @@ import {
 import { DailyMetric } from "@/lib/mock-data/analytics";
 import { formatCurrency } from "@/lib/utils";
 
+const gridStroke = "color-mix(in oklab, var(--color-overlay) 6%, transparent)";
+const axisStroke = "color-mix(in oklab, var(--color-overlay) 30%, transparent)";
+const labelColor = "color-mix(in oklab, var(--color-fg) 60%, transparent)";
+const tooltipBorder = "1px solid color-mix(in oklab, var(--color-overlay) 10%, transparent)";
+
 export function RevenueTrendChart({ data, height = 280 }: { data: DailyMetric[]; height?: number }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -22,18 +27,18 @@ export function RevenueTrendChart({ data, height = 280 }: { data: DailyMetric[];
             <stop offset="100%" stopColor="#c9a24b" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
         <XAxis
           dataKey="date"
           tickFormatter={(d: string) => d.slice(5)}
-          stroke="rgba(255,255,255,0.3)"
+          stroke={axisStroke}
           fontSize={11}
           tickLine={false}
           axisLine={false}
           minTickGap={24}
         />
         <YAxis
-          stroke="rgba(255,255,255,0.3)"
+          stroke={axisStroke}
           fontSize={11}
           tickLine={false}
           axisLine={false}
@@ -42,12 +47,13 @@ export function RevenueTrendChart({ data, height = 280 }: { data: DailyMetric[];
         />
         <Tooltip
           contentStyle={{
-            background: "#15161a",
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: "var(--color-surface)",
+            border: tooltipBorder,
             borderRadius: 4,
             fontSize: 12,
+            color: "var(--color-fg)",
           }}
-          labelStyle={{ color: "rgba(255,255,255,0.6)" }}
+          labelStyle={{ color: labelColor }}
           formatter={(value, name) => [
             name === "revenue" ? formatCurrency(Number(value)) : String(value),
             name === "revenue" ? "Revenue" : "Orders",

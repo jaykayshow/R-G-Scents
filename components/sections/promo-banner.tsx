@@ -12,7 +12,7 @@ export function PromoBanner() {
   if (!banner || dismissed) return null;
 
   return (
-    <div className="relative flex items-center justify-center gap-3 bg-gold px-4 py-2.5 text-center text-xs font-medium text-matte-black sm:text-sm">
+    <div className="relative flex items-center justify-center gap-3 bg-gold px-4 py-2.5 text-center text-xs font-medium text-ink sm:text-sm">
       <p>
         <span className="font-semibold">{banner.title}</span>
         {banner.subtitle && <span className="hidden sm:inline"> — {banner.subtitle}</span>}
@@ -25,7 +25,7 @@ export function PromoBanner() {
       <button
         onClick={() => setDismissed(true)}
         aria-label="Dismiss banner"
-        className="absolute right-3 text-matte-black/70 hover:text-matte-black"
+        className="absolute right-3 text-ink/70 hover:text-ink"
       >
         <X size={14} />
       </button>

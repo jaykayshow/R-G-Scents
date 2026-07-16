@@ -52,7 +52,7 @@ export default function AdminBlogEditorPage({ params }: { params: Promise<{ slug
   if (!isNew && !existing) {
     return (
       <div className="flex flex-col items-center gap-4 py-24 text-center">
-        <p className="text-white/50">Article not found.</p>
+        <p className="text-overlay/50">Article not found.</p>
         <Link href="/admin/blog" className="text-xs text-gold hover:underline">
           &larr; Back to Blog
         </Link>
@@ -102,7 +102,7 @@ export default function AdminBlogEditorPage({ params }: { params: Promise<{ slug
 
   return (
     <div>
-      <Link href="/admin/blog" className="mb-4 inline-flex items-center gap-1.5 text-xs text-white/40 hover:text-gold">
+      <Link href="/admin/blog" className="mb-4 inline-flex items-center gap-1.5 text-xs text-overlay/40 hover:text-gold">
         <ArrowLeft size={13} /> Back to Blog
       </Link>
       <AdminPageHeader
@@ -110,7 +110,7 @@ export default function AdminBlogEditorPage({ params }: { params: Promise<{ slug
         actions={
           <>
             {!isNew && (
-              <Button variant="secondary" size="sm" onClick={handleDelete} className="border-red-400/40 text-red-300 hover:bg-red-400 hover:text-matte-black">
+              <Button variant="secondary" size="sm" onClick={handleDelete} className="border-red-400/40 text-red-300 hover:bg-red-400 hover:text-ink">
                 <Trash2 size={14} /> Delete
               </Button>
             )}
@@ -140,7 +140,7 @@ export default function AdminBlogEditorPage({ params }: { params: Promise<{ slug
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-md border border-white/10 bg-white/[0.02] p-5 space-y-4">
+          <div className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5 space-y-4">
             <div>
               <Label htmlFor="slug">Slug</Label>
               <Input id="slug" value={draft.slug} placeholder={slugify(draft.title)} onChange={(e) => setDraft((d) => ({ ...d, slug: e.target.value }))} />
@@ -161,7 +161,7 @@ export default function AdminBlogEditorPage({ params }: { params: Promise<{ slug
               <Label htmlFor="image">Featured Image Path</Label>
               <Input id="image" value={draft.image} onChange={(e) => setDraft((d) => ({ ...d, image: e.target.value }))} />
             </div>
-            <label className="flex items-center gap-2 text-sm text-white/70">
+            <label className="flex items-center gap-2 text-sm text-overlay/70">
               <input
                 type="checkbox"
                 checked={draft.published}

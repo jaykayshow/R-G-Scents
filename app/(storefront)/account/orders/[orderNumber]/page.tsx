@@ -56,8 +56,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderNum
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-widest text-white/40">Order</p>
-          <h2 className="font-serif text-2xl text-brand-white">{order.orderNumber}</h2>
+          <p className="text-xs uppercase tracking-widest text-overlay/40">Order</p>
+          <h2 className="font-serif text-2xl text-fg">{order.orderNumber}</h2>
         </div>
         <div className="flex gap-3">
           <Button variant="secondary" size="sm" onClick={handleDownloadInvoice}>
@@ -77,31 +77,31 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderNum
                   <div
                     className={cn(
                       "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-xs",
-                      i <= currentStepIndex ? "border-gold bg-gold text-matte-black" : "border-white/20 text-white/40"
+                      i <= currentStepIndex ? "border-gold bg-gold text-ink" : "border-overlay/20 text-overlay/40"
                     )}
                   >
                     {i < currentStepIndex ? <Check size={14} /> : i + 1}
                   </div>
                   {i < statusFlow.length - 1 && (
-                    <div className={cn("h-0.5 flex-1", i < currentStepIndex ? "bg-gold" : "bg-white/15")} />
+                    <div className={cn("h-0.5 flex-1", i < currentStepIndex ? "bg-gold" : "bg-overlay/15")} />
                   )}
                 </div>
-                <p className={cn("mt-2 text-[11px]", i <= currentStepIndex ? "text-brand-white" : "text-white/40")}>
+                <p className={cn("mt-2 text-[11px]", i <= currentStepIndex ? "text-fg" : "text-overlay/40")}>
                   {step}
                 </p>
               </div>
             ))}
           </div>
           {order.trackingNumber && (
-            <p className="mt-6 text-xs text-white/50">
-              Tracking Number: <span className="text-brand-white">{order.trackingNumber}</span>
+            <p className="mt-6 text-xs text-overlay/50">
+              Tracking Number: <span className="text-fg">{order.trackingNumber}</span>
             </p>
           )}
-          <div className="mt-6 space-y-3 border-t border-white/10 pt-6">
+          <div className="mt-6 space-y-3 border-t border-overlay/10 pt-6">
             {order.trackingEvents.map((event, i) => (
               <div key={i} className="flex justify-between text-xs">
-                <span className="text-white/60">{event.note}</span>
-                <span className="text-white/30">{formatDate(event.date)}</span>
+                <span className="text-overlay/60">{event.note}</span>
+                <span className="text-overlay/30">{formatDate(event.date)}</span>
               </div>
             ))}
           </div>
@@ -113,27 +113,27 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderNum
         <div className="space-y-4">
           {order.items.map((item) => (
             <div key={item.productId} className="flex items-center gap-4">
-              <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-sm bg-white/5">
+              <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-sm bg-overlay/5">
                 <Image src={item.image} alt={item.productName} fill className="object-contain p-2" />
               </div>
               <div className="flex-1">
-                <Link href={`/shop/${item.productSlug}`} className="text-sm text-brand-white hover:text-gold">
+                <Link href={`/shop/${item.productSlug}`} className="text-sm text-fg hover:text-gold">
                   {item.productName}
                 </Link>
-                <p className="text-xs text-white/40">{item.variantSize} × {item.quantity}</p>
+                <p className="text-xs text-overlay/40">{item.variantSize} × {item.quantity}</p>
               </div>
-              <span className="text-sm text-brand-white">{formatCurrency(item.unitPrice * item.quantity)}</span>
+              <span className="text-sm text-fg">{formatCurrency(item.unitPrice * item.quantity)}</span>
             </div>
           ))}
         </div>
-        <div className="mt-6 space-y-2 border-t border-white/10 pt-6 text-sm">
-          <div className="flex justify-between text-white/60"><span>Subtotal</span><span>{formatCurrency(order.subtotal)}</span></div>
-          <div className="flex justify-between text-white/60"><span>Shipping</span><span>{order.shipping === 0 ? "Free" : formatCurrency(order.shipping)}</span></div>
-          <div className="flex justify-between text-white/60"><span>Tax</span><span>{formatCurrency(order.tax)}</span></div>
+        <div className="mt-6 space-y-2 border-t border-overlay/10 pt-6 text-sm">
+          <div className="flex justify-between text-overlay/60"><span>Subtotal</span><span>{formatCurrency(order.subtotal)}</span></div>
+          <div className="flex justify-between text-overlay/60"><span>Shipping</span><span>{order.shipping === 0 ? "Free" : formatCurrency(order.shipping)}</span></div>
+          <div className="flex justify-between text-overlay/60"><span>Tax</span><span>{formatCurrency(order.tax)}</span></div>
           {order.discount > 0 && (
             <div className="flex justify-between text-gold"><span>Discount</span><span>-{formatCurrency(order.discount)}</span></div>
           )}
-          <div className="flex justify-between border-t border-white/10 pt-2 font-serif text-lg text-brand-white">
+          <div className="flex justify-between border-t border-overlay/10 pt-2 font-serif text-lg text-fg">
             <span>Total</span><span>{formatCurrency(order.total)}</span>
           </div>
         </div>
@@ -141,14 +141,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderNum
 
       <Card className="p-6">
         <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gold">Shipping Address</h3>
-        <p className="text-sm text-white/70">
+        <p className="text-sm text-overlay/70">
           {order.shippingAddress.fullName}<br />
           {order.shippingAddress.line1}{order.shippingAddress.line2 ? `, ${order.shippingAddress.line2}` : ""}<br />
           {order.shippingAddress.city}, {order.shippingAddress.state}, {order.shippingAddress.country}<br />
           {order.shippingAddress.postalCode}<br />
           {order.shippingAddress.phone}
         </p>
-        <p className="mt-4 text-xs text-white/40">Payment Method: {order.paymentMethod}</p>
+        <p className="mt-4 text-xs text-overlay/40">Payment Method: {order.paymentMethod}</p>
       </Card>
     </div>
   );

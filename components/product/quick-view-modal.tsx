@@ -46,18 +46,18 @@ export function QuickViewModal({
   return (
     <Modal open={open} onClose={onClose}>
       <div className="grid gap-8 sm:grid-cols-2">
-        <div className="relative aspect-square overflow-hidden rounded-md bg-white/5">
+        <div className="relative aspect-square overflow-hidden rounded-md bg-overlay/5">
           <Image src={product.images[0]} alt={product.name} fill className="object-contain p-6" />
         </div>
         <div>
           <p className="text-[11px] uppercase tracking-widest text-gold">{product.collection}</p>
-          <h3 className="mt-2 font-serif text-2xl text-brand-white">{product.name}</h3>
-          <p className="mt-1 text-sm italic text-white/50">{product.tagline}</p>
+          <h3 className="mt-2 font-serif text-2xl text-fg">{product.name}</h3>
+          <p className="mt-1 text-sm italic text-overlay/50">{product.tagline}</p>
           <div className="mt-3">
             <StarRating rating={product.rating} showValue />
           </div>
-          <p className="mt-4 text-sm leading-relaxed text-white/70">{product.shortDescription}</p>
-          <p className="mt-4 font-serif text-2xl text-brand-white">{formatCurrency(variant.price)}</p>
+          <p className="mt-4 text-sm leading-relaxed text-overlay/70">{product.shortDescription}</p>
+          <p className="mt-4 font-serif text-2xl text-fg">{formatCurrency(variant.price)}</p>
 
           <div className="mt-5 flex flex-wrap gap-2">
             {product.variants.map((v) => (
@@ -66,8 +66,8 @@ export function QuickViewModal({
                 onClick={() => setVariantId(v.id)}
                 className={`rounded-sm border px-3 py-1.5 text-xs transition-colors ${
                   v.id === variantId
-                    ? "border-gold bg-gold text-matte-black"
-                    : "border-white/20 text-white/70 hover:border-gold hover:text-gold"
+                    ? "border-gold bg-gold text-ink"
+                    : "border-overlay/20 text-overlay/70 hover:border-gold hover:text-gold"
                 }`}
               >
                 {v.size}
@@ -85,7 +85,7 @@ export function QuickViewModal({
           <Link
             href={`/shop/${product.slug}`}
             onClick={onClose}
-            className="mt-5 inline-block text-xs uppercase tracking-widest text-white/50 underline underline-offset-4 hover:text-gold"
+            className="mt-5 inline-block text-xs uppercase tracking-widest text-overlay/50 underline underline-offset-4 hover:text-gold"
           >
             View full details
           </Link>

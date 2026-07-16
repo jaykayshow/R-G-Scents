@@ -81,7 +81,7 @@ export default function AdminCouponsPage() {
   }
 
   const columns: DataTableColumn<Coupon>[] = [
-    { key: "code", label: "Code", sortValue: (c) => c.code, render: (c) => <span className="font-mono font-medium text-brand-white">{c.code}</span> },
+    { key: "code", label: "Code", sortValue: (c) => c.code, render: (c) => <span className="font-mono font-medium text-fg">{c.code}</span> },
     { key: "type", label: "Type", render: (c) => c.type.replace("-", " ") },
     {
       key: "value",
@@ -98,7 +98,7 @@ export default function AdminCouponsPage() {
       render: (c) => (
         <div className="flex justify-end gap-3">
           <button onClick={() => openEdit(c)} className="text-xs text-gold hover:underline">Edit</button>
-          <button onClick={() => handleDelete(c.code)} className="text-xs text-white/40 hover:text-red-300">
+          <button onClick={() => handleDelete(c.code)} className="text-xs text-overlay/40 hover:text-red-300">
             <Trash2 size={13} />
           </button>
         </div>
@@ -120,7 +120,7 @@ export default function AdminCouponsPage() {
       <DataTable columns={columns} rows={coupons} getRowId={(c) => c.code} emptyMessage="No coupons yet." />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <h3 className="mb-6 font-serif text-xl text-brand-white">{editingCode ? "Edit Coupon" : "Create Coupon"}</h3>
+        <h3 className="mb-6 font-serif text-xl text-fg">{editingCode ? "Edit Coupon" : "Create Coupon"}</h3>
         <div className="space-y-4">
           <div>
             <Label htmlFor="code">Code</Label>
@@ -179,7 +179,7 @@ export default function AdminCouponsPage() {
               />
             </div>
           </div>
-          <label className="flex items-center gap-2 text-sm text-white/70">
+          <label className="flex items-center gap-2 text-sm text-overlay/70">
             <input
               type="checkbox"
               checked={draft.active}

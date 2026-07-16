@@ -58,7 +58,7 @@ export function ProductCard({ product }: { product: Product }) {
         className="group relative"
       >
         <Link href={`/shop/${product.slug}`} className="block">
-          <div className="relative aspect-square overflow-hidden rounded-md bg-white/[0.04] border border-white/10">
+          <div className="relative aspect-square overflow-hidden rounded-md bg-overlay/[0.04] border border-overlay/10">
             <Image
               src={product.images[0]}
               alt={product.name}
@@ -75,11 +75,11 @@ export function ProductCard({ product }: { product: Product }) {
             <button
               onClick={handleWishlist}
               aria-label="Toggle wishlist"
-              className="absolute right-3 top-3 rounded-full bg-matte-black/60 p-2 backdrop-blur-sm transition-colors hover:bg-matte-black"
+              className="absolute right-3 top-3 rounded-full bg-black/60 p-2 backdrop-blur-sm transition-colors hover:bg-black"
             >
               <Heart
                 size={16}
-                className={cn(isWishlisted ? "fill-gold text-gold" : "text-white/80")}
+                className={cn(isWishlisted ? "fill-gold text-gold" : "text-overlay/80")}
               />
             </button>
 
@@ -88,7 +88,7 @@ export function ProductCard({ product }: { product: Product }) {
                 e.preventDefault();
                 setQuickViewOpen(true);
               }}
-              className="absolute inset-x-3 bottom-3 flex translate-y-2 items-center justify-center gap-2 rounded-sm bg-matte-black/80 py-2.5 text-xs font-semibold uppercase tracking-wider text-brand-white opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+              className="absolute inset-x-3 bottom-3 flex translate-y-2 items-center justify-center gap-2 rounded-sm bg-black/80 py-2.5 text-xs font-semibold uppercase tracking-wider text-white opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
             >
               <Eye size={14} /> Quick View
             </button>
@@ -96,19 +96,19 @@ export function ProductCard({ product }: { product: Product }) {
 
           <div className="mt-4 space-y-1.5">
             <p className="text-[11px] uppercase tracking-widest text-gold">{product.collection}</p>
-            <h3 className="font-serif text-lg text-brand-white group-hover:text-gold transition-colors">
+            <h3 className="font-serif text-lg text-fg group-hover:text-gold transition-colors">
               {product.name}
             </h3>
-            <p className="line-clamp-1 text-xs text-white/50">{product.shortDescription}</p>
+            <p className="line-clamp-1 text-xs text-overlay/50">{product.shortDescription}</p>
             <div className="flex items-center justify-between pt-1">
               <StarRating rating={product.rating} />
               <div className="flex items-baseline gap-2">
                 {product.compareAtPrice && (
-                  <span className="text-xs text-white/40 line-through">
+                  <span className="text-xs text-overlay/40 line-through">
                     {formatCurrency(product.compareAtPrice)}
                   </span>
                 )}
-                <span className="font-serif text-base text-brand-white">
+                <span className="font-serif text-base text-fg">
                   {formatCurrency(product.price)}
                 </span>
               </div>

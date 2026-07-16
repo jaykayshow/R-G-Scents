@@ -54,7 +54,7 @@ export default function AdminOrdersPage() {
       label: "Order",
       sortValue: (o) => o.orderNumber,
       render: (o) => (
-        <Link href={`/admin/orders/${o.orderNumber}`} className="font-medium text-brand-white hover:text-gold">
+        <Link href={`/admin/orders/${o.orderNumber}`} className="font-medium text-fg hover:text-gold">
           {o.orderNumber}
         </Link>
       ),
@@ -91,12 +91,12 @@ export default function AdminOrdersPage() {
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1 max-w-sm">
-          <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+          <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-overlay/30" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search order number..."
-            className="w-full rounded-sm border border-white/15 bg-white/[0.03] py-2 pl-9 pr-3 text-sm text-brand-white placeholder:text-white/30 focus:border-gold focus:outline-none"
+            className="w-full rounded-sm border border-overlay/15 bg-overlay/[0.03] py-2 pl-9 pr-3 text-sm text-fg placeholder:text-overlay/30 focus:border-gold focus:outline-none"
           />
         </div>
         <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as never)} className="sm:w-48">

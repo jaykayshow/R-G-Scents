@@ -33,7 +33,7 @@ export default function AdminBlogPage() {
       label: "Title",
       sortValue: (p) => p.title,
       render: (p) => (
-        <Link href={`/admin/blog/${p.slug}`} className="font-medium text-brand-white hover:text-gold">
+        <Link href={`/admin/blog/${p.slug}`} className="font-medium text-fg hover:text-gold">
           {p.title}
         </Link>
       ),
@@ -53,7 +53,7 @@ export default function AdminBlogPage() {
       render: (p) => (
         <div className="flex justify-end gap-3">
           <Link href={`/admin/blog/${p.slug}`} className="text-xs text-gold hover:underline">Edit</Link>
-          <button onClick={() => handleDelete(p)} className="text-xs text-white/40 hover:text-red-300">
+          <button onClick={() => handleDelete(p)} className="text-xs text-overlay/40 hover:text-red-300">
             <Trash2 size={13} />
           </button>
         </div>

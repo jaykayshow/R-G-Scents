@@ -80,16 +80,16 @@ function LoginForm() {
       </form>
 
       <div className="my-6 flex items-center gap-3">
-        <span className="h-px flex-1 bg-white/10" />
-        <span className="text-xs uppercase tracking-widest text-white/40">Or continue with</span>
-        <span className="h-px flex-1 bg-white/10" />
+        <span className="h-px flex-1 bg-overlay/10" />
+        <span className="text-xs uppercase tracking-widest text-overlay/40">Or continue with</span>
+        <span className="h-px flex-1 bg-overlay/10" />
       </div>
 
       <SocialLoginButtons />
 
-      <p className="mt-6 text-center text-xs text-white/30">
+      <p className="mt-6 text-center text-xs text-overlay/30">
         Demo account: {" "}
-        <span className="text-white/50">everhot247@gmail.com / Billionaire123!</span>
+        <span className="text-overlay/50">everhot247@gmail.com / Billionaire123!</span>
       </p>
     </AuthCard>
   );

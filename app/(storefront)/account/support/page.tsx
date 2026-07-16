@@ -53,7 +53,7 @@ export default function SupportPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="font-serif text-xl text-brand-white">Support Tickets</h2>
+        <h2 className="font-serif text-xl text-fg">Support Tickets</h2>
         <Button size="sm" onClick={() => setModalOpen(true)}>
           <Plus size={14} /> New Ticket
         </Button>
@@ -61,8 +61,8 @@ export default function SupportPage() {
 
       {tickets.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 p-12 text-center">
-          <LifeBuoy size={28} className="text-white/30" />
-          <p className="text-sm text-white/50">No support tickets yet.</p>
+          <LifeBuoy size={28} className="text-overlay/30" />
+          <p className="text-sm text-overlay/50">No support tickets yet.</p>
         </Card>
       ) : (
         <div className="space-y-4">
@@ -70,8 +70,8 @@ export default function SupportPage() {
             <Link key={ticket.id} href={`/account/support/${ticket.id}`}>
               <Card className="flex items-center justify-between p-5 transition-colors hover:border-gold/40">
                 <div>
-                  <p className="text-sm font-medium text-brand-white">{ticket.subject}</p>
-                  <p className="text-xs text-white/40">{ticket.category} · {formatDate(ticket.createdAt)}</p>
+                  <p className="text-sm font-medium text-fg">{ticket.subject}</p>
+                  <p className="text-xs text-overlay/40">{ticket.category} · {formatDate(ticket.createdAt)}</p>
                 </div>
                 <Badge variant={statusVariant(ticket.status)}>{ticket.status}</Badge>
               </Card>
@@ -80,8 +80,8 @@ export default function SupportPage() {
         </div>
       )}
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} className="relative z-10 w-full max-w-lg overflow-y-auto rounded-md border border-white/10 bg-charcoal p-8">
-        <h3 className="mb-6 font-serif text-xl text-brand-white">New Support Ticket</h3>
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} className="relative z-10 w-full max-w-lg overflow-y-auto rounded-md border border-overlay/10 bg-surface p-8">
+        <h3 className="mb-6 font-serif text-xl text-fg">New Support Ticket</h3>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <Label htmlFor="category">Category</Label>

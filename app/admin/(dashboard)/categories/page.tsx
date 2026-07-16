@@ -72,8 +72,8 @@ export default function AdminCategoriesPage() {
   }
 
   const columns: DataTableColumn<Category>[] = [
-    { key: "name", label: "Name", sortValue: (c) => c.name, render: (c) => <span className="font-medium text-brand-white">{c.name}</span> },
-    { key: "slug", label: "Slug", render: (c) => <span className="font-mono text-xs text-white/40">{c.slug}</span> },
+    { key: "name", label: "Name", sortValue: (c) => c.name, render: (c) => <span className="font-medium text-fg">{c.name}</span> },
+    { key: "slug", label: "Slug", render: (c) => <span className="font-mono text-xs text-overlay/40">{c.slug}</span> },
     { key: "description", label: "Description", render: (c) => c.description },
     {
       key: "actions",
@@ -84,7 +84,7 @@ export default function AdminCategoriesPage() {
           <button onClick={() => openEdit(c)} className="text-xs text-gold hover:underline">
             <Pencil size={12} className="inline" /> Edit
           </button>
-          <button onClick={() => handleDelete(c)} className="text-xs text-white/40 hover:text-red-300">
+          <button onClick={() => handleDelete(c)} className="text-xs text-overlay/40 hover:text-red-300">
             <Trash2 size={13} />
           </button>
         </div>
@@ -106,7 +106,7 @@ export default function AdminCategoriesPage() {
       <DataTable columns={columns} rows={categories} getRowId={(c) => c.id} emptyMessage="No categories yet." />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <h3 className="mb-6 font-serif text-xl text-brand-white">{editingId ? "Edit Category" : "Add Category"}</h3>
+        <h3 className="mb-6 font-serif text-xl text-fg">{editingId ? "Edit Category" : "Add Category"}</h3>
         <div className="space-y-4">
           <div>
             <Label htmlFor="name">Name</Label>

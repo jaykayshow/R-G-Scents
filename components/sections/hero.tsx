@@ -6,10 +6,10 @@ import { ButtonLink } from "@/components/ui/button";
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-matte-black">
+    <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-bg">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(201,162,75,0.14),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,10,0.2)_0%,rgba(10,10,10,0.85)_85%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-bg)_20%,transparent)_0%,color-mix(in_oklab,var(--color-bg)_85%,transparent)_85%)]" />
         {Array.from({ length: 18 }).map((_, i) => (
           <motion.span
             key={i}
@@ -38,12 +38,12 @@ export function Hero() {
           <span className="mb-6 inline-block text-xs font-semibold uppercase tracking-[0.35em] text-gold">
             The Billionaire Collection
           </span>
-          <h1 className="text-balance font-serif text-4xl font-bold leading-[1.1] text-brand-white sm:text-5xl lg:text-6xl">
+          <h1 className="text-balance font-serif text-4xl font-bold leading-[1.1] text-fg sm:text-5xl lg:text-6xl">
             Luxury is not worn.
             <br />
             <span className="text-gold">It is remembered.</span>
           </h1>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-white/60 sm:text-lg">
+          <p className="mt-6 max-w-md text-base leading-relaxed text-overlay/60 sm:text-lg">
             Discover timeless fragrances crafted for men who leave a legacy.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">

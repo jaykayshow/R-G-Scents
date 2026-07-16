@@ -102,11 +102,11 @@ export default function InventoryPage() {
 
   const stockColumns: DataTableColumn<VariantRow>[] = [
     { key: "product", label: "Product", sortValue: (r) => r.productName, render: (r) => (
-      <span className="font-medium text-brand-white">{r.productName}</span>
+      <span className="font-medium text-fg">{r.productName}</span>
     ) },
     { key: "size", label: "Variant", render: (r) => r.size },
     { key: "sku", label: "SKU", render: (r) => <span className="font-mono text-xs">{r.sku}</span> },
-    { key: "barcode", label: "Barcode", render: (r) => <span className="font-mono text-xs text-white/40">{r.barcode}</span> },
+    { key: "barcode", label: "Barcode", render: (r) => <span className="font-mono text-xs text-overlay/40">{r.barcode}</span> },
     {
       key: "stock",
       label: "Stock",
@@ -126,7 +126,7 @@ export default function InventoryPage() {
           </div>
         ) : (
           <button onClick={() => startEdit(r)} className="text-left hover:text-gold">
-            <span className={r.stock === 0 ? "text-red-400" : r.stock <= LOW_STOCK_THRESHOLD ? "text-amber-400" : "text-white/80"}>
+            <span className={r.stock === 0 ? "text-red-400" : r.stock <= LOW_STOCK_THRESHOLD ? "text-amber-400" : "text-overlay/80"}>
               {r.stock} units
             </span>
           </button>
@@ -176,16 +176,16 @@ export default function InventoryPage() {
         </div>
       )}
 
-      <div className="mb-4 flex items-center gap-2 border-b border-white/10">
+      <div className="mb-4 flex items-center gap-2 border-b border-overlay/10">
         <button
           onClick={() => setTab("stock")}
-          className={`border-b-2 px-1 pb-3 text-sm font-medium ${tab === "stock" ? "border-gold text-gold" : "border-transparent text-white/50"}`}
+          className={`border-b-2 px-1 pb-3 text-sm font-medium ${tab === "stock" ? "border-gold text-gold" : "border-transparent text-overlay/50"}`}
         >
           Stock Levels
         </button>
         <button
           onClick={() => setTab("history")}
-          className={`flex items-center gap-1.5 border-b-2 px-1 pb-3 text-sm font-medium ${tab === "history" ? "border-gold text-gold" : "border-transparent text-white/50"}`}
+          className={`flex items-center gap-1.5 border-b-2 px-1 pb-3 text-sm font-medium ${tab === "history" ? "border-gold text-gold" : "border-transparent text-overlay/50"}`}
         >
           <History size={13} /> History Log
         </button>
@@ -194,12 +194,12 @@ export default function InventoryPage() {
       {tab === "stock" ? (
         <>
           <div className="relative mb-4 max-w-sm">
-            <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+            <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-overlay/30" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by product or SKU..."
-              className="w-full rounded-sm border border-white/15 bg-white/[0.03] py-2 pl-9 pr-3 text-sm text-brand-white placeholder:text-white/30 focus:border-gold focus:outline-none"
+              className="w-full rounded-sm border border-overlay/15 bg-overlay/[0.03] py-2 pl-9 pr-3 text-sm text-fg placeholder:text-overlay/30 focus:border-gold focus:outline-none"
             />
           </div>
           <DataTable columns={stockColumns} rows={filteredRows} getRowId={(r) => r.variantId} />

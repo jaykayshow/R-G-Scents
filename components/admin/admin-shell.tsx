@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { getNavForRole } from "@/lib/admin-permissions";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -33,8 +34,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           RG
         </div>
         <div>
-          <p className="text-sm font-semibold text-brand-white">R&amp;G Admin</p>
-          <p className="text-[10px] uppercase tracking-widest text-white/30">Console</p>
+          <p className="text-sm font-semibold text-fg">R&amp;G Admin</p>
+          <p className="text-[10px] uppercase tracking-widest text-overlay/30">Console</p>
         </div>
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3">
@@ -49,7 +50,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 "flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm transition-colors",
                 active
                   ? "bg-gold/15 text-gold"
-                  : "text-white/60 hover:bg-white/5 hover:text-brand-white"
+                  : "text-overlay/60 hover:bg-overlay/5 hover:text-fg"
               )}
             >
               <section.icon size={16} />
@@ -58,17 +59,17 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           );
         })}
       </nav>
-      <div className="border-t border-white/10 p-4">
+      <div className="border-t border-overlay/10 p-4">
         <Link
           href="/"
           target="_blank"
-          className="mb-2 flex items-center gap-2 rounded-sm px-3 py-2 text-xs text-white/50 hover:text-gold"
+          className="mb-2 flex items-center gap-2 rounded-sm px-3 py-2 text-xs text-overlay/50 hover:text-gold"
         >
           <ExternalLink size={13} /> View Storefront
         </Link>
         <button
           onClick={handleLogout}
-          className="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-xs text-white/50 hover:text-red-300"
+          className="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-xs text-overlay/50 hover:text-red-300"
         >
           <LogOut size={13} /> Sign Out
         </button>
@@ -77,9 +78,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <div className="flex min-h-screen bg-[#0d0e10] text-brand-white">
+    <div className="flex min-h-screen bg-bg text-fg">
       {/* Desktop sidebar */}
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-white/10 bg-[#0a0b0d] md:flex">
+      <aside className="hidden w-60 shrink-0 flex-col border-r border-overlay/10 bg-surface-2 md:flex">
         {sidebarContent}
       </aside>
 
@@ -87,27 +88,28 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       {mobileNavOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/70" onClick={() => setMobileNavOpen(false)} />
-          <aside className="absolute left-0 top-0 flex h-full w-64 flex-col border-r border-white/10 bg-[#0a0b0d]">
+          <aside className="absolute left-0 top-0 flex h-full w-64 flex-col border-r border-overlay/10 bg-surface-2">
             {sidebarContent}
           </aside>
         </div>
       )}
 
       <div className="flex min-h-screen flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-white/10 bg-[#0d0e10]/95 px-4 py-3 backdrop-blur-sm sm:px-6">
+        <header className="flex items-center justify-between border-b border-overlay/10 bg-bg/95 px-4 py-3 backdrop-blur-sm sm:px-6">
           <button
             onClick={() => setMobileNavOpen(true)}
-            className="text-white/70 md:hidden"
+            className="text-overlay/70 md:hidden"
             aria-label="Open menu"
           >
             <Menu size={20} />
           </button>
-          <div className="hidden text-sm text-white/40 md:block">
+          <div className="hidden text-sm text-overlay/40 md:block">
             Signed in to the R&amp;G Scents internal console
           </div>
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <div className="text-right">
-              <p className="text-sm font-medium text-brand-white">{currentAdmin.name}</p>
+              <p className="text-sm font-medium text-fg">{currentAdmin.name}</p>
               <p className="text-[10px] uppercase tracking-widest text-gold">{currentAdmin.role}</p>
             </div>
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold/15 font-serif text-sm text-gold">

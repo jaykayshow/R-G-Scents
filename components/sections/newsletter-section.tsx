@@ -23,16 +23,16 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-matte-black py-24">
+    <section className="relative overflow-hidden bg-bg py-24">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(201,162,75,0.1),transparent_65%)]" />
       <div className="relative mx-auto max-w-2xl px-4 text-center sm:px-6">
         <span className="text-xs font-semibold uppercase tracking-[0.3em] text-gold">
           Become a Billionaire Insider
         </span>
-        <h2 className="mt-4 text-balance font-serif text-3xl font-semibold text-brand-white sm:text-4xl">
+        <h2 className="mt-4 text-balance font-serif text-3xl font-semibold text-fg sm:text-4xl">
           Exclusive Launches. Private Discounts. First Access.
         </h2>
-        <p className="mt-4 text-sm text-white/60 sm:text-base">
+        <p className="mt-4 text-sm text-overlay/60 sm:text-base">
           Join the inner circle and be the first to know when a new fragrance drops.
         </p>
 

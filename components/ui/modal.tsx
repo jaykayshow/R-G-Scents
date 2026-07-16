@@ -49,13 +49,13 @@ export function Modal({
             transition={{ duration: 0.25, ease: "easeOut" }}
             className={
               className ??
-              "relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-md border border-white/10 bg-charcoal p-6 sm:p-8"
+              "relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-md border border-overlay/10 bg-surface p-6 sm:p-8"
             }
           >
             <button
               onClick={onClose}
               aria-label="Close"
-              className="absolute right-4 top-4 rounded-full p-2 text-white/60 transition-colors hover:bg-white/10 hover:text-gold"
+              className="absolute right-4 top-4 rounded-full p-2 text-overlay/60 transition-colors hover:bg-overlay/10 hover:text-gold"
             >
               <X size={20} />
             </button>

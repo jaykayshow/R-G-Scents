@@ -27,24 +27,24 @@ export default function AccountOverviewPage() {
       <div className="grid gap-6 sm:grid-cols-3">
         <Card className="p-6">
           <Package className="text-gold" size={22} />
-          <p className="mt-4 font-serif text-3xl text-brand-white">{orders.length}</p>
-          <p className="mt-1 text-xs uppercase tracking-widest text-white/50">Total Orders</p>
+          <p className="mt-4 font-serif text-3xl text-fg">{orders.length}</p>
+          <p className="mt-1 text-xs uppercase tracking-widest text-overlay/50">Total Orders</p>
         </Card>
         <Card className="p-6">
           <Gift className="text-gold" size={22} />
-          <p className="mt-4 font-serif text-3xl text-brand-white">{user.rewardPoints.toLocaleString()}</p>
-          <p className="mt-1 text-xs uppercase tracking-widest text-white/50">Reward Points</p>
+          <p className="mt-4 font-serif text-3xl text-fg">{user.rewardPoints.toLocaleString()}</p>
+          <p className="mt-1 text-xs uppercase tracking-widest text-overlay/50">Reward Points</p>
         </Card>
         <Card className="p-6">
           <Heart className="text-gold" size={22} />
-          <p className="mt-4 font-serif text-3xl text-brand-white">{wishlistProducts.length}</p>
-          <p className="mt-1 text-xs uppercase tracking-widest text-white/50">Wishlist Items</p>
+          <p className="mt-4 font-serif text-3xl text-fg">{wishlistProducts.length}</p>
+          <p className="mt-1 text-xs uppercase tracking-widest text-overlay/50">Wishlist Items</p>
         </Card>
       </div>
 
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-serif text-xl text-brand-white">Recent Orders</h2>
+          <h2 className="font-serif text-xl text-fg">Recent Orders</h2>
           <Link href="/account/orders" className="flex items-center gap-1 text-xs text-gold hover:underline">
             View All <ArrowRight size={12} />
           </Link>
@@ -53,12 +53,12 @@ export default function AccountOverviewPage() {
           {recentOrders.map((order) => (
             <Card key={order.id} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="font-medium text-brand-white">{order.orderNumber}</p>
-                <p className="text-xs text-white/40">{formatDate(order.date)} · {order.items.length} item(s)</p>
+                <p className="font-medium text-fg">{order.orderNumber}</p>
+                <p className="text-xs text-overlay/40">{formatDate(order.date)} · {order.items.length} item(s)</p>
               </div>
               <div className="flex items-center gap-4">
                 <Badge variant={order.status === "Delivered" ? "gold" : "outline"}>{order.status}</Badge>
-                <span className="font-serif text-brand-white">{formatCurrency(order.total)}</span>
+                <span className="font-serif text-fg">{formatCurrency(order.total)}</span>
                 <Link href={`/account/orders/${order.orderNumber}`} className="text-xs text-gold hover:underline">
                   Details
                 </Link>
@@ -70,13 +70,13 @@ export default function AccountOverviewPage() {
 
       <div>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-serif text-xl text-brand-white">Wishlist Snapshot</h2>
+          <h2 className="font-serif text-xl text-fg">Wishlist Snapshot</h2>
           <Link href="/account/wishlist" className="flex items-center gap-1 text-xs text-gold hover:underline">
             View All <ArrowRight size={12} />
           </Link>
         </div>
         {wishlistProducts.length === 0 ? (
-          <Card className="p-6 text-sm text-white/50">
+          <Card className="p-6 text-sm text-overlay/50">
             Your wishlist is empty. <Link href="/shop" className="text-gold hover:underline">Browse the collection.</Link>
           </Card>
         ) : (
@@ -84,10 +84,10 @@ export default function AccountOverviewPage() {
             {wishlistProducts.slice(0, 4).map((product) => (
               <Link key={product.id} href={`/shop/${product.slug}`}>
                 <Card className="p-4">
-                  <div className="relative aspect-square overflow-hidden rounded-sm bg-white/5">
+                  <div className="relative aspect-square overflow-hidden rounded-sm bg-overlay/5">
                     <Image src={product.images[0]} alt={product.name} fill className="object-contain p-4" />
                   </div>
-                  <p className="mt-3 font-serif text-sm text-brand-white">{product.name}</p>
+                  <p className="mt-3 font-serif text-sm text-fg">{product.name}</p>
                   <StarRating rating={product.rating} className="mt-1" />
                 </Card>
               </Link>

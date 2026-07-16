@@ -73,7 +73,7 @@ export default function ProfilePage() {
   return (
     <div className="space-y-10">
       <Card className="p-6">
-        <h2 className="mb-6 font-serif text-xl text-brand-white">Profile Information</h2>
+        <h2 className="mb-6 font-serif text-xl text-fg">Profile Information</h2>
         <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -98,7 +98,7 @@ export default function ProfilePage() {
       </Card>
 
       <Card className="p-6">
-        <h2 className="mb-6 font-serif text-xl text-brand-white">Change Password</h2>
+        <h2 className="mb-6 font-serif text-xl text-fg">Change Password</h2>
         <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
           <div>
             <Label htmlFor="currentPassword">Current Password</Label>
@@ -135,12 +135,12 @@ export default function ProfilePage() {
 
       <Card className="border-red-500/20 p-6">
         <h2 className="mb-2 font-serif text-xl text-red-300">Delete Account</h2>
-        <p className="mb-4 text-sm text-white/50">
+        <p className="mb-4 text-sm text-overlay/50">
           This will permanently delete your account and personal data in accordance with the Nigeria
           Data Protection Act (NDPA). Order history may be retained for legal/tax purposes as required
           by law.
         </p>
-        <Button variant="secondary" className="border-red-400/50 text-red-300 hover:bg-red-400 hover:text-matte-black" onClick={() => setDeleteModalOpen(true)}>
+        <Button variant="secondary" className="border-red-400/50 text-red-300 hover:bg-red-400 hover:text-ink" onClick={() => setDeleteModalOpen(true)}>
           Delete My Account
         </Button>
       </Card>
@@ -148,9 +148,9 @@ export default function ProfilePage() {
       <Modal open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
         <div className="text-center">
           <AlertTriangle size={36} className="mx-auto text-red-400" />
-          <h3 className="mt-4 font-serif text-xl text-brand-white">Delete Your Account?</h3>
-          <p className="mt-2 text-sm text-white/60">
-            This action cannot be undone. Type <span className="text-brand-white">DELETE</span> to
+          <h3 className="mt-4 font-serif text-xl text-fg">Delete Your Account?</h3>
+          <p className="mt-2 text-sm text-overlay/60">
+            This action cannot be undone. Type <span className="text-fg">DELETE</span> to
             confirm.
           </p>
           <Input

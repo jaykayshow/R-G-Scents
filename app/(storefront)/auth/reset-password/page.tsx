@@ -55,7 +55,7 @@ function ResetPasswordForm() {
       {done ? (
         <div className="text-center">
           <CheckCircle2 size={40} className="mx-auto text-gold" />
-          <p className="mt-4 text-sm text-white/70">Password updated. Redirecting to sign in...</p>
+          <p className="mt-4 text-sm text-overlay/70">Password updated. Redirecting to sign in...</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

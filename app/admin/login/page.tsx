@@ -9,6 +9,7 @@ import { ShieldCheck, Lock } from "lucide-react";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address."),
@@ -60,21 +61,24 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#08090b] px-4 py-16">
+    <div className="relative flex min-h-screen items-center justify-center bg-bg px-4 py-16">
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-md border border-gold/40 bg-gold/10">
             <ShieldCheck size={22} className="text-gold" />
           </div>
-          <p className="font-serif text-xl font-bold text-brand-white">
+          <p className="font-serif text-xl font-bold text-fg">
             R&amp;G <span className="text-gold">SCENTS</span>
           </p>
-          <p className="mt-1 text-xs uppercase tracking-[0.3em] text-white/40">Admin Portal</p>
+          <p className="mt-1 text-xs uppercase tracking-[0.3em] text-overlay/40">Admin Portal</p>
         </div>
 
-        <div className="rounded-md border border-white/10 bg-white/[0.02] p-8">
-          <h1 className="font-sans text-lg font-semibold text-brand-white">Sign in to the console</h1>
-          <p className="mt-1 text-sm text-white/40">
+        <div className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-8">
+          <h1 className="font-sans text-lg font-semibold text-fg">Sign in to the console</h1>
+          <p className="mt-1 text-sm text-overlay/40">
             This is a separate authentication domain from the storefront — customer sessions have no
             effect here.
           </p>
@@ -95,8 +99,8 @@ export default function AdminLoginPage() {
           </form>
         </div>
 
-        <div className="mt-6 rounded-md border border-white/10 bg-white/[0.02] p-5">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/40">
+        <div className="mt-6 rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-overlay/40">
             Demo Accounts (click to fill)
           </p>
           <div className="space-y-2">
@@ -105,10 +109,10 @@ export default function AdminLoginPage() {
                 key={acc.email}
                 type="button"
                 onClick={() => fillDemo(acc.email, acc.password)}
-                className="flex w-full items-center justify-between rounded-sm border border-white/10 px-3 py-2 text-left text-xs transition-colors hover:border-gold/40"
+                className="flex w-full items-center justify-between rounded-sm border border-overlay/10 px-3 py-2 text-left text-xs transition-colors hover:border-gold/40"
               >
-                <span className="text-white/70">{acc.role}</span>
-                <span className="text-white/30">{acc.email}</span>
+                <span className="text-overlay/70">{acc.role}</span>
+                <span className="text-overlay/30">{acc.email}</span>
               </button>
             ))}
           </div>

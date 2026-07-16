@@ -74,12 +74,12 @@ export default function PaymentMethodsPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="font-serif text-xl text-brand-white">Payment Methods</h2>
+        <h2 className="font-serif text-xl text-fg">Payment Methods</h2>
         <Button size="sm" onClick={() => setModalOpen(true)}>
           <Plus size={14} /> Add Card
         </Button>
       </div>
-      <p className="mb-6 text-xs text-white/40">
+      <p className="mb-6 text-xs text-overlay/40">
         Cards are tokenized via our payment gateway partners — R&amp;G Scents never stores raw card
         data.
       </p>
@@ -90,7 +90,7 @@ export default function PaymentMethodsPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CreditCard size={18} className="text-gold" />
-                <span className="text-sm font-semibold text-brand-white">{card.brand}</span>
+                <span className="text-sm font-semibold text-fg">{card.brand}</span>
               </div>
               {card.isDefault && (
                 <span className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-gold">
@@ -98,8 +98,8 @@ export default function PaymentMethodsPage() {
                 </span>
               )}
             </div>
-            <p className="mt-4 font-serif text-lg tracking-widest text-brand-white">•••• •••• •••• {card.last4}</p>
-            <p className="mt-1 text-xs text-white/40">Expires {card.expiry}</p>
+            <p className="mt-4 font-serif text-lg tracking-widest text-fg">•••• •••• •••• {card.last4}</p>
+            <p className="mt-1 text-xs text-overlay/40">Expires {card.expiry}</p>
             <div className="mt-4 flex gap-3">
               {!card.isDefault && (
                 <button
@@ -113,7 +113,7 @@ export default function PaymentMethodsPage() {
               )}
               <button
                 onClick={() => setCards((prev) => prev.filter((c) => c.id !== card.id))}
-                className="flex items-center gap-1 text-xs text-white/40 hover:text-red-300"
+                className="flex items-center gap-1 text-xs text-overlay/40 hover:text-red-300"
               >
                 <Trash2 size={12} /> Remove
               </button>
@@ -122,8 +122,8 @@ export default function PaymentMethodsPage() {
         ))}
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} className="relative z-10 w-full max-w-lg overflow-y-auto rounded-md border border-white/10 bg-charcoal p-8">
-        <h3 className="mb-6 font-serif text-xl text-brand-white">Add Payment Card</h3>
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} className="relative z-10 w-full max-w-lg overflow-y-auto rounded-md border border-overlay/10 bg-surface p-8">
+        <h3 className="mb-6 font-serif text-xl text-fg">Add Payment Card</h3>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <Label htmlFor="nameOnCard">Name on Card</Label>

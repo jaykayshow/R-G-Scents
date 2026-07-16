@@ -9,6 +9,7 @@ import { useCartStore } from "@/lib/store/cart-store";
 import { useWishlistStore } from "@/lib/store/wishlist-store";
 import { useAuthStore } from "@/lib/store/auth-store";
 import { CartDrawer } from "@/components/layout/cart-drawer";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -60,13 +61,13 @@ export function Header() {
         className={cn(
           "sticky top-0 z-50 border-b transition-colors duration-300",
           scrolled
-            ? "border-white/10 bg-matte-black/90 backdrop-blur-md"
-            : "border-transparent bg-matte-black/40 backdrop-blur-sm"
+            ? "border-overlay/10 bg-bg/90 backdrop-blur-md"
+            : "border-transparent bg-bg/40 backdrop-blur-sm"
         )}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <button
-            className="lg:hidden text-brand-white"
+            className="lg:hidden text-fg"
             onClick={() => setMobileOpen(true)}
             aria-label="Open menu"
           >
@@ -74,10 +75,10 @@ export function Header() {
           </button>
 
           <Link href="/" className="flex flex-col items-center lg:items-start">
-            <span className="font-serif text-xl font-bold tracking-wide text-brand-white sm:text-2xl">
+            <span className="font-serif text-xl font-bold tracking-wide text-fg sm:text-2xl">
               R&amp;G <span className="text-gold">SCENTS</span>
             </span>
-            <span className="hidden text-[9px] uppercase tracking-[0.35em] text-white/40 sm:block">
+            <span className="hidden text-[9px] uppercase tracking-[0.35em] text-overlay/40 sm:block">
               The Billionaire Collection
             </span>
           </Link>
@@ -89,7 +90,7 @@ export function Header() {
                 href={link.href}
                 className={cn(
                   "text-xs font-medium uppercase tracking-widest transition-colors hover:text-gold",
-                  pathname === link.href ? "text-gold" : "text-white/70"
+                  pathname === link.href ? "text-gold" : "text-overlay/70"
                 )}
               >
                 {link.label}
@@ -98,21 +99,22 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-4 sm:gap-5">
+            <ThemeToggle />
             <button
               onClick={() => setSearchOpen((v) => !v)}
               aria-label="Search"
-              className="text-brand-white/80 transition-colors hover:text-gold"
+              className="text-fg/80 transition-colors hover:text-gold"
             >
               <Search size={19} />
             </button>
             <Link
               href="/account/wishlist"
               aria-label="Wishlist"
-              className="relative text-brand-white/80 transition-colors hover:text-gold"
+              className="relative text-fg/80 transition-colors hover:text-gold"
             >
               <Heart size={19} />
               {hydrated && wishlistCount > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-matte-black">
+                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-ink">
                   {wishlistCount}
                 </span>
               )}
@@ -120,18 +122,18 @@ export function Header() {
             <Link
               href={currentUser ? "/account" : "/auth/login"}
               aria-label="Account"
-              className="hidden text-brand-white/80 transition-colors hover:text-gold sm:block"
+              className="hidden text-fg/80 transition-colors hover:text-gold sm:block"
             >
               <User size={19} />
             </Link>
             <button
               onClick={() => setCartOpen(true)}
               aria-label="Cart"
-              className="relative text-brand-white/80 transition-colors hover:text-gold"
+              className="relative text-fg/80 transition-colors hover:text-gold"
             >
               <ShoppingBag size={19} />
               {hydrated && cartCount > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-matte-black">
+                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-ink">
                   {cartCount}
                 </span>
               )}
@@ -145,7 +147,7 @@ export function Header() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden border-t border-white/10 bg-matte-black/95"
+              className="overflow-hidden border-t border-overlay/10 bg-bg/95"
             >
               <form onSubmit={handleSearchSubmit} className="mx-auto max-w-3xl px-4 py-4 sm:px-6">
                 <input
@@ -153,7 +155,7 @@ export function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search fragrances, collections, notes..."
-                  className="w-full border-b border-white/20 bg-transparent py-2 text-lg text-brand-white placeholder:text-white/30 focus:border-gold focus:outline-none"
+                  className="w-full border-b border-overlay/20 bg-transparent py-2 text-lg text-fg placeholder:text-overlay/30 focus:border-gold focus:outline-none"
                 />
               </form>
             </motion.div>
@@ -177,12 +179,12 @@ export function Header() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed left-0 top-0 z-[111] h-full w-72 bg-charcoal p-6"
+              className="fixed left-0 top-0 z-[111] h-full w-72 bg-surface p-6"
             >
               <button
                 onClick={() => setMobileOpen(false)}
                 aria-label="Close menu"
-                className="mb-8 text-brand-white"
+                className="mb-8 text-fg"
               >
                 <X size={24} />
               </button>
@@ -191,14 +193,14 @@ export function Header() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="font-serif text-xl text-brand-white hover:text-gold"
+                    className="font-serif text-xl text-fg hover:text-gold"
                   >
                     {link.label}
                   </Link>
                 ))}
                 <Link
                   href={currentUser ? "/account" : "/auth/login"}
-                  className="font-serif text-xl text-brand-white hover:text-gold"
+                  className="font-serif text-xl text-fg hover:text-gold"
                 >
                   {currentUser ? "My Account" : "Login / Register"}
                 </Link>

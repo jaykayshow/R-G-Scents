@@ -134,9 +134,9 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 py-32 text-center">
-        <ShoppingBag size={40} className="text-white/20" />
-        <h1 className="font-serif text-3xl text-brand-white">Your Bag is Empty</h1>
-        <p className="text-sm text-white/50">Add something to your bag before checking out.</p>
+        <ShoppingBag size={40} className="text-overlay/20" />
+        <h1 className="font-serif text-3xl text-fg">Your Bag is Empty</h1>
+        <p className="text-sm text-overlay/50">Add something to your bag before checking out.</p>
         <ButtonLink href="/shop">Shop the Collection</ButtonLink>
       </div>
     );
@@ -144,7 +144,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-      <h1 className="mb-10 text-center font-serif text-3xl font-semibold text-brand-white sm:text-4xl">
+      <h1 className="mb-10 text-center font-serif text-3xl font-semibold text-fg sm:text-4xl">
         Checkout
       </h1>
       <CheckoutSteps current={step} />
@@ -154,13 +154,13 @@ export default function CheckoutPage() {
           {/* Step 0: Contact */}
           {step === 0 && (
             <div className="space-y-5">
-              <h2 className="font-serif text-xl text-brand-white">Contact Information</h2>
+              <h2 className="font-serif text-xl text-fg">Contact Information</h2>
               {currentUser ? (
-                <p className="text-sm text-white/60">
-                  Signed in as <span className="text-brand-white">{currentUser.email}</span>.{" "}
+                <p className="text-sm text-overlay/60">
+                  Signed in as <span className="text-fg">{currentUser.email}</span>.{" "}
                 </p>
               ) : (
-                <p className="text-sm text-white/60">
+                <p className="text-sm text-overlay/60">
                   Checking out as a guest.{" "}
                   <Link href="/auth/login?redirect=/checkout" className="text-gold hover:underline">
                     Sign in
@@ -188,7 +188,7 @@ export default function CheckoutPage() {
           {step === 1 && (
             <div className="space-y-8">
               <div>
-                <h2 className="mb-5 font-serif text-xl text-brand-white">Shipping Address</h2>
+                <h2 className="mb-5 font-serif text-xl text-fg">Shipping Address</h2>
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="shipFullName">Full Name</Label>
@@ -230,7 +230,7 @@ export default function CheckoutPage() {
               </div>
 
               <div>
-                <label className="flex items-center gap-2.5 text-sm text-white/70">
+                <label className="flex items-center gap-2.5 text-sm text-overlay/70">
                   <input type="checkbox" className="h-4 w-4 accent-[#c9a24b]" {...register("billingSameAsShipping")} />
                   Billing address same as shipping
                 </label>
@@ -238,7 +238,7 @@ export default function CheckoutPage() {
 
               {!values.billingSameAsShipping && (
                 <div>
-                  <h2 className="mb-5 font-serif text-xl text-brand-white">Billing Address</h2>
+                  <h2 className="mb-5 font-serif text-xl text-fg">Billing Address</h2>
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="billFullName">Full Name</Label>
@@ -290,7 +290,7 @@ export default function CheckoutPage() {
           {/* Step 2: Payment */}
           {step === 2 && (
             <div className="space-y-6">
-              <h2 className="font-serif text-xl text-brand-white">Payment Method</h2>
+              <h2 className="font-serif text-xl text-fg">Payment Method</h2>
               <div className="space-y-3">
                 {paymentMethods.map((method) => (
                   <label
@@ -298,8 +298,8 @@ export default function CheckoutPage() {
                     className={cn(
                       "flex cursor-pointer items-center gap-3 rounded-sm border px-4 py-3 text-sm transition-colors",
                       values.paymentMethod === method.value
-                        ? "border-gold bg-gold/5 text-brand-white"
-                        : "border-white/15 text-white/60 hover:border-white/30"
+                        ? "border-gold bg-gold/5 text-fg"
+                        : "border-overlay/15 text-overlay/60 hover:border-overlay/30"
                     )}
                   >
                     <input
@@ -314,7 +314,7 @@ export default function CheckoutPage() {
               </div>
 
               {values.paymentMethod === "card" && (
-                <div className="space-y-4 rounded-md border border-white/10 p-5">
+                <div className="space-y-4 rounded-md border border-overlay/10 p-5">
                   <div>
                     <Label htmlFor="cardName">Name on Card</Label>
                     <Input id="cardName" error={errors.cardName?.message} {...register("cardName")} />
@@ -336,24 +336,24 @@ export default function CheckoutPage() {
                 </div>
               )}
               {values.paymentMethod === "bank-transfer" && (
-                <p className="rounded-md border border-white/10 p-4 text-xs text-white/50">
+                <p className="rounded-md border border-overlay/10 p-4 text-xs text-overlay/50">
                   You&apos;ll receive our bank details by email. Orders are confirmed manually once
                   payment is received.
                 </p>
               )}
               {values.paymentMethod === "cod" && (
-                <p className="rounded-md border border-white/10 p-4 text-xs text-white/50">
+                <p className="rounded-md border border-overlay/10 p-4 text-xs text-overlay/50">
                   Pay with cash upon delivery. Available for select locations within Nigeria.
                 </p>
               )}
               {["paystack", "flutterwave", "paypal", "apple-pay", "google-pay"].includes(values.paymentMethod) && (
-                <p className="rounded-md border border-white/10 p-4 text-xs text-white/50">
+                <p className="rounded-md border border-overlay/10 p-4 text-xs text-overlay/50">
                   You&apos;ll be redirected to complete payment securely via {paymentMethods.find((p) => p.value === values.paymentMethod)?.label}.
                 </p>
               )}
 
-              <div className="rounded-md border border-white/10 p-5">
-                <label className="flex items-center gap-2.5 text-sm text-white/70">
+              <div className="rounded-md border border-overlay/10 p-5">
+                <label className="flex items-center gap-2.5 text-sm text-overlay/70">
                   <input type="checkbox" className="h-4 w-4 accent-[#c9a24b]" {...register("giftWrap")} />
                   <Gift size={15} className="text-gold" /> Add gift wrapping
                 </label>
@@ -379,11 +379,11 @@ export default function CheckoutPage() {
           {/* Step 3: Review */}
           {step === 3 && (
             <div className="space-y-6">
-              <h2 className="font-serif text-xl text-brand-white">Review &amp; Place Order</h2>
+              <h2 className="font-serif text-xl text-fg">Review &amp; Place Order</h2>
 
-              <div className="rounded-md border border-white/10 p-5">
+              <div className="rounded-md border border-overlay/10 p-5">
                 <h3 className="mb-2 text-xs font-semibold uppercase tracking-widest text-gold">Shipping To</h3>
-                <p className="text-sm text-white/70">
+                <p className="text-sm text-overlay/70">
                   {values.shipFullName}<br />
                   {values.shipLine1}{values.shipLine2 ? `, ${values.shipLine2}` : ""}<br />
                   {values.shipCity}, {values.shipState}, {values.shipCountry} {values.shipPostalCode}<br />
@@ -391,24 +391,24 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
-              <div className="rounded-md border border-white/10 p-5">
+              <div className="rounded-md border border-overlay/10 p-5">
                 <h3 className="mb-2 text-xs font-semibold uppercase tracking-widest text-gold">Payment Method</h3>
-                <p className="text-sm text-white/70">
+                <p className="text-sm text-overlay/70">
                   {paymentMethods.find((p) => p.value === values.paymentMethod)?.label}
                 </p>
                 {values.giftWrap && <p className="mt-1 text-xs text-gold">Gift wrapping included</p>}
               </div>
 
-              <div className="rounded-md border border-white/10 p-5">
+              <div className="rounded-md border border-overlay/10 p-5">
                 <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gold">Items</h3>
                 <div className="space-y-3">
                   {items.map((item) => (
                     <div key={item.variantId} className="flex items-center gap-3 text-sm">
-                      <div className="relative h-12 w-10 shrink-0 overflow-hidden rounded-sm bg-white/5">
+                      <div className="relative h-12 w-10 shrink-0 overflow-hidden rounded-sm bg-overlay/5">
                         <Image src={item.image} alt={item.name} fill className="object-contain p-1" />
                       </div>
-                      <span className="flex-1 text-white/70">{item.name} ({item.size}) × {item.quantity}</span>
-                      <span className="text-brand-white">{formatCurrency(item.price * item.quantity)}</span>
+                      <span className="flex-1 text-overlay/70">{item.name} ({item.size}) × {item.quantity}</span>
+                      <span className="text-fg">{formatCurrency(item.price * item.quantity)}</span>
                     </div>
                   ))}
                 </div>
@@ -426,34 +426,34 @@ export default function CheckoutPage() {
           )}
         </form>
 
-        <div className="h-fit rounded-md border border-white/10 bg-white/[0.03] p-6">
-          <h2 className="mb-6 font-serif text-xl text-brand-white">Order Summary</h2>
+        <div className="h-fit rounded-md border border-overlay/10 bg-overlay/[0.03] p-6">
+          <h2 className="mb-6 font-serif text-xl text-fg">Order Summary</h2>
           <div className="max-h-64 space-y-4 overflow-y-auto pr-1">
             {items.map((item) => (
               <div key={item.variantId} className="flex items-center gap-3">
-                <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-sm bg-white/5">
+                <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-sm bg-overlay/5">
                   <Image src={item.image} alt={item.name} fill className="object-contain p-1.5" />
-                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-matte-black">
+                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-ink">
                     {item.quantity}
                   </span>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-brand-white">{item.name}</p>
-                  <p className="text-xs text-white/40">{item.size}</p>
+                  <p className="text-sm text-fg">{item.name}</p>
+                  <p className="text-xs text-overlay/40">{item.size}</p>
                 </div>
-                <span className="text-sm text-brand-white">{formatCurrency(item.price * item.quantity)}</span>
+                <span className="text-sm text-fg">{formatCurrency(item.price * item.quantity)}</span>
               </div>
             ))}
           </div>
-          <div className="mt-6 space-y-2 border-t border-white/10 pt-4 text-sm">
-            <div className="flex justify-between text-white/60"><span>Subtotal</span><span>{formatCurrency(totals.subtotal)}</span></div>
-            <div className="flex justify-between text-white/60"><span>Shipping</span><span>{totals.shipping === 0 ? "Free" : formatCurrency(totals.shipping)}</span></div>
-            <div className="flex justify-between text-white/60"><span>Tax</span><span>{formatCurrency(totals.tax)}</span></div>
+          <div className="mt-6 space-y-2 border-t border-overlay/10 pt-4 text-sm">
+            <div className="flex justify-between text-overlay/60"><span>Subtotal</span><span>{formatCurrency(totals.subtotal)}</span></div>
+            <div className="flex justify-between text-overlay/60"><span>Shipping</span><span>{totals.shipping === 0 ? "Free" : formatCurrency(totals.shipping)}</span></div>
+            <div className="flex justify-between text-overlay/60"><span>Tax</span><span>{formatCurrency(totals.tax)}</span></div>
             {totals.discount > 0 && (
               <div className="flex justify-between text-gold"><span>Discount</span><span>-{formatCurrency(totals.discount)}</span></div>
             )}
           </div>
-          <div className="mt-4 flex justify-between border-t border-white/10 pt-4 font-serif text-xl text-brand-white">
+          <div className="mt-4 flex justify-between border-t border-overlay/10 pt-4 font-serif text-xl text-fg">
             <span>Total</span><span>{formatCurrency(totals.total)}</span>
           </div>
         </div>

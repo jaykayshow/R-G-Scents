@@ -100,7 +100,7 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="flex items-start gap-2.5 text-xs text-white/60">
+          <label className="flex items-start gap-2.5 text-xs text-overlay/60">
             <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[#c9a24b]" {...register("agreeToTerms")} />
             I agree to the{" "}
             <Link href="/terms" className="text-gold hover:underline">Terms of Service</Link> and{" "}
@@ -115,9 +115,9 @@ export default function RegisterPage() {
       </form>
 
       <div className="my-6 flex items-center gap-3">
-        <span className="h-px flex-1 bg-white/10" />
-        <span className="text-xs uppercase tracking-widest text-white/40">Or continue with</span>
-        <span className="h-px flex-1 bg-white/10" />
+        <span className="h-px flex-1 bg-overlay/10" />
+        <span className="text-xs uppercase tracking-widest text-overlay/40">Or continue with</span>
+        <span className="h-px flex-1 bg-overlay/10" />
       </div>
 
       <SocialLoginButtons />

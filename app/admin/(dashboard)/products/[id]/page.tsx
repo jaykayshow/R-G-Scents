@@ -85,7 +85,7 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
   if (!isNew && !existing) {
     return (
       <div className="flex flex-col items-center gap-4 py-24 text-center">
-        <p className="text-white/50">Product not found.</p>
+        <p className="text-overlay/50">Product not found.</p>
         <Link href="/admin/products" className="text-xs text-gold hover:underline">
           &larr; Back to Products
         </Link>
@@ -164,7 +164,7 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
 
   return (
     <div>
-      <Link href="/admin/products" className="mb-4 inline-flex items-center gap-1.5 text-xs text-white/40 hover:text-gold">
+      <Link href="/admin/products" className="mb-4 inline-flex items-center gap-1.5 text-xs text-overlay/40 hover:text-gold">
         <ArrowLeft size={13} /> Back to Products
       </Link>
       <AdminPageHeader
@@ -173,7 +173,7 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
         actions={
           <>
             {!isNew && (
-              <Button variant="secondary" size="sm" onClick={handleDelete} className="border-red-400/40 text-red-300 hover:bg-red-400 hover:text-matte-black">
+              <Button variant="secondary" size="sm" onClick={handleDelete} className="border-red-400/40 text-red-300 hover:bg-red-400 hover:text-ink">
                 <Trash2 size={14} /> Delete
               </Button>
             )}
@@ -196,8 +196,8 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-6">
-          <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Basic Info</h2>
+          <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Basic Info</h2>
             <div className="space-y-4">
               <div>
                 <Label htmlFor="name">Product Name</Label>
@@ -266,7 +266,7 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
                 />
               </div>
               <div className="flex gap-6">
-                <label className="flex items-center gap-2 text-sm text-white/70">
+                <label className="flex items-center gap-2 text-sm text-overlay/70">
                   <input
                     type="checkbox"
                     checked={draft.isNew}
@@ -275,7 +275,7 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
                   />
                   Mark as New
                 </label>
-                <label className="flex items-center gap-2 text-sm text-white/70">
+                <label className="flex items-center gap-2 text-sm text-overlay/70">
                   <input
                     type="checkbox"
                     checked={draft.isLimitedEdition}
@@ -288,8 +288,8 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
             </div>
           </section>
 
-          <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Media</h2>
+          <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Media</h2>
             <Label htmlFor="images">Image Paths (one per line)</Label>
             <Textarea id="images" value={imagesText} onChange={(e) => setImagesText(e.target.value)} />
             <div className="mt-4">
@@ -302,8 +302,8 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
             </div>
           </section>
 
-          <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">SEO</h2>
+          <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">SEO</h2>
             <div className="space-y-4">
               <div>
                 <Label htmlFor="metaTitle">Meta Title</Label>
@@ -326,8 +326,8 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
         </div>
 
         <div className="space-y-6">
-          <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Pricing</h2>
+          <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Pricing</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="price">Base Price ($)</Label>
@@ -352,16 +352,16 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
             </div>
           </section>
 
-          <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
+          <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">Variants</h2>
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-overlay/50">Variants</h2>
               <Button variant="secondary" size="sm" onClick={addVariant}>
                 <Plus size={13} /> Add Variant
               </Button>
             </div>
             <div className="space-y-4">
               {draft.variants.map((variant, i) => (
-                <div key={variant.id} className="grid grid-cols-2 gap-3 rounded-sm border border-white/10 p-3 sm:grid-cols-5">
+                <div key={variant.id} className="grid grid-cols-2 gap-3 rounded-sm border border-overlay/10 p-3 sm:grid-cols-5">
                   <Input placeholder="Size" value={variant.size} onChange={(e) => updateVariant(i, { size: e.target.value })} />
                   <Input placeholder="SKU" value={variant.sku} onChange={(e) => updateVariant(i, { sku: e.target.value })} />
                   <Input placeholder="Barcode" value={variant.barcode} onChange={(e) => updateVariant(i, { barcode: e.target.value })} />
@@ -380,7 +380,7 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
                     />
                     <button
                       onClick={() => removeVariant(i)}
-                      className="shrink-0 text-white/30 hover:text-red-300"
+                      className="shrink-0 text-overlay/30 hover:text-red-300"
                       aria-label="Remove variant"
                     >
                       <Trash2 size={16} />
@@ -391,8 +391,8 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
             </div>
           </section>
 
-          <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Fragrance Notes</h2>
+          <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Fragrance Notes</h2>
             <div className="space-y-4">
               <div>
                 <Label htmlFor="notesTop">Top Notes (comma-separated)</Label>
@@ -409,8 +409,8 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
             </div>
           </section>
 
-          <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Performance</h2>
+          <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Performance</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="longevity">Longevity</Label>

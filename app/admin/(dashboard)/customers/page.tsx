@@ -33,12 +33,12 @@ export default function AdminCustomersPage() {
       label: "Customer",
       sortValue: (c) => c.name,
       render: (c) => (
-        <Link href={`/admin/customers/${c.id}`} className="font-medium text-brand-white hover:text-gold">
+        <Link href={`/admin/customers/${c.id}`} className="font-medium text-fg hover:text-gold">
           {c.name}
         </Link>
       ),
     },
-    { key: "email", label: "Email", render: (c) => <span className="text-white/60">{c.email}</span> },
+    { key: "email", label: "Email", render: (c) => <span className="text-overlay/60">{c.email}</span> },
     { key: "joined", label: "Joined", sortValue: (c) => c.joinedAt, render: (c) => formatDate(c.joinedAt) },
     { key: "orders", label: "Orders", sortValue: (c) => c.ordersCount, render: (c) => c.ordersCount },
     { key: "spent", label: "Total Spent", sortValue: (c) => c.totalSpent, render: (c) => formatCurrency(c.totalSpent) },
@@ -55,12 +55,12 @@ export default function AdminCustomersPage() {
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1 max-w-sm">
-          <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+          <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-overlay/30" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name or email..."
-            className="w-full rounded-sm border border-white/15 bg-white/[0.03] py-2 pl-9 pr-3 text-sm text-brand-white placeholder:text-white/30 focus:border-gold focus:outline-none"
+            className="w-full rounded-sm border border-overlay/15 bg-overlay/[0.03] py-2 pl-9 pr-3 text-sm text-fg placeholder:text-overlay/30 focus:border-gold focus:outline-none"
           />
         </div>
         <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as never)} className="sm:w-44">

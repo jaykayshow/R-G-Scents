@@ -9,7 +9,7 @@ export function Accordion({ items }: { items: { question: string; answer: string
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="divide-y divide-white/10 border-y border-white/10">
+    <div className="divide-y divide-overlay/10 border-y border-overlay/10">
       {items.map((item, index) => {
         const isOpen = openIndex === index;
         return (
@@ -19,7 +19,7 @@ export function Accordion({ items }: { items: { question: string; answer: string
               className="flex w-full items-center justify-between gap-4 py-5 text-left"
               aria-expanded={isOpen}
             >
-              <span className="font-serif text-base text-brand-white sm:text-lg">{item.question}</span>
+              <span className="font-serif text-base text-fg sm:text-lg">{item.question}</span>
               <ChevronDown
                 className={cn("shrink-0 text-gold transition-transform duration-300", isOpen && "rotate-180")}
                 size={20}
@@ -34,7 +34,7 @@ export function Accordion({ items }: { items: { question: string; answer: string
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <p className="pb-5 text-sm leading-relaxed text-white/60">{item.answer}</p>
+                  <p className="pb-5 text-sm leading-relaxed text-overlay/60">{item.answer}</p>
                 </motion.div>
               )}
             </AnimatePresence>

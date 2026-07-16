@@ -42,14 +42,14 @@ export function Drawer({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed right-0 top-0 z-[101] flex h-full w-full max-w-md flex-col border-l border-white/10 bg-charcoal shadow-2xl"
+            className="fixed right-0 top-0 z-[101] flex h-full w-full max-w-md flex-col border-l border-overlay/10 bg-surface shadow-2xl"
           >
-            <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
-              <h2 className="font-serif text-xl text-brand-white">{title}</h2>
+            <div className="flex items-center justify-between border-b border-overlay/10 px-6 py-5">
+              <h2 className="font-serif text-xl text-fg">{title}</h2>
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="rounded-full p-2 text-white/60 transition-colors hover:bg-white/10 hover:text-gold"
+                className="rounded-full p-2 text-overlay/60 transition-colors hover:bg-overlay/10 hover:text-gold"
               >
                 <X size={20} />
               </button>

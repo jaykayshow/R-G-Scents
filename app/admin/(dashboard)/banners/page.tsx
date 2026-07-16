@@ -100,14 +100,14 @@ export default function AdminBannersPage() {
 
       <div className="space-y-4">
         {banners.map((banner) => (
-          <div key={banner.id} className="flex flex-col gap-3 rounded-md border border-white/10 bg-white/[0.02] p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div key={banner.id} className="flex flex-col gap-3 rounded-md border border-overlay/10 bg-overlay/[0.02] p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <p className="font-medium text-brand-white">{banner.title}</p>
+                <p className="font-medium text-fg">{banner.title}</p>
                 <Badge variant={banner.active ? "gold" : "outline"}>{banner.active ? "Active" : "Inactive"}</Badge>
               </div>
-              {banner.subtitle && <p className="mt-1 text-sm text-white/50">{banner.subtitle}</p>}
-              <p className="mt-1 text-xs text-white/30">Placement: {banner.placement}</p>
+              {banner.subtitle && <p className="mt-1 text-sm text-overlay/50">{banner.subtitle}</p>}
+              <p className="mt-1 text-xs text-overlay/30">Placement: {banner.placement}</p>
             </div>
             <div className="flex gap-3">
               <Button variant="secondary" size="sm" onClick={() => handleToggle(banner)}>
@@ -116,7 +116,7 @@ export default function AdminBannersPage() {
               <Button variant="secondary" size="sm" onClick={() => openEdit(banner)}>
                 <Pencil size={13} />
               </Button>
-              <button onClick={() => handleDelete(banner)} className="text-white/40 hover:text-red-300">
+              <button onClick={() => handleDelete(banner)} className="text-overlay/40 hover:text-red-300">
                 <Trash2 size={16} />
               </button>
             </div>
@@ -125,7 +125,7 @@ export default function AdminBannersPage() {
       </div>
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <h3 className="mb-6 font-serif text-xl text-brand-white">{editingId ? "Edit Banner" : "Create Banner"}</h3>
+        <h3 className="mb-6 font-serif text-xl text-fg">{editingId ? "Edit Banner" : "Create Banner"}</h3>
         <div className="space-y-4">
           <div>
             <Label htmlFor="title">Title</Label>
@@ -157,7 +157,7 @@ export default function AdminBannersPage() {
               <option value="campaign">Campaign Takeover</option>
             </Select>
           </div>
-          <label className="flex items-center gap-2 text-sm text-white/70">
+          <label className="flex items-center gap-2 text-sm text-overlay/70">
             <input
               type="checkbox"
               checked={draft.active}

@@ -39,9 +39,9 @@ export default function AdminLogsPage() {
 
   const columns: DataTableColumn<AuditLogEntry>[] = [
     { key: "date", label: "Timestamp", sortValue: (l) => l.date, render: (l) => formatDate(l.date) },
-    { key: "actor", label: "Actor", render: (l) => <span className="font-medium text-brand-white">{l.actor}</span> },
+    { key: "actor", label: "Actor", render: (l) => <span className="font-medium text-fg">{l.actor}</span> },
     { key: "action", label: "Action", render: (l) => l.action },
-    { key: "target", label: "Target", render: (l) => <span className="text-white/60">{l.target}</span> },
+    { key: "target", label: "Target", render: (l) => <span className="text-overlay/60">{l.target}</span> },
     { key: "category", label: "Category", render: (l) => <Badge variant={categoryVariant(l.category)}>{l.category}</Badge> },
   ];
 

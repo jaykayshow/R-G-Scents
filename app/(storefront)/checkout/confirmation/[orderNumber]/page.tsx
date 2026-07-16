@@ -28,13 +28,13 @@ export default function OrderConfirmationPage({
   return (
     <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6">
       <CheckCircle2 size={48} className="mx-auto text-gold" />
-      <h1 className="mt-6 font-serif text-3xl font-semibold text-brand-white sm:text-4xl">
+      <h1 className="mt-6 font-serif text-3xl font-semibold text-fg sm:text-4xl">
         Thank You, Your Order Is Confirmed
       </h1>
-      <p className="mt-3 text-sm text-white/60">
-        Order <span className="text-brand-white">{order.orderNumber}</span> placed on {formatDate(order.date)}
+      <p className="mt-3 text-sm text-overlay/60">
+        Order <span className="text-fg">{order.orderNumber}</span> placed on {formatDate(order.date)}
       </p>
-      <p className="mt-2 flex items-center justify-center gap-2 text-xs text-white/40">
+      <p className="mt-2 flex items-center justify-center gap-2 text-xs text-overlay/40">
         <Mail size={13} /> A confirmation email has been sent with your receipt.
       </p>
 
@@ -43,27 +43,27 @@ export default function OrderConfirmationPage({
         <div className="space-y-3">
           {order.items.map((item) => (
             <div key={item.productId} className="flex items-center gap-3">
-              <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-sm bg-white/5">
+              <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-sm bg-overlay/5">
                 <Image src={item.image} alt={item.productName} fill className="object-contain p-1.5" />
               </div>
               <div className="flex-1 text-sm">
-                <Link href={`/shop/${item.productSlug}`} className="text-brand-white hover:text-gold">
+                <Link href={`/shop/${item.productSlug}`} className="text-fg hover:text-gold">
                   {item.productName}
                 </Link>
-                <p className="text-xs text-white/40">{item.variantSize} × {item.quantity}</p>
+                <p className="text-xs text-overlay/40">{item.variantSize} × {item.quantity}</p>
               </div>
-              <span className="text-sm text-brand-white">{formatCurrency(item.unitPrice * item.quantity)}</span>
+              <span className="text-sm text-fg">{formatCurrency(item.unitPrice * item.quantity)}</span>
             </div>
           ))}
         </div>
-        <div className="mt-6 space-y-2 border-t border-white/10 pt-4 text-sm">
-          <div className="flex justify-between text-white/60"><span>Subtotal</span><span>{formatCurrency(order.subtotal)}</span></div>
-          <div className="flex justify-between text-white/60"><span>Shipping</span><span>{order.shipping === 0 ? "Free" : formatCurrency(order.shipping)}</span></div>
-          <div className="flex justify-between text-white/60"><span>Tax</span><span>{formatCurrency(order.tax)}</span></div>
+        <div className="mt-6 space-y-2 border-t border-overlay/10 pt-4 text-sm">
+          <div className="flex justify-between text-overlay/60"><span>Subtotal</span><span>{formatCurrency(order.subtotal)}</span></div>
+          <div className="flex justify-between text-overlay/60"><span>Shipping</span><span>{order.shipping === 0 ? "Free" : formatCurrency(order.shipping)}</span></div>
+          <div className="flex justify-between text-overlay/60"><span>Tax</span><span>{formatCurrency(order.tax)}</span></div>
           {order.discount > 0 && (
             <div className="flex justify-between text-gold"><span>Discount</span><span>-{formatCurrency(order.discount)}</span></div>
           )}
-          <div className="flex justify-between border-t border-white/10 pt-2 font-serif text-lg text-brand-white">
+          <div className="flex justify-between border-t border-overlay/10 pt-2 font-serif text-lg text-fg">
             <span>Total</span><span>{formatCurrency(order.total)}</span>
           </div>
         </div>

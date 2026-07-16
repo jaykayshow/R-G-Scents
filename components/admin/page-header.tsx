@@ -10,8 +10,8 @@ export function AdminPageHeader({
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="font-serif text-2xl font-semibold text-brand-white sm:text-3xl">{title}</h1>
-        {description && <p className="mt-1 text-sm text-white/40">{description}</p>}
+        <h1 className="font-serif text-2xl font-semibold text-fg sm:text-3xl">{title}</h1>
+        {description && <p className="mt-1 text-sm text-overlay/40">{description}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
     </div>

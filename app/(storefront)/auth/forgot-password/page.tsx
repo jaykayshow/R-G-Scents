@@ -52,8 +52,8 @@ export default function ForgotPasswordPage() {
       {sent ? (
         <div className="text-center">
           <MailCheck size={40} className="mx-auto text-gold" />
-          <p className="mt-4 text-sm text-white/70">
-            If an account exists for <span className="text-brand-white">{email}</span>, a reset link
+          <p className="mt-4 text-sm text-overlay/70">
+            If an account exists for <span className="text-fg">{email}</span>, a reset link
             has been sent.
           </p>
           <Link

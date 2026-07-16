@@ -30,7 +30,7 @@ export function RequireAdminAuth({ children }: { children: React.ReactNode }) {
 
   if (!hydrated || !currentAdmin) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#08090b] text-sm text-white/40">
+      <div className="flex min-h-screen items-center justify-center bg-bg text-sm text-overlay/40">
         Loading admin console...
       </div>
     );
@@ -39,7 +39,7 @@ export function RequireAdminAuth({ children }: { children: React.ReactNode }) {
   const section = sectionForPath(pathname);
   if (section && !section.roles.includes(currentAdmin.role)) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#08090b] text-sm text-white/40">
+      <div className="flex min-h-screen items-center justify-center bg-bg text-sm text-overlay/40">
         Redirecting...
       </div>
     );

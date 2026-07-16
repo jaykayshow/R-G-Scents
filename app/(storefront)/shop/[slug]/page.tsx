@@ -16,8 +16,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   if (!product) {
     return (
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-4 py-32 text-center">
-        <h1 className="font-serif text-3xl text-brand-white">Product Not Found</h1>
-        <p className="text-sm text-white/50">This fragrance may have been retired from the collection.</p>
+        <h1 className="font-serif text-3xl text-fg">Product Not Found</h1>
+        <p className="text-sm text-overlay/50">This fragrance may have been retired from the collection.</p>
         <Link href="/shop" className="text-xs uppercase tracking-widest text-gold hover:underline">
           &larr; Back to Shop
         </Link>

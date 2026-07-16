@@ -79,40 +79,40 @@ export default function AdminReviewsPage() {
         description={pendingCount > 0 ? `${pendingCount} review(s) awaiting moderation` : "All caught up — no reviews pending."}
       />
 
-      <div className="mb-6 flex items-center gap-1 border-b border-white/10">
+      <div className="mb-6 flex items-center gap-1 border-b border-overlay/10">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
             className={`border-b-2 px-3 pb-3 text-sm font-medium transition-colors ${
-              tab === t.key ? "border-gold text-gold" : "border-transparent text-white/50 hover:text-white/80"
+              tab === t.key ? "border-gold text-gold" : "border-transparent text-overlay/50 hover:text-overlay/80"
             }`}
           >
             {t.label}
             {t.key === "pending" && pendingCount > 0 && (
-              <span className="ml-1.5 rounded-full bg-gold px-1.5 py-0.5 text-[10px] text-matte-black">{pendingCount}</span>
+              <span className="ml-1.5 rounded-full bg-gold px-1.5 py-0.5 text-[10px] text-ink">{pendingCount}</span>
             )}
           </button>
         ))}
       </div>
 
       {filtered.length === 0 ? (
-        <p className="py-12 text-center text-sm text-white/40">No reviews in this view.</p>
+        <p className="py-12 text-center text-sm text-overlay/40">No reviews in this view.</p>
       ) : (
         <div className="space-y-4">
           {filtered.map((review) => (
-            <div key={review.id} className="rounded-md border border-white/10 bg-white/[0.02] p-5">
+            <div key={review.id} className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="font-medium text-brand-white">{review.author}</p>
+                    <p className="font-medium text-fg">{review.author}</p>
                     {review.verified && (
                       <span className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-gold">
                         <BadgeCheck size={12} /> Verified
                       </span>
                     )}
                   </div>
-                  <Link href={`/shop/${productSlug(review.productId)}`} target="_blank" className="text-xs text-white/40 hover:text-gold">
+                  <Link href={`/shop/${productSlug(review.productId)}`} target="_blank" className="text-xs text-overlay/40 hover:text-gold">
                     on {productName(review.productId)}
                   </Link>
                 </div>
@@ -123,14 +123,14 @@ export default function AdminReviewsPage() {
                 </Badge>
               </div>
               <StarRating rating={review.rating} className="mt-3" />
-              <h4 className="mt-2 font-serif text-base text-brand-white">{review.title}</h4>
-              <p className="mt-1 text-sm text-white/60">{review.content}</p>
-              <p className="mt-2 text-xs text-white/30">{formatDate(review.date)}</p>
+              <h4 className="mt-2 font-serif text-base text-fg">{review.title}</h4>
+              <p className="mt-1 text-sm text-overlay/60">{review.content}</p>
+              <p className="mt-2 text-xs text-overlay/30">{formatDate(review.date)}</p>
 
               {review.replies?.map((r, i) => (
                 <div key={i} className="mt-3 rounded-sm border border-gold/20 bg-gold/5 p-3 text-sm">
                   <p className="text-xs font-semibold uppercase tracking-widest text-gold">{r.author}</p>
-                  <p className="mt-1 text-white/70">{r.content}</p>
+                  <p className="mt-1 text-overlay/70">{r.content}</p>
                 </div>
               ))}
 
@@ -145,7 +145,7 @@ export default function AdminReviewsPage() {
                     size="sm"
                     variant="secondary"
                     onClick={() => handleReject(review.id, review.author)}
-                    className="border-red-400/40 text-red-300 hover:bg-red-400 hover:text-matte-black"
+                    className="border-red-400/40 text-red-300 hover:bg-red-400 hover:text-ink"
                   >
                     <X size={13} /> Reject
                   </Button>

@@ -55,7 +55,7 @@ export function AccountNav() {
             href={item.href}
             className={cn(
               "flex items-center gap-3 rounded-sm px-4 py-2.5 text-sm transition-colors",
-              active ? "bg-gold text-matte-black" : "text-white/60 hover:bg-white/5 hover:text-brand-white"
+              active ? "bg-gold text-ink" : "text-overlay/60 hover:bg-overlay/5 hover:text-fg"
             )}
           >
             <item.icon size={16} /> {item.label}
@@ -64,7 +64,7 @@ export function AccountNav() {
       })}
       <button
         onClick={handleLogout}
-        className="flex w-full items-center gap-3 rounded-sm px-4 py-2.5 text-sm text-white/60 transition-colors hover:bg-white/5 hover:text-red-300"
+        className="flex w-full items-center gap-3 rounded-sm px-4 py-2.5 text-sm text-overlay/60 transition-colors hover:bg-overlay/5 hover:text-red-300"
       >
         <LogOut size={16} /> Sign Out
       </button>

@@ -10,7 +10,7 @@ export function Badge({
   className?: string;
 }) {
   const variants = {
-    gold: "bg-gold text-matte-black",
+    gold: "bg-gold text-ink",
     outline: "border border-gold/60 text-gold",
     danger: "bg-red-500/20 text-red-300 border border-red-400/40",
   };

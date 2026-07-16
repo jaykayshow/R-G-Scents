@@ -91,23 +91,23 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
-        <div className="rounded-md border border-white/10 bg-white/[0.02] p-5 lg:col-span-2">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">
+        <div className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5 lg:col-span-2">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">
             Revenue Trend (30 Days)
           </h2>
           <RevenueTrendChart data={dailyMetrics} />
         </div>
-        <div className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">
+        <div className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">
             Top Selling Products
           </h2>
           <TopProductsChart data={topProducts} />
         </div>
       </div>
 
-      <div className="mt-6 rounded-md border border-white/10 bg-white/[0.02] p-5">
+      <div className="mt-6 rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-widest text-white/50">Recent Orders</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-widest text-overlay/50">Recent Orders</h2>
           <Link href="/admin/orders" className="flex items-center gap-1 text-xs text-gold hover:underline">
             View All <ArrowRight size={12} />
           </Link>
@@ -115,23 +115,23 @@ export default function AdminDashboardPage() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-xs uppercase tracking-wider text-white/40">
+              <tr className="border-b border-overlay/10 text-xs uppercase tracking-wider text-overlay/40">
                 <th className="px-3 py-2 font-semibold">Order</th>
                 <th className="px-3 py-2 font-semibold">Date</th>
                 <th className="px-3 py-2 font-semibold">Total</th>
                 <th className="px-3 py-2 font-semibold">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-overlay/5">
               {recentOrders.map((order) => (
                 <tr key={order.id}>
                   <td className="px-3 py-3">
-                    <Link href={`/admin/orders/${order.orderNumber}`} className="text-brand-white hover:text-gold">
+                    <Link href={`/admin/orders/${order.orderNumber}`} className="text-fg hover:text-gold">
                       {order.orderNumber}
                     </Link>
                   </td>
-                  <td className="px-3 py-3 text-white/60">{formatDate(order.date)}</td>
-                  <td className="px-3 py-3 text-white/80">{formatCurrency(order.total)}</td>
+                  <td className="px-3 py-3 text-overlay/60">{formatDate(order.date)}</td>
+                  <td className="px-3 py-3 text-overlay/80">{formatCurrency(order.total)}</td>
                   <td className="px-3 py-3">
                     <Select
                       value={order.status}

@@ -22,11 +22,11 @@ export default function WishlistPage() {
 
   return (
     <div>
-      <h2 className="mb-6 font-serif text-xl text-brand-white">My Wishlist</h2>
+      <h2 className="mb-6 font-serif text-xl text-fg">My Wishlist</h2>
       {wishlistProducts.length === 0 ? (
         <Card className="flex flex-col items-center gap-4 p-12 text-center">
-          <Heart size={32} className="text-white/30" />
-          <p className="text-sm text-white/50">Your wishlist is empty.</p>
+          <Heart size={32} className="text-overlay/30" />
+          <p className="text-sm text-overlay/50">Your wishlist is empty.</p>
           <Link href="/shop">
             <Button variant="secondary">Browse the Collection</Button>
           </Link>
@@ -35,14 +35,14 @@ export default function WishlistPage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {wishlistProducts.map((product) => (
             <Card key={product.id} className="p-5">
-              <div className="relative aspect-square overflow-hidden rounded-sm bg-white/5">
+              <div className="relative aspect-square overflow-hidden rounded-sm bg-overlay/5">
                 <Image src={product.images[0]} alt={product.name} fill className="object-contain p-6" />
               </div>
               <Link href={`/shop/${product.slug}`}>
-                <p className="mt-4 font-serif text-lg text-brand-white hover:text-gold">{product.name}</p>
+                <p className="mt-4 font-serif text-lg text-fg hover:text-gold">{product.name}</p>
               </Link>
               <StarRating rating={product.rating} className="mt-1" />
-              <p className="mt-2 font-serif text-brand-white">{formatCurrency(product.price)}</p>
+              <p className="mt-2 font-serif text-fg">{formatCurrency(product.price)}</p>
               <div className="mt-4 flex gap-2">
                 <Button
                   size="sm"

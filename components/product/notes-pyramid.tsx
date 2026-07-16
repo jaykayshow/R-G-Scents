@@ -13,11 +13,11 @@ export function NotesPyramidDisplay({ notes }: { notes: NotesPyramid }) {
         <div key={tier.label} className="flex gap-4">
           <div className="flex w-10 shrink-0 flex-col items-center">
             <span className="font-serif text-lg text-gold">{i + 1}</span>
-            <span className="mt-1 h-full w-px bg-white/15" />
+            <span className="mt-1 h-full w-px bg-overlay/15" />
           </div>
           <div className="pb-2">
             <h4 className="text-xs font-semibold uppercase tracking-widest text-gold">{tier.label}</h4>
-            <p className="mt-1.5 text-sm text-white/70">{tier.items.join(", ")}</p>
+            <p className="mt-1.5 text-sm text-overlay/70">{tier.items.join(", ")}</p>
           </div>
         </div>
       ))}

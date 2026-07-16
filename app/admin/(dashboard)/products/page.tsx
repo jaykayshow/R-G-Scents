@@ -138,14 +138,14 @@ export default function AdminProductsPage() {
       sortValue: (p) => p.name,
       render: (p) => (
         <div className="flex items-center gap-3">
-          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-white/5">
+          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-overlay/5">
             <Image src={p.images[0]} alt={p.name} fill className="object-contain p-1" />
           </div>
           <div>
-            <Link href={`/admin/products/${p.id}`} className="font-medium text-brand-white hover:text-gold">
+            <Link href={`/admin/products/${p.id}`} className="font-medium text-fg hover:text-gold">
               {p.name}
             </Link>
-            <p className="text-xs capitalize text-white/40">{p.collection}</p>
+            <p className="text-xs capitalize text-overlay/40">{p.collection}</p>
           </div>
         </div>
       ),
@@ -156,7 +156,7 @@ export default function AdminProductsPage() {
       label: "Stock",
       sortValue: (p) => p.stock,
       render: (p) => (
-        <span className={p.stock === 0 ? "text-red-400" : p.stock <= 15 ? "text-amber-400" : "text-white/80"}>
+        <span className={p.stock === 0 ? "text-red-400" : p.stock <= 15 ? "text-amber-400" : "text-overlay/80"}>
           {p.stock} units
         </span>
       ),
@@ -179,7 +179,7 @@ export default function AdminProductsPage() {
           </Link>
           <button
             onClick={() => handleDeleteOne(p.id, p.name)}
-            className="text-xs text-white/40 hover:text-red-300"
+            className="text-xs text-overlay/40 hover:text-red-300"
           >
             Delete
           </button>
@@ -210,12 +210,12 @@ export default function AdminProductsPage() {
 
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+          <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-overlay/30" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search products..."
-            className="w-full rounded-sm border border-white/15 bg-white/[0.03] py-2 pl-9 pr-3 text-sm text-brand-white placeholder:text-white/30 focus:border-gold focus:outline-none"
+            className="w-full rounded-sm border border-overlay/15 bg-overlay/[0.03] py-2 pl-9 pr-3 text-sm text-fg placeholder:text-overlay/30 focus:border-gold focus:outline-none"
           />
         </div>
         <Select value={collectionFilter} onChange={(e) => setCollectionFilter(e.target.value)} className="sm:w-48">
@@ -228,7 +228,7 @@ export default function AdminProductsPage() {
         </Select>
         {selectedIds.length > 0 && (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-white/40">{selectedIds.length} selected</span>
+            <span className="text-xs text-overlay/40">{selectedIds.length} selected</span>
             <Button variant="secondary" size="sm" onClick={handleBulkDeactivateStock}>
               Mark Out of Stock
             </Button>
@@ -254,8 +254,8 @@ export default function AdminProductsPage() {
       />
 
       <Modal open={importOpen} onClose={() => setImportOpen(false)}>
-        <h3 className="mb-2 font-serif text-xl text-brand-white">Import Products via CSV</h3>
-        <p className="mb-4 text-sm text-white/50">
+        <h3 className="mb-2 font-serif text-xl text-fg">Import Products via CSV</h3>
+        <p className="mb-4 text-sm text-overlay/50">
           Paste rows in the format: <code className="text-gold">name,collection,price,stock</code> — one
           per line. Collection must be one of legacy, reserve, royale, elite, noir.
         </p>

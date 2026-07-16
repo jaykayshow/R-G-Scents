@@ -30,8 +30,8 @@ export default function AdminSettingsPage() {
     <div className="space-y-6">
       <AdminPageHeader title="Settings" description="Store-wide configuration for tax, shipping, payments, and SEO." />
 
-      <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">General</h2>
+      <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">General</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="siteName">Site Name</Label>
@@ -46,7 +46,7 @@ export default function AdminSettingsPage() {
             <Input id="supportPhone" value={draft.supportPhone} onChange={(e) => setDraft((d) => ({ ...d, supportPhone: e.target.value }))} />
           </div>
           <div className="flex items-end">
-            <label className="flex items-center gap-2 text-sm text-white/70">
+            <label className="flex items-center gap-2 text-sm text-overlay/70">
               <input
                 type="checkbox"
                 checked={draft.maintenanceMode}
@@ -62,8 +62,8 @@ export default function AdminSettingsPage() {
         </Button>
       </section>
 
-      <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Tax &amp; Shipping</h2>
+      <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Tax &amp; Shipping</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
             <Label htmlFor="taxRate">Tax Rate (%)</Label>
@@ -93,7 +93,7 @@ export default function AdminSettingsPage() {
             />
           </div>
         </div>
-        <p className="mt-3 text-xs text-white/30">
+        <p className="mt-3 text-xs text-overlay/30">
           These values directly control checkout totals on the storefront in real time.
         </p>
         <Button size="sm" className="mt-4" onClick={() => handleSave("Tax & Shipping")}>
@@ -101,8 +101,8 @@ export default function AdminSettingsPage() {
         </Button>
       </section>
 
-      <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">Payment Gateways</h2>
+      <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">Payment Gateways</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {(
             [
@@ -114,7 +114,7 @@ export default function AdminSettingsPage() {
               ["codEnabled", "Cash on Delivery"],
             ] as [keyof SiteSettings, string][]
           ).map(([key, label]) => (
-            <label key={key} className="flex items-center gap-2 text-sm text-white/70">
+            <label key={key} className="flex items-center gap-2 text-sm text-overlay/70">
               <input
                 type="checkbox"
                 checked={Boolean(draft[key])}
@@ -130,8 +130,8 @@ export default function AdminSettingsPage() {
         </Button>
       </section>
 
-      <section className="rounded-md border border-white/10 bg-white/[0.02] p-5">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/50">SEO Defaults</h2>
+      <section className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
+        <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">SEO Defaults</h2>
         <div className="space-y-4">
           <div>
             <Label htmlFor="metaTitle">Default Meta Title</Label>

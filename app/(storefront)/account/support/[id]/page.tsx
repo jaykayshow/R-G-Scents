@@ -34,11 +34,11 @@ export default function SupportTicketDetailPage({ params }: { params: Promise<{ 
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <LifeBuoy size={18} className="text-gold" />
-          <h2 className="font-serif text-xl text-brand-white">{ticket.subject}</h2>
+          <h2 className="font-serif text-xl text-fg">{ticket.subject}</h2>
         </div>
         <Badge variant={statusVariant(ticket.status) as never}>{ticket.status}</Badge>
       </div>
-      <p className="mb-6 text-xs text-white/40">
+      <p className="mb-6 text-xs text-overlay/40">
         {ticket.category} · Opened {formatDate(ticket.createdAt)}
       </p>
 
@@ -52,9 +52,9 @@ export default function SupportTicketDetailPage({ params }: { params: Promise<{ 
               <span className="text-xs font-semibold uppercase tracking-widest text-gold">
                 {msg.author === "support" ? "R&G Scents Support" : "You"}
               </span>
-              <span className="text-xs text-white/30">{formatDate(msg.date)}</span>
+              <span className="text-xs text-overlay/30">{formatDate(msg.date)}</span>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-white/70">{msg.content}</p>
+            <p className="mt-3 text-sm leading-relaxed text-overlay/70">{msg.content}</p>
           </Card>
         ))}
       </div>

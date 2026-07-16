@@ -16,7 +16,7 @@ export function BestSellers() {
   }
 
   return (
-    <section className="bg-charcoal py-24">
+    <section className="bg-surface py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between">
           <SectionHeading
@@ -29,14 +29,14 @@ export function BestSellers() {
             <button
               onClick={() => scroll("left")}
               aria-label="Scroll left"
-              className="rounded-full border border-white/15 p-2.5 text-white/70 hover:border-gold hover:text-gold"
+              className="rounded-full border border-overlay/15 p-2.5 text-overlay/70 hover:border-gold hover:text-gold"
             >
               <ChevronLeft size={18} />
             </button>
             <button
               onClick={() => scroll("right")}
               aria-label="Scroll right"
-              className="rounded-full border border-white/15 p-2.5 text-white/70 hover:border-gold hover:text-gold"
+              className="rounded-full border border-overlay/15 p-2.5 text-overlay/70 hover:border-gold hover:text-gold"
             >
               <ChevronRight size={18} />
             </button>

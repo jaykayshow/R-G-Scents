@@ -21,7 +21,7 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
   }, [hydrated, currentUser, router, pathname]);
 
   if (!hydrated || !currentUser) {
-    return <div className="flex min-h-[60vh] items-center justify-center text-sm text-white/40">Loading account...</div>;
+    return <div className="flex min-h-[60vh] items-center justify-center text-sm text-overlay/40">Loading account...</div>;
   }
 
   return <>{children}</>;

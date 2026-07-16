@@ -13,7 +13,7 @@ const icons = {
 const colors = {
   success: "border-gold/40 text-gold",
   error: "border-red-400/40 text-red-300",
-  info: "border-white/25 text-white",
+  info: "border-overlay/25 text-fg",
 };
 
 export function Toaster() {
@@ -33,10 +33,10 @@ export function Toaster() {
               exit={{ opacity: 0, x: 40 }}
               transition={{ duration: 0.25 }}
               onClick={() => dismiss(toast.id)}
-              className={`pointer-events-auto flex max-w-sm items-center gap-3 rounded-sm border bg-charcoal/95 px-4 py-3 text-sm shadow-xl backdrop-blur-sm cursor-pointer ${colors[toast.variant]}`}
+              className={`pointer-events-auto flex max-w-sm items-center gap-3 rounded-sm border bg-surface/95 px-4 py-3 text-sm shadow-xl backdrop-blur-sm cursor-pointer ${colors[toast.variant]}`}
             >
               <Icon size={18} className="shrink-0" />
-              <span className="text-brand-white/90">{toast.message}</span>
+              <span className="text-fg/90">{toast.message}</span>
             </motion.div>
           );
         })}

@@ -60,9 +60,9 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 py-32 text-center">
-        <ShoppingBag size={40} className="text-white/20" />
-        <h1 className="font-serif text-3xl text-brand-white">Your Bag is Empty</h1>
-        <p className="text-sm text-white/50">Discover fragrances built for men who leave a legacy.</p>
+        <ShoppingBag size={40} className="text-overlay/20" />
+        <h1 className="font-serif text-3xl text-fg">Your Bag is Empty</h1>
+        <p className="text-sm text-overlay/50">Discover fragrances built for men who leave a legacy.</p>
         <ButtonLink href="/shop">Shop the Collection</ButtonLink>
       </div>
     );
@@ -70,22 +70,22 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <h1 className="mb-10 font-serif text-3xl font-semibold text-brand-white sm:text-4xl">Your Bag</h1>
+      <h1 className="mb-10 font-serif text-3xl font-semibold text-fg sm:text-4xl">Your Bag</h1>
 
       <div className="grid gap-12 lg:grid-cols-[1fr_380px]">
         <div className="space-y-6">
           {items.map((item) => (
-            <div key={item.variantId} className="flex gap-5 border-b border-white/10 pb-6">
-              <Link href={`/shop/${item.slug}`} className="relative h-28 w-24 shrink-0 overflow-hidden rounded-sm bg-white/5">
+            <div key={item.variantId} className="flex gap-5 border-b border-overlay/10 pb-6">
+              <Link href={`/shop/${item.slug}`} className="relative h-28 w-24 shrink-0 overflow-hidden rounded-sm bg-overlay/5">
                 <Image src={item.image} alt={item.name} fill className="object-contain p-3" />
               </Link>
               <div className="flex flex-1 flex-col justify-between">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <Link href={`/shop/${item.slug}`} className="font-serif text-lg text-brand-white hover:text-gold">
+                    <Link href={`/shop/${item.slug}`} className="font-serif text-lg text-fg hover:text-gold">
                       {item.name}
                     </Link>
-                    <p className="text-xs text-white/40">{item.size}</p>
+                    <p className="text-xs text-overlay/40">{item.size}</p>
                     {item.quantity > item.stock && (
                       <p className="mt-1 text-xs text-red-400">Only {item.stock} left in stock</p>
                     )}
@@ -93,7 +93,7 @@ export default function CartPage() {
                   <button
                     onClick={() => removeItem(item.variantId)}
                     aria-label="Remove item"
-                    className="text-white/40 hover:text-red-300"
+                    className="text-overlay/40 hover:text-red-300"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -104,7 +104,7 @@ export default function CartPage() {
                     onChange={(q) => updateQuantity(item.variantId, q)}
                     max={item.stock}
                   />
-                  <span className="font-serif text-lg text-brand-white">
+                  <span className="font-serif text-lg text-fg">
                     {formatCurrency(item.price * item.quantity)}
                   </span>
                 </div>
@@ -113,8 +113,8 @@ export default function CartPage() {
           ))}
         </div>
 
-        <div className="h-fit rounded-md border border-white/10 bg-white/[0.03] p-6">
-          <h2 className="mb-6 font-serif text-xl text-brand-white">Order Summary</h2>
+        <div className="h-fit rounded-md border border-overlay/10 bg-overlay/[0.03] p-6">
+          <h2 className="mb-6 font-serif text-xl text-fg">Order Summary</h2>
 
           {appliedCoupon ? (
             <div className="mb-4 flex items-center justify-between rounded-sm border border-gold/30 bg-gold/5 px-3 py-2 text-xs">
@@ -122,7 +122,7 @@ export default function CartPage() {
                 <Tag size={13} /> {appliedCoupon.code}
               </span>
               <button onClick={removeCoupon} aria-label="Remove coupon">
-                <X size={14} className="text-white/50 hover:text-red-300" />
+                <X size={14} className="text-overlay/50 hover:text-red-300" />
               </button>
             </div>
           ) : (
@@ -132,33 +132,33 @@ export default function CartPage() {
                   value={couponInput}
                   onChange={(e) => setCouponInput(e.target.value)}
                   placeholder="Coupon code"
-                  className="w-full rounded-sm border border-white/15 bg-white/[0.03] px-3 py-2 text-sm text-brand-white placeholder:text-white/35 focus:border-gold focus:outline-none"
+                  className="w-full rounded-sm border border-overlay/15 bg-overlay/[0.03] px-3 py-2 text-sm text-fg placeholder:text-overlay/35 focus:border-gold focus:outline-none"
                 />
                 <Button type="submit" size="sm" variant="secondary" className="shrink-0">
                   Apply
                 </Button>
               </div>
               {couponError && <p className="mt-1.5 text-xs text-red-400">{couponError}</p>}
-              <p className="mt-1.5 text-[11px] text-white/30">Try WELCOME20, BILLIONAIRE10, FREESHIP, or LEGACY50</p>
+              <p className="mt-1.5 text-[11px] text-overlay/30">Try WELCOME20, BILLIONAIRE10, FREESHIP, or LEGACY50</p>
             </form>
           )}
 
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-white/60"><span>Subtotal</span><span>{formatCurrency(totals.subtotal)}</span></div>
-            <div className="flex justify-between text-white/60"><span>Shipping</span><span>{totals.shipping === 0 ? "Free" : formatCurrency(totals.shipping)}</span></div>
-            <div className="flex justify-between text-white/60"><span>Tax</span><span>{formatCurrency(totals.tax)}</span></div>
+            <div className="flex justify-between text-overlay/60"><span>Subtotal</span><span>{formatCurrency(totals.subtotal)}</span></div>
+            <div className="flex justify-between text-overlay/60"><span>Shipping</span><span>{totals.shipping === 0 ? "Free" : formatCurrency(totals.shipping)}</span></div>
+            <div className="flex justify-between text-overlay/60"><span>Tax</span><span>{formatCurrency(totals.tax)}</span></div>
             {totals.discount > 0 && (
               <div className="flex justify-between text-gold"><span>Discount</span><span>-{formatCurrency(totals.discount)}</span></div>
             )}
           </div>
-          <div className="mt-4 flex justify-between border-t border-white/10 pt-4 font-serif text-xl text-brand-white">
+          <div className="mt-4 flex justify-between border-t border-overlay/10 pt-4 font-serif text-xl text-fg">
             <span>Total</span><span>{formatCurrency(totals.total)}</span>
           </div>
 
           <Button onClick={handleCheckout} size="lg" className="mt-6 w-full">
             Proceed to Checkout
           </Button>
-          <Link href="/shop" className="mt-4 block text-center text-xs text-white/40 hover:text-gold">
+          <Link href="/shop" className="mt-4 block text-center text-xs text-overlay/40 hover:text-gold">
             Continue Shopping
           </Link>
         </div>

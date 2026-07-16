@@ -71,8 +71,8 @@ export default function AdminUsersPage() {
   }
 
   const columns: DataTableColumn<AdminAccount>[] = [
-    { key: "name", label: "Name", sortValue: (a) => a.name, render: (a) => <span className="font-medium text-brand-white">{a.name}</span> },
-    { key: "email", label: "Email", render: (a) => <span className="text-white/60">{a.email}</span> },
+    { key: "name", label: "Name", sortValue: (a) => a.name, render: (a) => <span className="font-medium text-fg">{a.name}</span> },
+    { key: "email", label: "Email", render: (a) => <span className="text-overlay/60">{a.email}</span> },
     {
       key: "role",
       label: "Role",
@@ -101,7 +101,7 @@ export default function AdminUsersPage() {
         <button
           onClick={() => handleToggle(a)}
           disabled={a.id === currentAdmin?.id}
-          className="flex items-center gap-1 text-xs text-white/50 hover:text-gold disabled:opacity-30"
+          className="flex items-center gap-1 text-xs text-overlay/50 hover:text-gold disabled:opacity-30"
         >
           {a.active ? <Ban size={13} /> : <CheckCircle2 size={13} />}
           {a.active ? "Deactivate" : "Activate"}
@@ -124,7 +124,7 @@ export default function AdminUsersPage() {
       <DataTable columns={columns} rows={admins} getRowId={(a) => a.id} />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <h3 className="mb-6 font-serif text-xl text-brand-white">Add Admin User</h3>
+        <h3 className="mb-6 font-serif text-xl text-fg">Add Admin User</h3>
         <div className="space-y-4">
           <div>
             <Label htmlFor="name">Full Name</Label>

@@ -2,7 +2,7 @@ import { InputHTMLAttributes, forwardRef, TextareaHTMLAttributes, SelectHTMLAttr
 import { cn } from "@/lib/utils";
 
 const baseFieldClasses =
-  "w-full rounded-sm border border-white/15 bg-white/[0.03] px-4 py-3 text-sm text-brand-white placeholder:text-white/35 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold transition-colors";
+  "w-full rounded-sm border border-overlay/15 bg-overlay/[0.03] px-4 py-3 text-sm text-fg placeholder:text-overlay/35 focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold transition-colors";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
@@ -62,7 +62,7 @@ Select.displayName = "Select";
 
 export function Label({ children, htmlFor }: { children: React.ReactNode; htmlFor?: string }) {
   return (
-    <label htmlFor={htmlFor} className="mb-2 block text-xs font-semibold uppercase tracking-wider text-white/60">
+    <label htmlFor={htmlFor} className="mb-2 block text-xs font-semibold uppercase tracking-wider text-overlay/60">
       {children}
     </label>
   );

@@ -8,7 +8,7 @@ export function FeaturedCollection() {
   const products = useProductsStore((s) => s.products);
 
   return (
-    <section id="featured-collection" className="bg-matte-black py-24">
+    <section id="featured-collection" className="bg-bg py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="The Billionaire Collection"

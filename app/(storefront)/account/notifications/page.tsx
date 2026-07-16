@@ -36,23 +36,23 @@ export default function NotificationsPage() {
 
   return (
     <div>
-      <h2 className="mb-6 font-serif text-xl text-brand-white">Notification Preferences</h2>
-      <Card className="divide-y divide-white/10">
+      <h2 className="mb-6 font-serif text-xl text-fg">Notification Preferences</h2>
+      <Card className="divide-y divide-overlay/10">
         {(Object.keys(prefs) as (keyof typeof initialPrefs)[]).map((key) => (
           <div key={key} className="flex items-center justify-between p-5">
             <div>
-              <p className="text-sm font-medium text-brand-white">{labels[key].title}</p>
-              <p className="text-xs text-white/40">{labels[key].description}</p>
+              <p className="text-sm font-medium text-fg">{labels[key].title}</p>
+              <p className="text-xs text-overlay/40">{labels[key].description}</p>
             </div>
             <button
               onClick={() => toggle(key)}
               disabled={key === "accountSecurity"}
               className={`relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-50 ${
-                prefs[key] ? "bg-gold" : "bg-white/15"
+                prefs[key] ? "bg-gold" : "bg-overlay/20"
               }`}
             >
               <span
-                className={`absolute top-0.5 h-5 w-5 rounded-full bg-matte-black transition-transform ${
+                className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
                   prefs[key] ? "translate-x-5" : "translate-x-0.5"
                 }`}
               />

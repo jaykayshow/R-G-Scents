@@ -14,7 +14,7 @@ const features = [
 
 export function WhyChooseUs() {
   return (
-    <section className="bg-matte-black py-24">
+    <section className="bg-bg py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading eyebrow="Why Choose Us" title="Details Only a Billionaire Would Notice" />
         <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-4">
@@ -23,8 +23,8 @@ export function WhyChooseUs() {
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-gold/30 text-gold">
                 <feature.icon size={22} />
               </div>
-              <h3 className="font-serif text-sm text-brand-white sm:text-base">{feature.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-white/50">{feature.description}</p>
+              <h3 className="font-serif text-sm text-fg sm:text-base">{feature.title}</h3>
+              <p className="mt-2 text-xs leading-relaxed text-overlay/50">{feature.description}</p>
             </div>
           ))}
         </div>

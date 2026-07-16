@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, X } from "lucide-react";
-import { products } from "@/lib/mock-data/products";
+import { useProductsStore } from "@/lib/store/products-store";
 import { CollectionSlug, Gender } from "@/types";
 import { ProductCard } from "@/components/product/product-card";
 import { Select } from "@/components/ui/input";
@@ -24,6 +24,7 @@ const genderOptions: Gender[] = ["Men", "Women", "Unisex"];
 const PAGE_SIZE = 8;
 
 export function ShopContent() {
+  const products = useProductsStore((s) => s.products);
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [selectedCollections, setSelectedCollections] = useState<CollectionSlug[]>(
@@ -100,7 +101,7 @@ export function ShopContent() {
         result = [...result].sort((a, b) => b.rating - a.rating);
     }
     return result;
-  }, [query, selectedCollections, selectedGenders, maxPrice, inStockOnly, sort]);
+  }, [products, query, selectedCollections, selectedGenders, maxPrice, inStockOnly, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);

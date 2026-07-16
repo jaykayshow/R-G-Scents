@@ -7,6 +7,7 @@ export interface BlogPost {
   author: string;
   date: string;
   image: string;
+  published: boolean;
 }
 
 export const blogPosts: BlogPost[] = [
@@ -23,6 +24,7 @@ export const blogPosts: BlogPost[] = [
     author: "R&G Scents Editorial",
     date: "2026-06-01",
     image: "/products/legacy.png",
+    published: true,
   },
   {
     slug: "power-dressing-and-scent",
@@ -36,6 +38,7 @@ export const blogPosts: BlogPost[] = [
     author: "R&G Scents Editorial",
     date: "2026-05-12",
     image: "/products/royale.png",
+    published: true,
   },
   {
     slug: "inside-the-billionaire-collection",
@@ -49,6 +52,7 @@ export const blogPosts: BlogPost[] = [
     author: "R&G Scents Editorial",
     date: "2026-04-22",
     image: "/products/noir.png",
+    published: true,
   },
 ];
 

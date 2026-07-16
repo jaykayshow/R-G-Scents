@@ -2,13 +2,14 @@
 
 import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { getBestSellers } from "@/lib/mock-data/products";
+import { useProductsStore } from "@/lib/store/products-store";
 import { SectionHeading } from "@/components/ui/typography";
 import { ProductCard } from "@/components/product/product-card";
 
 export function BestSellers() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const bestSellers = getBestSellers(5);
+  const products = useProductsStore((s) => s.products);
+  const bestSellers = [...products].sort((a, b) => b.salesCount - a.salesCount).slice(0, 5);
 
   function scroll(direction: "left" | "right") {
     scrollRef.current?.scrollBy({ left: direction === "left" ? -320 : 320, behavior: "smooth" });

@@ -1,6 +1,6 @@
 import { products, getProductBySlug, getRelatedProducts, getBestSellers } from "@/lib/mock-data/products";
 import { reviews, getReviewsForProduct } from "@/lib/mock-data/reviews";
-import { coupons, validateCoupon, calculateDiscount } from "@/lib/mock-data/coupons";
+import { coupons, validateCouponAgainst, calculateDiscount } from "@/lib/mock-data/coupons";
 import { orders, getOrderByNumber } from "@/lib/mock-data/orders";
 import {
   testimonials,
@@ -32,7 +32,7 @@ export const api = {
     all: async () => reviews,
   },
   coupons: {
-    validate: async (code: string, subtotal: number) => validateCoupon(code, subtotal),
+    validate: async (code: string, subtotal: number) => validateCouponAgainst(coupons, code, subtotal),
     discountFor: (coupon: (typeof coupons)[number], subtotal: number, shipping: number) =>
       calculateDiscount(coupon, subtotal, shipping),
   },

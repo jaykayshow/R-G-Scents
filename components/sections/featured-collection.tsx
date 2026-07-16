@@ -1,8 +1,12 @@
-import { products } from "@/lib/mock-data/products";
+"use client";
+
+import { useProductsStore } from "@/lib/store/products-store";
 import { SectionHeading } from "@/components/ui/typography";
 import { ProductCard } from "@/components/product/product-card";
 
 export function FeaturedCollection() {
+  const products = useProductsStore((s) => s.products);
+
   return (
     <section id="featured-collection" className="bg-matte-black py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

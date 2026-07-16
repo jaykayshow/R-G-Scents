@@ -6,6 +6,7 @@ import { StarRating } from "@/components/ui/star-rating";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
 import { useToastStore } from "@/lib/store/toast-store";
+import { useReviewsStore } from "@/lib/store/reviews-store";
 import { BadgeCheck } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
@@ -16,18 +17,18 @@ export function ReviewSection({
   reviews: Review[];
   averageRating: number;
 }) {
-  const [localReviews, setLocalReviews] = useState(reviews);
   const [showForm, setShowForm] = useState(false);
   const [draftRating, setDraftRating] = useState(5);
   const [draftTitle, setDraftTitle] = useState("");
   const [draftContent, setDraftContent] = useState("");
   const showToast = useToastStore((s) => s.show);
+  const addReview = useReviewsStore((s) => s.addReview);
 
   const breakdown = [5, 4, 3, 2, 1].map((star) => ({
     star,
-    count: localReviews.filter((r) => Math.round(r.rating) === star).length,
+    count: reviews.filter((r) => Math.round(r.rating) === star).length,
   }));
-  const total = localReviews.length || 1;
+  const total = reviews.length || 1;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,8 +45,9 @@ export function ReviewSection({
       content: draftContent,
       date: new Date().toISOString(),
       verified: true,
+      status: "pending",
     };
-    setLocalReviews((prev) => [newReview, ...prev]);
+    addReview(newReview);
     setDraftTitle("");
     setDraftContent("");
     setDraftRating(5);
@@ -59,7 +61,7 @@ export function ReviewSection({
         <div className="shrink-0 text-center sm:text-left">
           <p className="font-serif text-5xl text-brand-white">{averageRating.toFixed(1)}</p>
           <StarRating rating={averageRating} size={16} className="mt-2 justify-center sm:justify-start" />
-          <p className="mt-1 text-xs text-white/40">{localReviews.length} reviews</p>
+          <p className="mt-1 text-xs text-white/40">{reviews.length} reviews</p>
         </div>
         <div className="flex-1 space-y-1.5">
           {breakdown.map((row) => (
@@ -116,7 +118,7 @@ export function ReviewSection({
       )}
 
       <div className="mt-10 space-y-8 divide-y divide-white/10">
-        {localReviews.map((review) => (
+        {reviews.map((review) => (
           <div key={review.id} className="pt-8 first:pt-0">
             <div className="flex items-center justify-between">
               <div>
@@ -132,6 +134,12 @@ export function ReviewSection({
             <h4 className="mt-3 font-serif text-base text-brand-white">{review.title}</h4>
             <p className="mt-2 text-sm leading-relaxed text-white/60">{review.content}</p>
             <p className="mt-3 text-xs text-white/30">{formatDate(review.date)}</p>
+            {review.replies?.map((reply, i) => (
+              <div key={i} className="mt-3 rounded-sm border border-gold/20 bg-gold/5 p-3">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-gold">{reply.author}</p>
+                <p className="mt-1 text-sm text-white/70">{reply.content}</p>
+              </div>
+            ))}
           </div>
         ))}
       </div>

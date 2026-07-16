@@ -43,7 +43,13 @@ export interface Product {
   createdAt: string;
   variants: ProductVariant[];
   stock: number;
+  metaTitle?: string;
+  metaDescription?: string;
+  imageAlt?: string;
+  tags?: string[];
 }
+
+export type ReviewStatus = "pending" | "approved" | "rejected";
 
 export interface Review {
   id: string;
@@ -55,6 +61,8 @@ export interface Review {
   content: string;
   date: string;
   verified: boolean;
+  status: ReviewStatus;
+  replies?: { author: string; content: string; date: string }[];
   photos?: string[];
 }
 
@@ -66,6 +74,10 @@ export interface Coupon {
   value: number;
   description: string;
   minSubtotal?: number;
+  active: boolean;
+  usageLimit?: number;
+  usageCount: number;
+  expiresAt?: string;
 }
 
 export interface Address {
@@ -167,4 +179,101 @@ export interface User {
   createdAt: string;
   rewardPoints: number;
   referralCode: string;
+}
+
+// ---------------------------------------------------------------------------
+// Admin domain types
+// ---------------------------------------------------------------------------
+
+export type AdminRole = "Super Admin" | "Admin" | "Support" | "Content Editor";
+
+export interface AdminAccount {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  role: AdminRole;
+  active: boolean;
+  createdAt: string;
+  lastLogin?: string;
+}
+
+export interface InventoryHistoryEntry {
+  id: string;
+  productId: string;
+  productName: string;
+  variantId: string;
+  variantSize: string;
+  sku: string;
+  change: number;
+  previousStock: number;
+  newStock: number;
+  reason: string;
+  actor: string;
+  date: string;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  actor: string;
+  action: string;
+  target: string;
+  category: "Product" | "Order" | "Coupon" | "Review" | "Blog" | "Banner" | "User" | "Settings" | "Inventory" | "Customer";
+  date: string;
+}
+
+export interface Banner {
+  id: string;
+  title: string;
+  subtitle?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  active: boolean;
+  placement: "homepage-top" | "homepage-hero" | "campaign";
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
+export interface CollectionMeta {
+  slug: CollectionSlug;
+  name: string;
+  description: string;
+  heroImage: string;
+}
+
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  joinedAt: string;
+  ordersCount: number;
+  totalSpent: number;
+  status: "Active" | "Suspended";
+  notes?: string;
+}
+
+export interface SiteSettings {
+  siteName: string;
+  supportEmail: string;
+  supportPhone: string;
+  maintenanceMode: boolean;
+  taxRatePercent: number;
+  flatShippingRate: number;
+  freeShippingThreshold: number;
+  codEnabled: boolean;
+  bankTransferEnabled: boolean;
+  stripeEnabled: boolean;
+  paystackEnabled: boolean;
+  flutterwaveEnabled: boolean;
+  paypalEnabled: boolean;
+  metaTitle: string;
+  metaDescription: string;
 }

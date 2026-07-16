@@ -11,6 +11,7 @@ export const reviews: Review[] = [
       "Walked into a client meeting wearing this and got asked about it before we even sat down. Longevity is genuinely all-day. Worth every naira.",
     date: "2026-06-02",
     verified: true,
+    status: "approved",
   },
   {
     id: "r-2",
@@ -21,6 +22,7 @@ export const reviews: Review[] = [
     content: "Deep, smoky, and it doesn't scream for attention — it commands it. My new signature scent.",
     date: "2026-05-14",
     verified: true,
+    status: "approved",
   },
   {
     id: "r-3",
@@ -31,6 +33,7 @@ export const reviews: Review[] = [
     content: "Perfect for the office. Not overpowering, but people definitely notice it. Packaging feels genuinely premium.",
     date: "2026-04-28",
     verified: true,
+    status: "approved",
   },
   {
     id: "r-4",
@@ -41,6 +44,7 @@ export const reviews: Review[] = [
     content: "Wore this to my introduction and it held up for 10+ hours. Compliments all night.",
     date: "2026-06-20",
     verified: true,
+    status: "approved",
   },
   {
     id: "r-5",
@@ -51,6 +55,7 @@ export const reviews: Review[] = [
     content: "The rose and sandalwood combo is addictive. We now both wear it — genuinely unisex.",
     date: "2026-06-11",
     verified: true,
+    status: "approved",
   },
   {
     id: "r-6",
@@ -61,6 +66,7 @@ export const reviews: Review[] = [
     content: "The espresso and oud combination is unreal. Limited edition means I bought two bottles just in case.",
     date: "2026-05-30",
     verified: true,
+    status: "approved",
   },
   {
     id: "r-7",
@@ -71,6 +77,29 @@ export const reviews: Review[] = [
     content: "Two sprays is plenty. This projects for hours. Not for the faint of heart.",
     date: "2026-06-08",
     verified: true,
+    status: "approved",
+  },
+  {
+    id: "r-8",
+    productId: "p-noir",
+    author: "Femi A.",
+    rating: 3,
+    title: "Good but overpriced?",
+    content: "It's a nice scent but I'm not sure it justifies the price tag compared to niche alternatives.",
+    date: "2026-07-10",
+    verified: true,
+    status: "pending",
+  },
+  {
+    id: "r-9",
+    productId: "p-reserve",
+    author: "Anonymous123",
+    rating: 1,
+    title: "buy my product instead",
+    content: "check out my website for cheaper perfume alternatives, link in bio!!!",
+    date: "2026-07-12",
+    verified: false,
+    status: "pending",
   },
 ];
 

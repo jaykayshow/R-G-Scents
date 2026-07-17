@@ -13,12 +13,18 @@ function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const email = searchParams.get("email") ?? "";
+  const token = searchParams.get("token") ?? "";
   const verifyEmail = useAuthStore((s) => s.verifyEmail);
   const showToast = useToastStore((s) => s.show);
   const [verified, setVerified] = useState(false);
+  const [serverError, setServerError] = useState("");
 
-  function handleVerify() {
-    verifyEmail(email);
+  async function handleVerify() {
+    const result = await verifyEmail(token);
+    if (!result.success) {
+      setServerError(result.message);
+      return;
+    }
     setVerified(true);
     showToast("Email verified successfully.");
     setTimeout(() => router.push("/account"), 1500);
@@ -53,7 +59,8 @@ function VerifyEmailContent() {
               Click the link in your email to activate your account. In this preview environment, you
               can simulate that click below.
             </p>
-            <Button onClick={handleVerify} className="mt-6 w-full">
+            {serverError && <p className="mt-3 text-xs text-red-400">{serverError}</p>}
+            <Button onClick={handleVerify} className="mt-6 w-full" disabled={!token}>
               Simulate Email Verification
             </Button>
           </>

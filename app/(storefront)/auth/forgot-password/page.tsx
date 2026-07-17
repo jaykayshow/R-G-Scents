@@ -21,6 +21,7 @@ export default function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
   const [serverError, setServerError] = useState("");
   const [email, setEmail] = useState("");
+  const [devResetToken, setDevResetToken] = useState("");
 
   const {
     register,
@@ -28,13 +29,14 @@ export default function ForgotPasswordPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-  function onSubmit(values: FormValues) {
-    const result = requestPasswordReset(values.email);
+  async function onSubmit(values: FormValues) {
+    const result = await requestPasswordReset(values.email);
     if (!result.success) {
       setServerError(result.message);
       return;
     }
     setEmail(values.email);
+    setDevResetToken(result.devResetToken ?? "");
     setSent(true);
   }
 
@@ -56,12 +58,14 @@ export default function ForgotPasswordPage() {
             If an account exists for <span className="text-fg">{email}</span>, a reset link
             has been sent.
           </p>
-          <Link
-            href={`/auth/reset-password?email=${encodeURIComponent(email)}`}
-            className="mt-6 inline-block text-xs uppercase tracking-widest text-gold hover:underline"
-          >
-            (Preview) Continue to Reset Password
-          </Link>
+          {devResetToken && (
+            <Link
+              href={`/auth/reset-password?email=${encodeURIComponent(email)}&token=${encodeURIComponent(devResetToken)}`}
+              className="mt-6 inline-block text-xs uppercase tracking-widest text-gold hover:underline"
+            >
+              (Preview) Continue to Reset Password
+            </Link>
+          )}
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

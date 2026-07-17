@@ -13,13 +13,12 @@ import { CheckoutSteps } from "@/components/checkout/checkout-steps";
 import { checkoutSchema, CheckoutValues, stepFields, paymentMethods } from "@/lib/checkout-schema";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useAuthStore } from "@/lib/store/auth-store";
-import { useOrdersStore, nextOrderNumber } from "@/lib/store/orders-store";
-import { useCouponsStore } from "@/lib/store/coupons-store";
+import { useOrdersStore } from "@/lib/store/orders-store";
+import { useAddressesStore } from "@/lib/store/addresses-store";
 import { useToastStore } from "@/lib/store/toast-store";
-import { mockAddresses } from "@/lib/mock-data/misc";
 import { computeOrderTotals } from "@/lib/order-totals";
 import { formatCurrency } from "@/lib/utils";
-import { Order } from "@/types";
+import { ApiError } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
 export default function CheckoutPage() {
@@ -32,30 +31,31 @@ export default function CheckoutPage() {
   const appliedCoupon = useCartStore((s) => s.appliedCoupon);
   const clearCart = useCartStore((s) => s.clear);
   const currentUser = useAuthStore((s) => s.currentUser);
-  const addOrder = useOrdersStore((s) => s.addOrder);
-  const incrementCouponUsage = useCouponsStore((s) => s.incrementUsage);
+  const createOrder = useOrdersStore((s) => s.createOrder);
+  const addresses = useAddressesStore((s) => s.addresses);
+  const fetchAddresses = useAddressesStore((s) => s.fetchAddresses);
   const showToast = useToastStore((s) => s.show);
-
-  const defaultAddress = mockAddresses.find((a) => a.isDefault);
+  const [placingOrder, setPlacingOrder] = useState(false);
 
   const {
     register,
     handleSubmit,
     trigger,
     watch,
+    reset,
     formState: { errors },
   } = useForm<CheckoutValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       guestEmail: currentUser?.email ?? "",
-      shipFullName: currentUser ? defaultAddress?.fullName ?? "" : "",
-      shipLine1: currentUser ? defaultAddress?.line1 ?? "" : "",
-      shipLine2: currentUser ? defaultAddress?.line2 ?? "" : "",
-      shipCity: currentUser ? defaultAddress?.city ?? "" : "",
-      shipState: currentUser ? defaultAddress?.state ?? "" : "",
-      shipCountry: currentUser ? defaultAddress?.country ?? "Nigeria" : "Nigeria",
-      shipPostalCode: currentUser ? defaultAddress?.postalCode ?? "" : "",
-      shipPhone: currentUser ? defaultAddress?.phone ?? "" : "",
+      shipFullName: "",
+      shipLine1: "",
+      shipLine2: "",
+      shipCity: "",
+      shipState: "",
+      shipCountry: "Nigeria",
+      shipPostalCode: "",
+      shipPhone: "",
       billingSameAsShipping: true,
       paymentMethod: "card",
       giftWrap: false,
@@ -67,6 +67,30 @@ export default function CheckoutPage() {
 
   useEffect(() => setHydrated(true), []);
 
+  useEffect(() => {
+    if (currentUser) fetchAddresses();
+  }, [currentUser, fetchAddresses]);
+
+  useEffect(() => {
+    const defaultAddress = addresses.find((a) => a.isDefault);
+    if (currentUser && defaultAddress) {
+      reset({
+        guestEmail: currentUser.email,
+        shipFullName: defaultAddress.fullName,
+        shipLine1: defaultAddress.line1,
+        shipLine2: defaultAddress.line2 ?? "",
+        shipCity: defaultAddress.city,
+        shipState: defaultAddress.state,
+        shipCountry: defaultAddress.country,
+        shipPostalCode: defaultAddress.postalCode,
+        shipPhone: defaultAddress.phone,
+        billingSameAsShipping: true,
+        paymentMethod: "card",
+        giftWrap: false,
+      });
+    }
+  }, [addresses, currentUser, reset]);
+
   async function goNext() {
     const valid = await trigger(stepFields[step]);
     if (valid) setStep((s) => Math.min(s + 1, 3));
@@ -76,7 +100,7 @@ export default function CheckoutPage() {
     setStep((s) => Math.max(s - 1, 0));
   }
 
-  function onSubmit(data: CheckoutValues) {
+  async function onSubmit(data: CheckoutValues) {
     const outOfStock = items.find((i) => i.quantity > i.stock);
     if (outOfStock) {
       showToast(`${outOfStock.name} only has ${outOfStock.stock} unit(s) left in stock.`, "error");
@@ -84,49 +108,32 @@ export default function CheckoutPage() {
       return;
     }
 
-    const paymentLabel =
-      paymentMethods.find((p) => p.value === data.paymentMethod)?.label ?? data.paymentMethod;
+    setPlacingOrder(true);
+    try {
+      const order = await createOrder({
+        items: items.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
+        guestEmail: currentUser ? undefined : data.guestEmail,
+        shipFullName: data.shipFullName,
+        shipLine1: data.shipLine1,
+        shipLine2: data.shipLine2,
+        shipCity: data.shipCity,
+        shipState: data.shipState,
+        shipCountry: data.shipCountry,
+        shipPostalCode: data.shipPostalCode,
+        shipPhone: data.shipPhone,
+        paymentMethod: data.paymentMethod,
+        giftWrap: data.giftWrap,
+        giftMessage: data.giftMessage,
+        couponCode: appliedCoupon?.code,
+      });
 
-    const order: Order = {
-      id: `o-${Date.now()}`,
-      orderNumber: nextOrderNumber(),
-      date: new Date().toISOString(),
-      status: "Pending",
-      items: items.map((i) => ({
-        productId: i.productId,
-        productName: i.name,
-        productSlug: i.slug,
-        image: i.image,
-        variantSize: i.size,
-        quantity: i.quantity,
-        unitPrice: i.price,
-      })),
-      subtotal: totals.subtotal,
-      shipping: totals.shipping,
-      tax: totals.tax,
-      discount: totals.discount,
-      total: totals.total,
-      trackingEvents: [
-        { status: "Pending", date: new Date().toISOString(), note: "Order placed" },
-      ],
-      shippingAddress: {
-        fullName: data.shipFullName,
-        line1: data.shipLine1,
-        line2: data.shipLine2,
-        city: data.shipCity,
-        state: data.shipState,
-        country: data.shipCountry,
-        postalCode: data.shipPostalCode,
-        phone: data.shipPhone,
-      },
-      paymentMethod: paymentLabel,
-    };
-
-    addOrder(order);
-    if (appliedCoupon) incrementCouponUsage(appliedCoupon.code);
-    clearCart();
-    showToast("Order placed successfully.");
-    router.push(`/checkout/confirmation/${order.orderNumber}`);
+      clearCart();
+      showToast("Order placed successfully.");
+      router.push(`/checkout/confirmation/${order.orderNumber}`);
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : "Could not place order. Please try again.", "error");
+      setPlacingOrder(false);
+    }
   }
 
   if (!hydrated) return <div className="min-h-[60vh]" />;
@@ -418,8 +425,8 @@ export default function CheckoutPage() {
                 <Button type="button" variant="secondary" onClick={goBack} className="flex-1">
                   Back
                 </Button>
-                <Button type="submit" className="flex-1">
-                  <Lock size={14} /> Place Order
+                <Button type="submit" className="flex-1" disabled={placingOrder}>
+                  <Lock size={14} /> {placingOrder ? "Placing Order…" : "Place Order"}
                 </Button>
               </div>
             </div>

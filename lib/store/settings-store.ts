@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { SiteSettings } from "@/types";
+import { apiClient } from "@/lib/api-client";
 
 const defaultSettings: SiteSettings = {
   siteName: "R&G Scents",
@@ -23,15 +23,27 @@ const defaultSettings: SiteSettings = {
 
 interface SettingsState {
   settings: SiteSettings;
-  updateSettings: (patch: Partial<SiteSettings>) => void;
+  loading: boolean;
+  fetchSettings: () => Promise<void>;
+  updateSettings: (patch: Partial<SiteSettings>, section: string) => Promise<void>;
 }
 
-export const useSettingsStore = create<SettingsState>()(
-  persist(
-    (set) => ({
-      settings: defaultSettings,
-      updateSettings: (patch) => set((state) => ({ settings: { ...state.settings, ...patch } })),
-    }),
-    { name: "rg-scents-settings" }
-  )
-);
+export const useSettingsStore = create<SettingsState>()((set) => ({
+  settings: defaultSettings,
+  loading: false,
+
+  fetchSettings: async () => {
+    set({ loading: true });
+    try {
+      const settings = await apiClient.settings.get();
+      set({ settings, loading: false });
+    } catch {
+      set({ loading: false });
+    }
+  },
+
+  updateSettings: async (patch, section) => {
+    const settings = await apiClient.adminSettings.update(patch, section);
+    set({ settings });
+  },
+}));

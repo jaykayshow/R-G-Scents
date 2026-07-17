@@ -1,13 +1,22 @@
 "use client";
 
+import { useEffect } from "react";
 import { Gift, TrendingUp, TrendingDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useAuthStore } from "@/lib/store/auth-store";
-import { mockRewardTransactions } from "@/lib/mock-data/misc";
+import { useRewardsStore } from "@/lib/store/rewards-store";
 import { formatDate } from "@/lib/utils";
 
 export default function RewardsPage() {
   const user = useAuthStore((s) => s.currentUser);
+  const transactions = useRewardsStore((s) => s.transactions);
+  const loading = useRewardsStore((s) => s.loading);
+  const fetchTransactions = useRewardsStore((s) => s.fetchTransactions);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
+
   if (!user) return null;
 
   return (
@@ -31,26 +40,30 @@ export default function RewardsPage() {
 
       <Card className="p-6">
         <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-gold">Points History</h3>
-        <div className="space-y-4">
-          {mockRewardTransactions.map((tx) => (
-            <div key={tx.id} className="flex items-center justify-between border-b border-overlay/5 pb-4 last:border-0 last:pb-0">
-              <div className="flex items-center gap-3">
-                {tx.type === "earn" ? (
-                  <TrendingUp size={16} className="text-gold" />
-                ) : (
-                  <TrendingDown size={16} className="text-overlay/40" />
-                )}
-                <div>
-                  <p className="text-sm text-fg">{tx.description}</p>
-                  <p className="text-xs text-overlay/40">{formatDate(tx.date)}</p>
+        {transactions.length === 0 ? (
+          <p className="text-sm text-overlay/50">{loading ? "Loading history…" : "No reward activity yet."}</p>
+        ) : (
+          <div className="space-y-4">
+            {transactions.map((tx) => (
+              <div key={tx.id} className="flex items-center justify-between border-b border-overlay/5 pb-4 last:border-0 last:pb-0">
+                <div className="flex items-center gap-3">
+                  {tx.type === "earn" ? (
+                    <TrendingUp size={16} className="text-gold" />
+                  ) : (
+                    <TrendingDown size={16} className="text-overlay/40" />
+                  )}
+                  <div>
+                    <p className="text-sm text-fg">{tx.description}</p>
+                    <p className="text-xs text-overlay/40">{formatDate(tx.date)}</p>
+                  </div>
                 </div>
+                <span className={tx.type === "earn" ? "text-gold" : "text-overlay/50"}>
+                  {tx.type === "earn" ? "+" : ""}{tx.points}
+                </span>
               </div>
-              <span className={tx.type === "earn" ? "text-gold" : "text-overlay/50"}>
-                {tx.type === "earn" ? "+" : ""}{tx.points}
-              </span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </Card>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { DataTable, DataTableColumn } from "@/components/admin/data-table";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,13 @@ const categoryVariant = (category: AuditLogEntry["category"]) => {
 
 export default function AdminLogsPage() {
   const logs = useAuditLogStore((s) => s.logs);
+  const loading = useAuditLogStore((s) => s.loading);
+  const fetchLogs = useAuditLogStore((s) => s.fetchLogs);
   const [categoryFilter, setCategoryFilter] = useState<"all" | AuditLogEntry["category"]>("all");
+
+  useEffect(() => {
+    fetchLogs();
+  }, [fetchLogs]);
 
   const filtered = useMemo(
     () => (categoryFilter === "all" ? logs : logs.filter((l) => l.category === categoryFilter)),
@@ -60,7 +66,12 @@ export default function AdminLogsPage() {
         </Select>
       </div>
 
-      <DataTable columns={columns} rows={filtered} getRowId={(l) => l.id} emptyMessage="No log entries yet." />
+      <DataTable
+        columns={columns}
+        rows={filtered}
+        getRowId={(l) => l.id}
+        emptyMessage={loading ? "Loading logs…" : "No log entries yet."}
+      />
     </div>
   );
 }

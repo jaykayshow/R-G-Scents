@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -20,10 +20,21 @@ const statusFlow: OrderStatus[] = ["Pending", "Processing", "Shipped", "Delivere
 export default function OrderDetailPage({ params }: { params: Promise<{ orderNumber: string }> }) {
   const { orderNumber } = use(params);
   const order = useOrdersStore((s) => s.getByNumber(orderNumber));
+  const fetchByNumber = useOrdersStore((s) => s.fetchByNumber);
   const addItem = useCartStore((s) => s.addItem);
   const showToast = useToastStore((s) => s.show);
   const getProductBySlug = useProductsStore((s) => s.getBySlug);
+  const [checked, setChecked] = useState(false);
 
+  useEffect(() => {
+    if (order) {
+      setChecked(true);
+      return;
+    }
+    fetchByNumber(orderNumber).finally(() => setChecked(true));
+  }, [order, orderNumber, fetchByNumber]);
+
+  if (!checked) return <div className="min-h-[60vh]" />;
   if (!order) notFound();
 
   const currentStepIndex = statusFlow.indexOf(order.status);

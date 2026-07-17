@@ -41,8 +41,8 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-  function onSubmit(values: FormValues) {
-    const result = register_({
+  async function onSubmit(values: FormValues) {
+    const result = await register_({
       firstName: values.firstName,
       lastName: values.lastName,
       email: values.email,
@@ -53,7 +53,10 @@ export default function RegisterPage() {
       return;
     }
     showToast(result.message);
-    router.push(`/auth/verify-email?email=${encodeURIComponent(values.email)}`);
+    const tokenParam = result.devVerificationToken
+      ? `&token=${encodeURIComponent(result.devVerificationToken)}`
+      : "";
+    router.push(`/auth/verify-email?email=${encodeURIComponent(values.email)}${tokenParam}`);
   }
 
   return (

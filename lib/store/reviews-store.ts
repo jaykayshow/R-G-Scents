@@ -1,36 +1,60 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { Review, ReviewStatus } from "@/types";
-import { reviews as seedReviews } from "@/lib/mock-data/reviews";
+import { apiClient } from "@/lib/api-client";
 
 interface ReviewsState {
   reviews: Review[];
-  addReview: (review: Review) => void;
-  setStatus: (id: string, status: ReviewStatus) => void;
-  reply: (id: string, content: string) => void;
-  deleteReview: (id: string) => void;
-  approvedForProduct: (productId: string) => Review[];
+  loading: boolean;
+  error: string | null;
+  fetchApproved: () => Promise<void>;
+  fetchAllForAdmin: () => Promise<void>;
+  addReview: (input: { productId: string; rating: number; title: string; content: string }) => Promise<void>;
+  setStatus: (id: string, status: ReviewStatus) => Promise<void>;
+  reply: (id: string, content: string) => Promise<void>;
 }
 
-export const useReviewsStore = create<ReviewsState>()(
-  persist(
-    (set, get) => ({
-      reviews: seedReviews,
-      addReview: (review) => set((state) => ({ reviews: [review, ...state.reviews] })),
-      setStatus: (id, status) =>
-        set((state) => ({ reviews: state.reviews.map((r) => (r.id === id ? { ...r, status } : r)) })),
-      reply: (id, content) =>
-        set((state) => ({
-          reviews: state.reviews.map((r) =>
-            r.id === id
-              ? { ...r, replies: [...(r.replies ?? []), { author: "R&G Scents Support", content, date: new Date().toISOString() }] }
-              : r
-          ),
-        })),
-      deleteReview: (id) => set((state) => ({ reviews: state.reviews.filter((r) => r.id !== id) })),
-      approvedForProduct: (productId) =>
-        get().reviews.filter((r) => r.productId === productId && r.status === "approved"),
-    }),
-    { name: "rg-scents-reviews" }
-  )
-);
+function upsert(reviews: Review[], review: Review): Review[] {
+  const exists = reviews.some((r) => r.id === review.id);
+  return exists ? reviews.map((r) => (r.id === review.id ? review : r)) : [review, ...reviews];
+}
+
+export const useReviewsStore = create<ReviewsState>()((set) => ({
+  reviews: [],
+  loading: false,
+  error: null,
+
+  fetchApproved: async () => {
+    set({ loading: true, error: null });
+    try {
+      const reviews = await apiClient.reviews.listApproved();
+      set({ reviews, loading: false });
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : "Failed to load reviews.", loading: false });
+    }
+  },
+
+  fetchAllForAdmin: async () => {
+    set({ loading: true, error: null });
+    try {
+      const reviews = await apiClient.adminReviews.list();
+      set({ reviews, loading: false });
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : "Failed to load reviews.", loading: false });
+    }
+  },
+
+  addReview: async (input) => {
+    const review = await apiClient.reviews.create(input);
+    set((state) => ({ reviews: [review, ...state.reviews] }));
+  },
+
+  setStatus: async (id, status) => {
+    const updated = await apiClient.adminReviews.updateStatus(id, status);
+    set((state) => ({ reviews: upsert(state.reviews, updated) }));
+  },
+
+  reply: async (id, content) => {
+    const updated = await apiClient.adminReviews.reply(id, content);
+    set((state) => ({ reviews: upsert(state.reviews, updated) }));
+  },
+}));

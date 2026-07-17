@@ -179,6 +179,12 @@ export interface User {
   createdAt: string;
   rewardPoints: number;
   referralCode: string;
+  notifyOrderUpdates: boolean;
+  notifyShippingAlerts: boolean;
+  notifyPromotions: boolean;
+  notifyVipEarlyAccess: boolean;
+  notifyRestockAlerts: boolean;
+  notifyReviewRequests: boolean;
 }
 
 // ---------------------------------------------------------------------------

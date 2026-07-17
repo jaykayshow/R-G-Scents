@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,9 +9,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
-import { mockAddresses } from "@/lib/mock-data/misc";
-import { Address } from "@/types";
+import { useAddressesStore } from "@/lib/store/addresses-store";
 import { useToastStore } from "@/lib/store/toast-store";
+import { ApiError } from "@/lib/api-client";
 
 const schema = z.object({
   label: z.string().min(1, "Label is required."),
@@ -26,10 +26,23 @@ const schema = z.object({
 });
 type FormValues = z.infer<typeof schema>;
 
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
+
 export default function AddressesPage() {
-  const [addresses, setAddresses] = useState<Address[]>(mockAddresses);
+  const addresses = useAddressesStore((s) => s.addresses);
+  const loading = useAddressesStore((s) => s.loading);
+  const fetchAddresses = useAddressesStore((s) => s.fetchAddresses);
+  const addAddress = useAddressesStore((s) => s.addAddress);
+  const removeAddress = useAddressesStore((s) => s.removeAddress);
+  const setDefault = useAddressesStore((s) => s.setDefault);
   const [modalOpen, setModalOpen] = useState(false);
   const showToast = useToastStore((s) => s.show);
+
+  useEffect(() => {
+    fetchAddresses();
+  }, [fetchAddresses]);
 
   const {
     register,
@@ -38,26 +51,33 @@ export default function AddressesPage() {
     formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-  function onSubmit(values: FormValues) {
-    const newAddress: Address = {
-      id: `a-${Date.now()}`,
-      isDefault: addresses.length === 0,
-      ...values,
-    };
-    setAddresses((prev) => [...prev, newAddress]);
-    showToast("Address added.");
-    reset();
-    setModalOpen(false);
+  async function onSubmit(values: FormValues) {
+    try {
+      await addAddress(values);
+      showToast("Address added.");
+      reset();
+      setModalOpen(false);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  function setDefault(id: string) {
-    setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a.id === id })));
-    showToast("Default address updated.");
+  async function handleSetDefault(id: string) {
+    try {
+      await setDefault(id);
+      showToast("Default address updated.");
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  function removeAddress(id: string) {
-    setAddresses((prev) => prev.filter((a) => a.id !== id));
-    showToast("Address removed.", "info");
+  async function handleRemove(id: string) {
+    try {
+      await removeAddress(id);
+      showToast("Address removed.", "info");
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   return (
@@ -70,7 +90,9 @@ export default function AddressesPage() {
       </div>
 
       {addresses.length === 0 ? (
-        <Card className="p-8 text-center text-sm text-overlay/50">No saved addresses yet.</Card>
+        <Card className="p-8 text-center text-sm text-overlay/50">
+          {loading ? "Loading addresses…" : "No saved addresses yet."}
+        </Card>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2">
           {addresses.map((address) => (
@@ -96,14 +118,14 @@ export default function AddressesPage() {
               <div className="mt-4 flex gap-3">
                 {!address.isDefault && (
                   <button
-                    onClick={() => setDefault(address.id)}
+                    onClick={() => handleSetDefault(address.id)}
                     className="text-xs text-gold hover:underline"
                   >
                     Set as Default
                   </button>
                 )}
                 <button
-                  onClick={() => removeAddress(address.id)}
+                  onClick={() => handleRemove(address.id)}
                   className="flex items-center gap-1 text-xs text-overlay/40 hover:text-red-300"
                 >
                   <Trash2 size={12} /> Remove

@@ -34,8 +34,8 @@ function LoginForm() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-  function onSubmit(values: FormValues) {
-    const result = login(values.email, values.password);
+  async function onSubmit(values: FormValues) {
+    const result = await login(values.email, values.password);
     if (!result.success) {
       setServerError(result.message);
       return;

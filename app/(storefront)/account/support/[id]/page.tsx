@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import { LifeBuoy } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
 import { useSupportStore } from "@/lib/store/support-store";
+import { useToastStore } from "@/lib/store/toast-store";
+import { ApiError } from "@/lib/api-client";
 import { formatDate } from "@/lib/utils";
 
 const statusVariant = (status: string) =>
@@ -16,17 +18,33 @@ const statusVariant = (status: string) =>
 export default function SupportTicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const tickets = useSupportStore((s) => s.tickets);
+  const fetchTicket = useSupportStore((s) => s.fetchTicket);
   const reply = useSupportStore((s) => s.reply);
   const ticket = tickets.find((t) => t.id === id);
   const [message, setMessage] = useState("");
+  const [checked, setChecked] = useState(false);
+  const showToast = useToastStore((s) => s.show);
 
+  useEffect(() => {
+    if (ticket) {
+      setChecked(true);
+      return;
+    }
+    fetchTicket(id).finally(() => setChecked(true));
+  }, [ticket, id, fetchTicket]);
+
+  if (!checked) return <div className="min-h-[40vh]" />;
   if (!ticket) notFound();
 
-  function handleReply(e: React.FormEvent) {
+  async function handleReply(e: React.FormEvent) {
     e.preventDefault();
     if (!message.trim()) return;
-    reply(ticket!.id, message.trim());
-    setMessage("");
+    try {
+      await reply(ticket!.id, message.trim());
+      setMessage("");
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : "Could not send reply.", "error");
+    }
   }
 
   return (

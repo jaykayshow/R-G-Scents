@@ -36,10 +36,13 @@ type PasswordValues = z.infer<typeof passwordSchema>;
 export default function ProfilePage() {
   const router = useRouter();
   const user = useAuthStore((s) => s.currentUser);
-  const logout = useAuthStore((s) => s.logout);
+  const updateProfile = useAuthStore((s) => s.updateProfile);
+  const changePassword = useAuthStore((s) => s.changePassword);
+  const deleteAccount = useAuthStore((s) => s.deleteAccount);
   const showToast = useToastStore((s) => s.show);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [confirmText, setConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   const profileForm = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
@@ -53,19 +56,28 @@ export default function ProfilePage() {
 
   const passwordForm = useForm<PasswordValues>({ resolver: zodResolver(passwordSchema) });
 
-  function onProfileSubmit() {
-    showToast("Profile updated successfully.");
+  async function onProfileSubmit(values: ProfileValues) {
+    const result = await updateProfile(values);
+    showToast(result.message, result.success ? "success" : "error");
   }
 
-  function onPasswordSubmit() {
-    showToast("Password changed successfully.");
-    passwordForm.reset();
+  async function onPasswordSubmit(values: PasswordValues) {
+    const result = await changePassword(values.currentPassword, values.newPassword);
+    showToast(result.message, result.success ? "success" : "error");
+    if (result.success) passwordForm.reset();
   }
 
-  function handleDeleteAccount() {
-    logout();
-    showToast("Your account has been scheduled for deletion.", "info");
-    router.push("/");
+  async function handleDeleteAccount() {
+    setDeleting(true);
+    const result = await deleteAccount();
+    setDeleting(false);
+    setDeleteModalOpen(false);
+    if (result.success) {
+      showToast(result.message, "info");
+      router.push("/");
+    } else {
+      showToast(result.message, "error");
+    }
   }
 
   if (!user) return null;
@@ -93,7 +105,9 @@ export default function ProfilePage() {
             <Label htmlFor="phone">Phone Number</Label>
             <Input id="phone" {...profileForm.register("phone")} />
           </div>
-          <Button type="submit">Save Changes</Button>
+          <Button type="submit" disabled={profileForm.formState.isSubmitting}>
+            {profileForm.formState.isSubmitting ? "Saving..." : "Save Changes"}
+          </Button>
         </form>
       </Card>
 
@@ -129,7 +143,9 @@ export default function ProfilePage() {
               />
             </div>
           </div>
-          <Button type="submit">Update Password</Button>
+          <Button type="submit" disabled={passwordForm.formState.isSubmitting}>
+            {passwordForm.formState.isSubmitting ? "Updating..." : "Update Password"}
+          </Button>
         </form>
       </Card>
 
@@ -164,11 +180,11 @@ export default function ProfilePage() {
               Cancel
             </Button>
             <Button
-              disabled={confirmText !== "DELETE"}
+              disabled={confirmText !== "DELETE" || deleting}
               onClick={handleDeleteAccount}
               className="bg-red-500 text-white hover:bg-red-600"
             >
-              Confirm Delete
+              {deleting ? "Deleting..." : "Confirm Delete"}
             </Button>
           </div>
         </div>

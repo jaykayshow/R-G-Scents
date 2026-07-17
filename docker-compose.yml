@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rg-scents-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rgscents
+      POSTGRES_PASSWORD: rgscents_dev_password
+      POSTGRES_DB: rgscents
+    ports:
+      - "5432:5432"
+    volumes:
+      - rg_scents_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rgscents -d rgscents"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: rg-scents-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - rg_scents_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  rg_scents_postgres_data:
+  rg_scents_redis_data:

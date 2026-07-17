@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useBlogStore } from "@/lib/store/blog-store";
@@ -9,6 +10,11 @@ import { formatDate } from "@/lib/utils";
 
 export default function BlogPage() {
   const posts = useBlogStore((s) => s.posts).filter((p) => p.published);
+  const fetchPosts = useBlogStore((s) => s.fetchPosts);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">

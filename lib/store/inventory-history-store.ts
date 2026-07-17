@@ -1,25 +1,26 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { InventoryHistoryEntry } from "@/types";
-import { inventoryHistory as seedHistory } from "@/lib/mock-data/inventory-history";
+import { apiClient } from "@/lib/api-client";
 
 interface InventoryHistoryState {
   history: InventoryHistoryEntry[];
-  log: (entry: Omit<InventoryHistoryEntry, "id" | "date">) => void;
+  loading: boolean;
+  error: string | null;
+  fetchHistory: () => Promise<void>;
 }
 
-export const useInventoryHistoryStore = create<InventoryHistoryState>()(
-  persist(
-    (set) => ({
-      history: seedHistory,
-      log: (entry) =>
-        set((state) => ({
-          history: [
-            { ...entry, id: `ih-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, date: new Date().toISOString() },
-            ...state.history,
-          ],
-        })),
-    }),
-    { name: "rg-scents-inventory-history" }
-  )
-);
+export const useInventoryHistoryStore = create<InventoryHistoryState>()((set) => ({
+  history: [],
+  loading: false,
+  error: null,
+
+  fetchHistory: async () => {
+    set({ loading: true, error: null });
+    try {
+      const history = await apiClient.inventory.history();
+      set({ history, loading: false });
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : "Failed to load inventory history.", loading: false });
+    }
+  },
+}));

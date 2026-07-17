@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Truck } from "lucide-react";
@@ -9,27 +9,44 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select } from "@/components/ui/input";
 import { useOrdersStore } from "@/lib/store/orders-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { OrderStatus } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { ApiError } from "@/lib/api-client";
 
 const orderStatuses: OrderStatus[] = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Refunded"];
 
 const statusVariant = (status: OrderStatus) =>
   status === "Delivered" ? "gold" : status === "Cancelled" || status === "Refunded" ? "danger" : "outline";
 
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
+
 export default function AdminOrderDetailPage({ params }: { params: Promise<{ orderNumber: string }> }) {
   const { orderNumber } = use(params);
   const order = useOrdersStore((s) => s.getByNumber(orderNumber));
+  const fetchAllForAdmin = useOrdersStore((s) => s.fetchAllForAdmin);
   const updateStatus = useOrdersStore((s) => s.updateStatus);
   const setTrackingNumber = useOrdersStore((s) => s.setTrackingNumber);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
 
   const [trackingInput, setTrackingInput] = useState(order?.trackingNumber ?? "");
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (order) {
+      setChecked(true);
+      return;
+    }
+    fetchAllForAdmin().finally(() => setChecked(true));
+  }, [order, fetchAllForAdmin]);
+
+  useEffect(() => {
+    if (order?.trackingNumber) setTrackingInput(order.trackingNumber);
+  }, [order?.trackingNumber]);
+
+  if (!checked) return <div className="min-h-[40vh]" />;
 
   if (!order) {
     return (
@@ -42,16 +59,22 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ ord
     );
   }
 
-  function handleStatusChange(status: OrderStatus) {
-    updateStatus(orderNumber, status);
-    log({ actor: currentAdmin?.name ?? "Admin", action: `Changed order status to ${status}`, target: orderNumber, category: "Order" });
-    showToast(`Order ${orderNumber} marked as ${status}.`);
+  async function handleStatusChange(status: OrderStatus) {
+    try {
+      await updateStatus(orderNumber, status);
+      showToast(`Order ${orderNumber} marked as ${status}.`);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  function handleSaveTracking() {
-    setTrackingNumber(orderNumber, trackingInput.trim());
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Updated tracking number", target: `${orderNumber} — ${trackingInput.trim()}`, category: "Order" });
-    showToast("Tracking number saved.");
+  async function handleSaveTracking() {
+    try {
+      await setTrackingNumber(orderNumber, trackingInput.trim());
+      showToast("Tracking number saved.");
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   return (

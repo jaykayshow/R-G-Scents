@@ -1,21 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Copy, Users, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/store/auth-store";
+import { useRewardsStore } from "@/lib/store/rewards-store";
 import { useToastStore } from "@/lib/store/toast-store";
-
-const mockReferrals = [
-  { name: "Michael T.", status: "Completed", reward: "$25 Credit" },
-  { name: "Chidi E.", status: "Pending First Order", reward: "—" },
-];
+import { formatDate } from "@/lib/utils";
 
 export default function ReferralsPage() {
   const user = useAuthStore((s) => s.currentUser);
+  const referrals = useRewardsStore((s) => s.referrals);
+  const fetchReferrals = useRewardsStore((s) => s.fetchReferrals);
   const showToast = useToastStore((s) => s.show);
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    fetchReferrals();
+  }, [fetchReferrals]);
 
   if (!user) return null;
 
@@ -52,15 +55,15 @@ export default function ReferralsPage() {
         <h3 className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-gold">
           <Users size={14} /> Your Referrals
         </h3>
-        {mockReferrals.length === 0 ? (
+        {referrals.length === 0 ? (
           <p className="text-sm text-overlay/50">No referrals yet — share your link to get started.</p>
         ) : (
           <div className="space-y-4">
-            {mockReferrals.map((ref, i) => (
+            {referrals.map((ref, i) => (
               <div key={i} className="flex items-center justify-between border-b border-overlay/5 pb-4 last:border-0 last:pb-0">
                 <div>
                   <p className="text-sm text-fg">{ref.name}</p>
-                  <p className="text-xs text-overlay/40">{ref.status}</p>
+                  <p className="text-xs text-overlay/40">{ref.status} · Joined {formatDate(ref.joinedAt)}</p>
                 </div>
                 <span className="text-sm text-gold">{ref.reward}</span>
               </div>

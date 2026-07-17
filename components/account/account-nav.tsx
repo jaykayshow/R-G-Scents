@@ -39,8 +39,8 @@ export function AccountNav() {
   const logout = useAuthStore((s) => s.logout);
   const showToast = useToastStore((s) => s.show);
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    await logout();
     showToast("You've been signed out.", "info");
     router.push("/");
   }

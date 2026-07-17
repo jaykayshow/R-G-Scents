@@ -25,6 +25,9 @@ const PAGE_SIZE = 8;
 
 export function ShopContent() {
   const products = useProductsStore((s) => s.products);
+  const loading = useProductsStore((s) => s.loading);
+  const error = useProductsStore((s) => s.error);
+  const fetchProducts = useProductsStore((s) => s.fetchProducts);
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [selectedCollections, setSelectedCollections] = useState<CollectionSlug[]>(
@@ -162,7 +165,18 @@ export function ShopContent() {
             {filtered.length} {filtered.length === 1 ? "fragrance" : "fragrances"} found
           </p>
 
-          {paginated.length === 0 ? (
+          {loading && products.length === 0 ? (
+            <div className="flex flex-col items-center gap-4 py-24 text-center">
+              <p className="text-sm text-overlay/50">Loading fragrances…</p>
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center gap-4 py-24 text-center">
+              <p className="text-sm text-red-400">{error}</p>
+              <Button variant="secondary" onClick={() => fetchProducts()}>
+                Retry
+              </Button>
+            </div>
+          ) : paginated.length === 0 ? (
             <div className="flex flex-col items-center gap-4 py-24 text-center">
               <p className="font-serif text-xl text-fg">No fragrances match your filters.</p>
               <Button variant="secondary" onClick={clearFilters}>

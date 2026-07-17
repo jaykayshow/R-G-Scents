@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Heart, Clock, Radar, CalendarDays, Sun, ShieldCheck, Truck } from "lucide-react";
 import { Product, Review } from "@/types";
 import { ProductGallery } from "@/components/product/product-gallery";
@@ -16,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency, cn } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useWishlistStore } from "@/lib/store/wishlist-store";
+import { useAuthStore } from "@/lib/store/auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 
 type Tab = "description" | "ingredients" | "reviews";
@@ -38,7 +40,9 @@ export function ProductDetail({
   const addItem = useCartStore((s) => s.addItem);
   const isWishlisted = useWishlistStore((s) => s.has(product.id));
   const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const currentUser = useAuthStore((s) => s.currentUser);
   const showToast = useToastStore((s) => s.show);
+  const router = useRouter();
 
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
 
@@ -122,12 +126,19 @@ export function ProductDetail({
               {variant.stock === 0 ? "Out of Stock" : "Add to Cart"}
             </Button>
             <button
-              onClick={() => {
-                toggleWishlist(product.id);
-                showToast(
-                  isWishlisted ? "Removed from wishlist." : "Added to wishlist.",
-                  "info"
-                );
+              onClick={async () => {
+                if (!currentUser) {
+                  showToast("Sign in to save items to your wishlist.", "error");
+                  router.push("/auth/login");
+                  return;
+                }
+                const wasWishlisted = isWishlisted;
+                try {
+                  await toggleWishlist(product.id);
+                  showToast(wasWishlisted ? "Removed from wishlist." : "Added to wishlist.", "info");
+                } catch {
+                  showToast("Could not update wishlist. Please try again.", "error");
+                }
               }}
               aria-label="Toggle wishlist"
               className="flex h-14 w-14 shrink-0 items-center justify-center rounded-sm border border-overlay/15 transition-colors hover:border-gold"
@@ -195,7 +206,9 @@ export function ProductDetail({
                 ]}
               />
             )}
-            {tab === "reviews" && <ReviewSection reviews={reviews} averageRating={product.rating} />}
+            {tab === "reviews" && (
+              <ReviewSection productId={product.id} reviews={reviews} averageRating={product.rating} />
+            )}
           </div>
         </div>
       </div>

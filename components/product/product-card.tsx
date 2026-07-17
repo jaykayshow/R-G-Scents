@@ -12,15 +12,19 @@ import { Button } from "@/components/ui/button";
 import { cn, formatCurrency } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useWishlistStore } from "@/lib/store/wishlist-store";
+import { useAuthStore } from "@/lib/store/auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { QuickViewModal } from "@/components/product/quick-view-modal";
+import { useRouter } from "next/navigation";
 
 export function ProductCard({ product }: { product: Product }) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
   const isWishlisted = useWishlistStore((s) => s.has(product.id));
   const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const currentUser = useAuthStore((s) => s.currentUser);
   const showToast = useToastStore((s) => s.show);
+  const router = useRouter();
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
@@ -39,13 +43,23 @@ export function ProductCard({ product }: { product: Product }) {
     showToast(`${product.name} added to cart.`);
   }
 
-  function handleWishlist(e: React.MouseEvent) {
+  async function handleWishlist(e: React.MouseEvent) {
     e.preventDefault();
-    toggleWishlist(product.id);
-    showToast(
-      isWishlisted ? `${product.name} removed from wishlist.` : `${product.name} added to wishlist.`,
-      "info"
-    );
+    if (!currentUser) {
+      showToast("Sign in to save items to your wishlist.", "error");
+      router.push("/auth/login");
+      return;
+    }
+    const wasWishlisted = isWishlisted;
+    try {
+      await toggleWishlist(product.id);
+      showToast(
+        wasWishlisted ? `${product.name} removed from wishlist.` : `${product.name} added to wishlist.`,
+        "info"
+      );
+    } catch {
+      showToast("Could not update wishlist. Please try again.", "error");
+    }
   }
 
   return (

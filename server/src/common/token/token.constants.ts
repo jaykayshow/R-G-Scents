@@ -1,0 +1,9 @@
+export const CUSTOMER_ACCESS_TOKEN_SERVICE = "CUSTOMER_ACCESS_TOKEN_SERVICE";
+export const CUSTOMER_REFRESH_TOKEN_SERVICE = "CUSTOMER_REFRESH_TOKEN_SERVICE";
+export const ADMIN_ACCESS_TOKEN_SERVICE = "ADMIN_ACCESS_TOKEN_SERVICE";
+export const ADMIN_REFRESH_TOKEN_SERVICE = "ADMIN_REFRESH_TOKEN_SERVICE";
+
+export const CUSTOMER_ACCESS_COOKIE = "rg_customer_access";
+export const CUSTOMER_REFRESH_COOKIE = "rg_customer_refresh";
+export const ADMIN_ACCESS_COOKIE = "rg_admin_access";
+export const ADMIN_REFRESH_COOKIE = "rg_admin_refresh";

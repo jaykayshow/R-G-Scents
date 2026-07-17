@@ -21,8 +21,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   if (!currentAdmin) return null;
   const navSections = getNavForRole(currentAdmin.role);
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    await logout();
     showToast("Signed out of admin console.", "info");
     router.push("/admin/login");
   }

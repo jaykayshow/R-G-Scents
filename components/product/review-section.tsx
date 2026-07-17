@@ -1,19 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Review } from "@/types";
 import { StarRating } from "@/components/ui/star-rating";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
 import { useToastStore } from "@/lib/store/toast-store";
 import { useReviewsStore } from "@/lib/store/reviews-store";
+import { useAuthStore } from "@/lib/store/auth-store";
 import { BadgeCheck } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
 export function ReviewSection({
+  productId,
   reviews,
   averageRating,
 }: {
+  productId: string;
   reviews: Review[];
   averageRating: number;
 }) {
@@ -21,8 +25,11 @@ export function ReviewSection({
   const [draftRating, setDraftRating] = useState(5);
   const [draftTitle, setDraftTitle] = useState("");
   const [draftContent, setDraftContent] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const showToast = useToastStore((s) => s.show);
   const addReview = useReviewsStore((s) => s.addReview);
+  const currentUser = useAuthStore((s) => s.currentUser);
+  const router = useRouter();
 
   const breakdown = [5, 4, 3, 2, 1].map((star) => ({
     star,
@@ -30,29 +37,30 @@ export function ReviewSection({
   }));
   const total = reviews.length || 1;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!currentUser) {
+      showToast("Sign in to write a review.", "error");
+      router.push("/auth/login");
+      return;
+    }
     if (!draftTitle.trim() || !draftContent.trim()) {
       showToast("Please add a title and a review before submitting.", "error");
       return;
     }
-    const newReview: Review = {
-      id: `r-${Date.now()}`,
-      productId: reviews[0]?.productId ?? "",
-      author: "You",
-      rating: draftRating,
-      title: draftTitle,
-      content: draftContent,
-      date: new Date().toISOString(),
-      verified: true,
-      status: "pending",
-    };
-    addReview(newReview);
-    setDraftTitle("");
-    setDraftContent("");
-    setDraftRating(5);
-    setShowForm(false);
-    showToast("Thank you — your review has been submitted for moderation.");
+    setSubmitting(true);
+    try {
+      await addReview({ productId, rating: draftRating, title: draftTitle, content: draftContent });
+      setDraftTitle("");
+      setDraftContent("");
+      setDraftRating(5);
+      setShowForm(false);
+      showToast("Thank you — your review has been submitted for moderation.");
+    } catch {
+      showToast("Could not submit review. Please try again.", "error");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -113,7 +121,9 @@ export function ReviewSection({
             onChange={(e) => setDraftContent(e.target.value)}
             placeholder="Share your experience with this fragrance..."
           />
-          <Button type="submit">Submit Review</Button>
+          <Button type="submit" disabled={submitting}>
+            {submitting ? "Submitting…" : "Submit Review"}
+          </Button>
         </form>
       )}
 

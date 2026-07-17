@@ -1,5 +1,3 @@
-import { Address, RewardTransaction, SupportTicket, User } from "@/types";
-
 export interface Testimonial {
   id: string;
   name: string;
@@ -54,86 +52,6 @@ export const galleryPosts: GalleryPost[] = [
   { id: "g-4", image: "/products/reserve.jpeg", caption: "Reserve, held back for a reason.", likes: 298 },
   { id: "g-5", image: "/products/elite.jpeg", caption: "Elite. For the inner circle.", likes: 402 },
   { id: "g-6", image: "/products/legacy.png", caption: "The Billionaire Collection, in full.", likes: 733 },
-];
-
-export const mockUser: User = {
-  id: "u-1",
-  firstName: "Rita",
-  lastName: "Green",
-  email: "everhot247@gmail.com",
-  phone: "+234 803 000 1122",
-  emailVerified: true,
-  createdAt: "2026-01-15",
-  rewardPoints: 1280,
-  referralCode: "RITAG-BILLION25",
-};
-
-export const mockAddresses: Address[] = [
-  {
-    id: "a-1",
-    label: "Home",
-    fullName: "Rita Green",
-    line1: "14 Admiralty Way",
-    line2: "Lekki Phase 1",
-    city: "Lagos",
-    state: "Lagos",
-    country: "Nigeria",
-    postalCode: "106104",
-    phone: "+234 803 000 1122",
-    isDefault: true,
-  },
-  {
-    id: "a-2",
-    label: "Office",
-    fullName: "Rita Green",
-    line1: "5 Banana Island Road",
-    city: "Ikoyi",
-    state: "Lagos",
-    country: "Nigeria",
-    postalCode: "101233",
-    phone: "+234 803 000 1122",
-    isDefault: false,
-  },
-];
-
-export const mockSupportTickets: SupportTicket[] = [
-  {
-    id: "s-1",
-    subject: "Question about longevity of Noir",
-    category: "Product",
-    status: "Resolved",
-    createdAt: "2026-06-15",
-    messages: [
-      { author: "customer", content: "How long does Noir typically last on skin?", date: "2026-06-15" },
-      {
-        author: "support",
-        content: "Noir is rated Eternal — most customers report 10-12 hours of wear with 2-3 sprays.",
-        date: "2026-06-15",
-      },
-    ],
-  },
-  {
-    id: "s-2",
-    subject: "Order RG-100519 shipping delay",
-    category: "Order",
-    status: "Awaiting Reply",
-    createdAt: "2026-07-12",
-    messages: [
-      { author: "customer", content: "My order shows shipped but tracking hasn't updated in 2 days.", date: "2026-07-12" },
-      {
-        author: "support",
-        content: "Thanks for flagging — we've pinged the courier and will update you within 24 hours.",
-        date: "2026-07-13",
-      },
-    ],
-  },
-];
-
-export const mockRewardTransactions: RewardTransaction[] = [
-  { id: "rw-1", type: "earn", points: 285, description: "Order RG-100234", date: "2026-07-01" },
-  { id: "rw-2", type: "earn", points: 955, description: "Order RG-100519", date: "2026-07-10" },
-  { id: "rw-3", type: "redeem", points: -200, description: "Redeemed for $10 off", date: "2026-07-11" },
-  { id: "rw-4", type: "earn", points: 295, description: "Order RG-100822", date: "2026-07-14" },
 ];
 
 export const faqs = [

@@ -4,22 +4,32 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToastStore } from "@/lib/store/toast-store";
+import { apiClient, ApiError } from "@/lib/api-client";
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const showToast = useToastStore((s) => s.show);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
     setError("");
-    setSubmitted(true);
-    showToast("You're on the list. Confirm via the email we just sent.");
+    setSubmitting(true);
+    try {
+      const res = await apiClient.newsletter.subscribe(email);
+      setSubmitted(true);
+      showToast(res.message);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Could not subscribe. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -48,8 +58,8 @@ export function NewsletterSection() {
               placeholder="Your email address"
               error={error}
             />
-            <Button type="submit" className="shrink-0">
-              Join Now
+            <Button type="submit" className="shrink-0" disabled={submitting}>
+              {submitting ? "Joining…" : "Join Now"}
             </Button>
           </form>
         )}

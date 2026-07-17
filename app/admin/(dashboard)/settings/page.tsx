@@ -1,29 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { useSettingsStore } from "@/lib/store/settings-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { SiteSettings } from "@/types";
+import { ApiError } from "@/lib/api-client";
 
 export default function AdminSettingsPage() {
   const settings = useSettingsStore((s) => s.settings);
+  const fetchSettings = useSettingsStore((s) => s.fetchSettings);
   const updateSettings = useSettingsStore((s) => s.updateSettings);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const [draft, setDraft] = useState<SiteSettings>(settings);
 
-  function handleSave(section: string) {
-    updateSettings(draft);
-    log({ actor: currentAdmin?.name ?? "Admin", action: `Updated ${section} settings`, target: section, category: "Settings" });
-    showToast(`${section} settings saved.`);
+  useEffect(() => {
+    setDraft(settings);
+  }, [settings]);
+
+  async function handleSave(section: string) {
+    try {
+      await updateSettings(draft, section);
+      showToast(`${section} settings saved.`);
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : "Could not save settings.", "error");
+    }
   }
 
   return (

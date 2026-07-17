@@ -1,7 +1,7 @@
 "use client";
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { TopProductMetric } from "@/lib/mock-data/analytics";
+import { AnalyticsTopProduct } from "@/lib/api-client";
 import { formatCurrency } from "@/lib/utils";
 
 const COLORS = ["#c9a24b", "#e6cd8a", "#8a6d2f", "#efe3c3", "#5b4a24"];
@@ -10,7 +10,7 @@ const axisStroke = "color-mix(in oklab, var(--color-overlay) 30%, transparent)";
 const axisStrokeStrong = "color-mix(in oklab, var(--color-overlay) 50%, transparent)";
 const tooltipBorder = "1px solid color-mix(in oklab, var(--color-overlay) 10%, transparent)";
 
-export function TopProductsChart({ data, height = 260 }: { data: TopProductMetric[]; height?: number }) {
+export function TopProductsChart({ data, height = 260 }: { data: AnalyticsTopProduct[]; height?: number }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} layout="vertical" margin={{ top: 4, right: 16, left: 8, bottom: 4 }}>

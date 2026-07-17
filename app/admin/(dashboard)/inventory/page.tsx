@@ -9,12 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useProductsStore } from "@/lib/store/products-store";
 import { useInventoryHistoryStore } from "@/lib/store/inventory-history-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { formatDate } from "@/lib/utils";
+import { ApiError } from "@/lib/api-client";
 
 const LOW_STOCK_THRESHOLD = 15;
+
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
 
 interface VariantRow {
   productId: string;
@@ -30,9 +33,8 @@ export default function InventoryPage() {
   const products = useProductsStore((s) => s.products);
   const setVariantStock = useProductsStore((s) => s.setVariantStock);
   const history = useInventoryHistoryStore((s) => s.history);
-  const logInventory = useInventoryHistoryStore((s) => s.log);
-  const logAudit = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
+  const historyLoading = useInventoryHistoryStore((s) => s.loading);
+  const fetchHistory = useInventoryHistoryStore((s) => s.fetchHistory);
   const showToast = useToastStore((s) => s.show);
 
   const [query, setQuery] = useState("");
@@ -71,33 +73,20 @@ export default function InventoryPage() {
     setEditValue(String(row.stock));
   }
 
-  function saveEdit(row: VariantRow) {
+  async function saveEdit(row: VariantRow) {
     const newStock = Math.max(0, Number(editValue) || 0);
     if (newStock === row.stock) {
       setEditingVariant(null);
       return;
     }
-    setVariantStock(row.productId, row.variantId, newStock);
-    logInventory({
-      productId: row.productId,
-      productName: row.productName,
-      variantId: row.variantId,
-      variantSize: row.size,
-      sku: row.sku,
-      change: newStock - row.stock,
-      previousStock: row.stock,
-      newStock,
-      reason: "Manual adjustment",
-      actor: currentAdmin?.name ?? "Admin",
-    });
-    logAudit({
-      actor: currentAdmin?.name ?? "Admin",
-      action: "Updated stock",
-      target: `${row.productName} — ${row.size} (${row.sku})`,
-      category: "Inventory",
-    });
-    showToast(`${row.productName} (${row.size}) stock updated to ${newStock}.`);
-    setEditingVariant(null);
+    try {
+      await setVariantStock(row.productId, row.variantId, newStock, "Manual adjustment");
+      showToast(`${row.productName} (${row.size}) stock updated to ${newStock}.`);
+      setEditingVariant(null);
+      if (tab === "history") fetchHistory();
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   const stockColumns: DataTableColumn<VariantRow>[] = [
@@ -184,7 +173,10 @@ export default function InventoryPage() {
           Stock Levels
         </button>
         <button
-          onClick={() => setTab("history")}
+          onClick={() => {
+            setTab("history");
+            fetchHistory();
+          }}
           className={`flex items-center gap-1.5 border-b-2 px-1 pb-3 text-sm font-medium ${tab === "history" ? "border-gold text-gold" : "border-transparent text-overlay/50"}`}
         >
           <History size={13} /> History Log
@@ -202,10 +194,20 @@ export default function InventoryPage() {
               className="w-full rounded-sm border border-overlay/15 bg-overlay/[0.03] py-2 pl-9 pr-3 text-sm text-fg placeholder:text-overlay/30 focus:border-gold focus:outline-none"
             />
           </div>
-          <DataTable columns={stockColumns} rows={filteredRows} getRowId={(r) => r.variantId} />
+          <DataTable
+            columns={stockColumns}
+            rows={filteredRows}
+            getRowId={(r) => r.variantId}
+            emptyMessage={products.length === 0 ? "Loading inventory…" : "No variants match your search."}
+          />
         </>
       ) : (
-        <DataTable columns={historyColumns} rows={history} getRowId={(h) => h.id} emptyMessage="No inventory changes yet." />
+        <DataTable
+          columns={historyColumns}
+          rows={history}
+          getRowId={(h) => h.id}
+          emptyMessage={historyLoading ? "Loading history…" : "No inventory changes yet."}
+        />
       )}
     </div>
   );

@@ -1,22 +1,34 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { CollectionMeta, CollectionSlug } from "@/types";
-import { collectionsMeta as seedCollections } from "@/lib/mock-data/collections";
+import { apiClient } from "@/lib/api-client";
 
 interface CollectionsState {
   collections: CollectionMeta[];
-  updateCollection: (slug: CollectionSlug, patch: Partial<CollectionMeta>) => void;
+  loading: boolean;
+  error: string | null;
+  fetchCollections: () => Promise<void>;
+  updateCollection: (slug: CollectionSlug, patch: Partial<CollectionMeta>) => Promise<void>;
 }
 
-export const useCollectionsStore = create<CollectionsState>()(
-  persist(
-    (set) => ({
-      collections: seedCollections,
-      updateCollection: (slug, patch) =>
-        set((state) => ({
-          collections: state.collections.map((c) => (c.slug === slug ? { ...c, ...patch } : c)),
-        })),
-    }),
-    { name: "rg-scents-collections" }
-  )
-);
+export const useCollectionsStore = create<CollectionsState>()((set) => ({
+  collections: [],
+  loading: false,
+  error: null,
+
+  fetchCollections: async () => {
+    set({ loading: true, error: null });
+    try {
+      const collections = await apiClient.collections.list();
+      set({ collections, loading: false });
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : "Failed to load collections.", loading: false });
+    }
+  },
+
+  updateCollection: async (slug, patch) => {
+    const updated = await apiClient.collections.update(slug, patch);
+    set((state) => ({
+      collections: state.collections.map((c) => (c.slug === slug ? updated : c)),
+    }));
+  },
+}));

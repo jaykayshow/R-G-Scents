@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
@@ -8,15 +8,18 @@ import { sectionForPath } from "@/lib/admin-permissions";
 
 export function RequireAdminAuth({ children }: { children: React.ReactNode }) {
   const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
-  const [hydrated, setHydrated] = useState(false);
+  const checked = useAdminAuthStore((s) => s.checked);
+  const fetchMe = useAdminAuthStore((s) => s.fetchMe);
   const router = useRouter();
   const pathname = usePathname();
   const showToast = useToastStore((s) => s.show);
 
-  useEffect(() => setHydrated(true), []);
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!checked) return;
     if (!currentAdmin) {
       router.replace("/admin/login");
       return;
@@ -26,9 +29,9 @@ export function RequireAdminAuth({ children }: { children: React.ReactNode }) {
       showToast(`Your role (${currentAdmin.role}) does not have access to ${section.label}.`, "error");
       router.replace("/admin");
     }
-  }, [hydrated, currentAdmin, pathname, router, showToast]);
+  }, [checked, currentAdmin, pathname, router, showToast]);
 
-  if (!hydrated || !currentAdmin) {
+  if (!checked || !currentAdmin) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-bg text-sm text-overlay/40">
         Loading admin console...

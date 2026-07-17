@@ -1,27 +1,57 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { blogPosts as seedPosts, BlogPost } from "@/lib/mock-data/blog";
+import { BlogPost } from "@/lib/mock-data/blog";
+import { apiClient } from "@/lib/api-client";
 
 interface BlogState {
   posts: BlogPost[];
-  addPost: (post: BlogPost) => void;
-  updatePost: (slug: string, patch: Partial<BlogPost>) => void;
-  deletePost: (slug: string) => void;
-  getBySlug: (slug: string) => BlogPost | undefined;
+  loading: boolean;
+  error: string | null;
+  fetchPosts: () => Promise<void>;
+  fetchAllForAdmin: () => Promise<void>;
+  addPost: (post: BlogPost) => Promise<void>;
+  updatePost: (slug: string, patch: BlogPost) => Promise<void>;
+  deletePost: (slug: string) => Promise<void>;
 }
 
-export const useBlogStore = create<BlogState>()(
-  persist(
-    (set, get) => ({
-      posts: seedPosts,
-      addPost: (post) => set((state) => ({ posts: [post, ...state.posts] })),
-      updatePost: (slug, patch) =>
-        set((state) => ({
-          posts: state.posts.map((p) => (p.slug === slug ? { ...p, ...patch } : p)),
-        })),
-      deletePost: (slug) => set((state) => ({ posts: state.posts.filter((p) => p.slug !== slug) })),
-      getBySlug: (slug) => get().posts.find((p) => p.slug === slug),
-    }),
-    { name: "rg-scents-blog" }
-  )
-);
+export const useBlogStore = create<BlogState>()((set) => ({
+  posts: [],
+  loading: false,
+  error: null,
+
+  fetchPosts: async () => {
+    set({ loading: true, error: null });
+    try {
+      const posts = await apiClient.blog.list();
+      set({ posts, loading: false });
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : "Failed to load articles.", loading: false });
+    }
+  },
+
+  fetchAllForAdmin: async () => {
+    set({ loading: true, error: null });
+    try {
+      const posts = await apiClient.adminBlog.list();
+      set({ posts, loading: false });
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : "Failed to load articles.", loading: false });
+    }
+  },
+
+  addPost: async (post) => {
+    const created = await apiClient.adminBlog.create(post);
+    set((state) => ({ posts: [created, ...state.posts] }));
+  },
+
+  updatePost: async (slug, patch) => {
+    const updated = await apiClient.adminBlog.update(slug, patch);
+    set((state) => ({
+      posts: state.posts.map((p) => (p.slug === slug ? updated : p)),
+    }));
+  },
+
+  deletePost: async (slug) => {
+    await apiClient.adminBlog.delete(slug);
+    set((state) => ({ posts: state.posts.filter((p) => p.slug !== slug) }));
+  },
+}));

@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Save, Trash2 } from "lucide-react";
@@ -8,10 +8,9 @@ import { AdminPageHeader } from "@/components/admin/page-header";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { useBlogStore } from "@/lib/store/blog-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { BlogPost } from "@/lib/mock-data/blog";
+import { ApiError } from "@/lib/api-client";
 
 function slugify(value: string) {
   return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -37,12 +36,16 @@ export default function AdminBlogEditorPage({ params }: { params: Promise<{ slug
   const router = useRouter();
 
   const posts = useBlogStore((s) => s.posts);
+  const fetchAllForAdmin = useBlogStore((s) => s.fetchAllForAdmin);
   const addPost = useBlogStore((s) => s.addPost);
   const updatePost = useBlogStore((s) => s.updatePost);
   const deletePost = useBlogStore((s) => s.deletePost);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
+
+  useEffect(() => {
+    if (posts.length === 0) fetchAllForAdmin();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const existing = isNew ? undefined : posts.find((p) => p.slug === slug);
   const [draft, setDraft] = useState<BlogPost>(existing ?? blankPost());
@@ -60,7 +63,7 @@ export default function AdminBlogEditorPage({ params }: { params: Promise<{ slug
     );
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!draft.title.trim()) {
       setError("Title is required.");
       return;
@@ -79,25 +82,30 @@ export default function AdminBlogEditorPage({ params }: { params: Promise<{ slug
       content: contentText.split("\n\n").map((s) => s.trim()).filter(Boolean),
     };
 
-    if (isNew) {
-      addPost(finalPost);
-      log({ actor: currentAdmin?.name ?? "Admin", action: `Created blog post (${finalPost.published ? "published" : "draft"})`, target: finalPost.title, category: "Blog" });
-      showToast(`"${finalPost.title}" created.`);
-    } else {
-      updatePost(existing!.slug, finalPost);
-      log({ actor: currentAdmin?.name ?? "Admin", action: `Updated blog post (${finalPost.published ? "published" : "draft"})`, target: finalPost.title, category: "Blog" });
-      showToast(`"${finalPost.title}" updated.`);
+    try {
+      if (isNew) {
+        await addPost(finalPost);
+        showToast(`"${finalPost.title}" created.`);
+      } else {
+        await updatePost(existing!.slug, finalPost);
+        showToast(`"${finalPost.title}" updated.`);
+      }
+      router.push("/admin/blog");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Could not save article.");
     }
-    router.push("/admin/blog");
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!existing) return;
     if (!confirm(`Delete "${existing.title}"?`)) return;
-    deletePost(existing.slug);
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Deleted blog post", target: existing.title, category: "Blog" });
-    showToast(`"${existing.title}" deleted.`);
-    router.push("/admin/blog");
+    try {
+      await deletePost(existing.slug);
+      showToast(`"${existing.title}" deleted.`);
+      router.push("/admin/blog");
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : "Could not delete article.", "error");
+    }
   }
 
   return (

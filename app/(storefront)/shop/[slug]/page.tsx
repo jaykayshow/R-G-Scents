@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect } from "react";
 import Link from "next/link";
 import { useProductsStore } from "@/lib/store/products-store";
 import { useReviewsStore } from "@/lib/store/reviews-store";
@@ -9,11 +9,20 @@ import { ProductDetail } from "@/components/product/product-detail";
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const products = useProductsStore((s) => s.products);
+  const loading = useProductsStore((s) => s.loading);
   const reviews = useReviewsStore((s) => s.reviews);
+  const fetchApproved = useReviewsStore((s) => s.fetchApproved);
+
+  useEffect(() => {
+    fetchApproved();
+  }, [fetchApproved]);
 
   const product = products.find((p) => p.slug === slug);
 
   if (!product) {
+    if (loading) {
+      return <div className="min-h-[60vh]" />;
+    }
     return (
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-4 py-32 text-center">
         <h1 className="font-serif text-3xl text-fg">Product Not Found</h1>

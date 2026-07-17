@@ -12,20 +12,23 @@ import { Select } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { Textarea } from "@/components/ui/input";
 import { useProductsStore } from "@/lib/store/products-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { Product, ProductVariant } from "@/types";
 import { formatCurrency } from "@/lib/utils";
+import { ApiError } from "@/lib/api-client";
 
 export default function AdminProductsPage() {
   const products = useProductsStore((s) => s.products);
+  const loading = useProductsStore((s) => s.loading);
+  const storeError = useProductsStore((s) => s.error);
   const deleteProducts = useProductsStore((s) => s.deleteProducts);
   const bulkUpdate = useProductsStore((s) => s.bulkUpdate);
   const addProduct = useProductsStore((s) => s.addProduct);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
+
+  function errorMessage(err: unknown) {
+    return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+  }
 
   const [query, setQuery] = useState("");
   const [collectionFilter, setCollectionFilter] = useState("all");
@@ -41,46 +44,50 @@ export default function AdminProductsPage() {
     });
   }, [products, query, collectionFilter]);
 
-  function actor() {
-    return currentAdmin?.name ?? "Admin";
-  }
-
-  function handleBulkDelete() {
+  async function handleBulkDelete() {
     if (selectedIds.length === 0) return;
     if (!confirm(`Delete ${selectedIds.length} selected product(s)? This cannot be undone.`)) return;
-    deleteProducts(selectedIds);
-    log({ actor: actor(), action: `Bulk deleted ${selectedIds.length} product(s)`, target: selectedIds.join(", "), category: "Product" });
-    showToast(`${selectedIds.length} product(s) deleted.`);
-    setSelectedIds([]);
+    try {
+      await deleteProducts(selectedIds);
+      showToast(`${selectedIds.length} product(s) deleted.`);
+      setSelectedIds([]);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  function handleBulkDeactivateStock() {
+  async function handleBulkDeactivateStock() {
     if (selectedIds.length === 0) return;
-    selectedIds.forEach((id) => {
-      const product = products.find((p) => p.id === id);
-      if (!product) return;
-      bulkUpdate([id], { variants: product.variants.map((v) => ({ ...v, stock: 0 })) });
-    });
-    log({ actor: actor(), action: `Bulk marked ${selectedIds.length} product(s) out of stock`, target: selectedIds.join(", "), category: "Product" });
-    showToast(`${selectedIds.length} product(s) marked out of stock.`);
-    setSelectedIds([]);
+    try {
+      await Promise.all(
+        selectedIds.map((id) => {
+          const product = products.find((p) => p.id === id);
+          if (!product) return Promise.resolve();
+          return bulkUpdate([id], { variants: product.variants.map((v) => ({ ...v, stock: 0 })) });
+        })
+      );
+      showToast(`${selectedIds.length} product(s) marked out of stock.`);
+      setSelectedIds([]);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  function handleImport() {
+  async function handleImport() {
     const lines = csvText
       .split("\n")
       .map((l) => l.trim())
       .filter(Boolean);
     let imported = 0;
-    lines.forEach((line) => {
+    for (const [index, line] of lines.entries()) {
       const [name, collection, priceStr, stockStr] = line.split(",").map((s) => s.trim());
-      if (!name || !collection || !priceStr) return;
+      if (!name || !collection || !priceStr) continue;
       const price = Number(priceStr) || 0;
       const stock = Number(stockStr) || 0;
       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-      const id = `p-${slug}-${Date.now()}-${imported}`;
+      const id = `p-${slug}-${Date.now()}-${index}`;
       const variant: ProductVariant = {
-        id: `v-${slug}-50-${Date.now()}-${imported}`,
+        id: `v-${slug}-50-${Date.now()}-${index}`,
         size: "50ml",
         sku: `RG-${slug.slice(0, 3).toUpperCase()}-50`,
         barcode: String(Date.now()).slice(-10),
@@ -89,7 +96,7 @@ export default function AdminProductsPage() {
       };
       const newProduct: Product = {
         id,
-        slug: `${slug}-${imported}`,
+        slug: `${slug}-${index}`,
         name,
         collection: (["legacy", "reserve", "royale", "elite", "noir"].includes(collection)
           ? collection
@@ -115,20 +122,26 @@ export default function AdminProductsPage() {
         variants: [variant],
         stock,
       };
-      addProduct(newProduct);
-      imported += 1;
-    });
-    log({ actor: actor(), action: `Imported ${imported} product(s) via CSV`, target: "Bulk Import", category: "Product" });
+      try {
+        await addProduct(newProduct);
+        imported += 1;
+      } catch (err) {
+        showToast(`Skipped "${name}": ${errorMessage(err)}`, "error");
+      }
+    }
     showToast(`Imported ${imported} product(s) from CSV.`);
     setCsvText("");
     setImportOpen(false);
   }
 
-  function handleDeleteOne(id: string, name: string) {
+  async function handleDeleteOne(id: string, name: string) {
     if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
-    deleteProducts([id]);
-    log({ actor: actor(), action: "Deleted product", target: name, category: "Product" });
-    showToast(`${name} deleted.`);
+    try {
+      await deleteProducts([id]);
+      showToast(`${name} deleted.`);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   const columns: DataTableColumn<Product>[] = [
@@ -250,7 +263,7 @@ export default function AdminProductsPage() {
         selectable
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
-        emptyMessage="No products match your filters."
+        emptyMessage={loading ? "Loading products…" : storeError ? storeError : "No products match your filters."}
       />
 
       <Modal open={importOpen} onClose={() => setImportOpen(false)}>

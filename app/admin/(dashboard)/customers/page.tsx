@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
@@ -13,8 +13,14 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 
 export default function AdminCustomersPage() {
   const customers = useCustomersStore((s) => s.customers);
+  const loading = useCustomersStore((s) => s.loading);
+  const fetchCustomers = useCustomersStore((s) => s.fetchCustomers);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | Customer["status"]>("all");
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
 
   const filtered = useMemo(() => {
     return customers.filter((c) => {
@@ -70,7 +76,12 @@ export default function AdminCustomersPage() {
         </Select>
       </div>
 
-      <DataTable columns={columns} rows={filtered} getRowId={(c) => c.id} emptyMessage="No customers match your filters." />
+      <DataTable
+        columns={columns}
+        rows={filtered}
+        getRowId={(c) => c.id}
+        emptyMessage={loading ? "Loading customers…" : "No customers match your filters."}
+      />
     </div>
   );
 }

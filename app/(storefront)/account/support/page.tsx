@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,7 @@ import { Modal } from "@/components/ui/modal";
 import { SupportTicket } from "@/types";
 import { useSupportStore } from "@/lib/store/support-store";
 import { useToastStore } from "@/lib/store/toast-store";
+import { ApiError } from "@/lib/api-client";
 import { formatDate } from "@/lib/utils";
 
 const schema = z.object({
@@ -28,9 +29,15 @@ const statusVariant = (status: SupportTicket["status"]) =>
 
 export default function SupportPage() {
   const tickets = useSupportStore((s) => s.tickets);
+  const loading = useSupportStore((s) => s.loading);
+  const fetchTickets = useSupportStore((s) => s.fetchTickets);
   const addTicket = useSupportStore((s) => s.addTicket);
   const [modalOpen, setModalOpen] = useState(false);
   const showToast = useToastStore((s) => s.show);
+
+  useEffect(() => {
+    fetchTickets();
+  }, [fetchTickets]);
 
   const {
     register,
@@ -39,15 +46,15 @@ export default function SupportPage() {
     formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-  function onSubmit(values: FormValues) {
-    addTicket({
-      subject: values.subject,
-      category: values.category,
-      messages: [{ author: "customer", content: values.message, date: new Date().toISOString() }],
-    });
-    showToast("Support ticket submitted — we'll respond within 24 hours.");
-    reset();
-    setModalOpen(false);
+  async function onSubmit(values: FormValues) {
+    try {
+      await addTicket(values);
+      showToast("Support ticket submitted — we'll respond within 24 hours.");
+      reset();
+      setModalOpen(false);
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : "Could not submit ticket.", "error");
+    }
   }
 
   return (
@@ -62,7 +69,7 @@ export default function SupportPage() {
       {tickets.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 p-12 text-center">
           <LifeBuoy size={28} className="text-overlay/30" />
-          <p className="text-sm text-overlay/50">No support tickets yet.</p>
+          <p className="text-sm text-overlay/50">{loading ? "Loading tickets…" : "No support tickets yet."}</p>
         </Card>
       ) : (
         <div className="space-y-4">

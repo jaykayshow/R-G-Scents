@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { Plus, Trash2 } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
@@ -7,24 +8,30 @@ import { DataTable, DataTableColumn } from "@/components/admin/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useBlogStore } from "@/lib/store/blog-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { BlogPost } from "@/lib/mock-data/blog";
 import { formatDate } from "@/lib/utils";
+import { ApiError } from "@/lib/api-client";
 
 export default function AdminBlogPage() {
   const posts = useBlogStore((s) => s.posts);
+  const loading = useBlogStore((s) => s.loading);
+  const fetchAllForAdmin = useBlogStore((s) => s.fetchAllForAdmin);
   const deletePost = useBlogStore((s) => s.deletePost);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
 
-  function handleDelete(post: BlogPost) {
+  useEffect(() => {
+    fetchAllForAdmin();
+  }, [fetchAllForAdmin]);
+
+  async function handleDelete(post: BlogPost) {
     if (!confirm(`Delete "${post.title}"?`)) return;
-    deletePost(post.slug);
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Deleted blog post", target: post.title, category: "Blog" });
-    showToast(`"${post.title}" deleted.`);
+    try {
+      await deletePost(post.slug);
+      showToast(`"${post.title}" deleted.`);
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : "Could not delete article.", "error");
+    }
   }
 
   const columns: DataTableColumn<BlogPost>[] = [
@@ -74,7 +81,12 @@ export default function AdminBlogPage() {
           </Link>
         }
       />
-      <DataTable columns={columns} rows={posts} getRowId={(p) => p.slug} emptyMessage="No articles yet." />
+      <DataTable
+        columns={columns}
+        rows={posts}
+        getRowId={(p) => p.slug}
+        emptyMessage={loading ? "Loading articles…" : "No articles yet."}
+      />
     </div>
   );
 }

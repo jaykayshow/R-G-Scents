@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { DollarSign, ShoppingCart, Percent, AlertTriangle, LifeBuoy, ArrowRight } from "lucide-react";
+import { useEffect } from "react";
+import { DollarSign, ShoppingCart, Receipt, AlertTriangle, LifeBuoy, ArrowRight } from "lucide-react";
 import { StatCard } from "@/components/admin/stat-card";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { RevenueTrendChart } from "@/components/admin/charts/revenue-trend-chart";
@@ -11,15 +12,9 @@ import { useOrdersStore } from "@/lib/store/orders-store";
 import { useProductsStore } from "@/lib/store/products-store";
 import { useSupportStore } from "@/lib/store/support-store";
 import { useToastStore } from "@/lib/store/toast-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
 import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
-import {
-  dailyMetrics,
-  topProducts,
-  conversionRate,
-  revenueTrendVsPreviousPeriod,
-  ordersTrendVsPreviousPeriod,
-} from "@/lib/mock-data/analytics";
+import { useAnalyticsStore } from "@/lib/store/analytics-store";
+import { ApiError } from "@/lib/api-client";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { OrderStatus } from "@/types";
 
@@ -28,14 +23,21 @@ const orderStatuses: OrderStatus[] = ["Pending", "Processing", "Shipped", "Deliv
 
 export default function AdminDashboardPage() {
   const orders = useOrdersStore((s) => s.orders);
+  const fetchAllForAdmin = useOrdersStore((s) => s.fetchAllForAdmin);
   const updateOrderStatus = useOrdersStore((s) => s.updateStatus);
   const products = useProductsStore((s) => s.products);
   const tickets = useSupportStore((s) => s.tickets);
   const showToast = useToastStore((s) => s.show);
-  const log = useAuditLogStore((s) => s.log);
   const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
+  const overview = useAnalyticsStore((s) => s.overview);
+  const fetchOverview = useAnalyticsStore((s) => s.fetchOverview);
 
-  const today = dailyMetrics[dailyMetrics.length - 1];
+  useEffect(() => {
+    fetchAllForAdmin();
+    fetchOverview();
+  }, [fetchAllForAdmin, fetchOverview]);
+
+  const today = overview?.dailyMetrics[overview.dailyMetrics.length - 1];
   const lowStockVariants = products.flatMap((p) =>
     p.variants.filter((v) => v.stock > 0 && v.stock <= LOW_STOCK_THRESHOLD).map((v) => ({ product: p, variant: v }))
   );
@@ -44,15 +46,13 @@ export default function AdminDashboardPage() {
     .sort((a, b) => +new Date(b.date) - +new Date(a.date))
     .slice(0, 6);
 
-  function handleStatusChange(orderNumber: string, status: OrderStatus) {
-    updateOrderStatus(orderNumber, status);
-    log({
-      actor: currentAdmin?.name ?? "Admin",
-      action: `Changed order status to ${status}`,
-      target: orderNumber,
-      category: "Order",
-    });
-    showToast(`Order ${orderNumber} marked as ${status}.`);
+  async function handleStatusChange(orderNumber: string, status: OrderStatus) {
+    try {
+      await updateOrderStatus(orderNumber, status);
+      showToast(`Order ${orderNumber} marked as ${status}.`);
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : "Could not update order status.", "error");
+    }
   }
 
   return (
@@ -65,17 +65,17 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
         <StatCard
           label="Revenue (30d)"
-          value={formatCurrency(dailyMetrics.reduce((s, d) => s + d.revenue, 0))}
+          value={formatCurrency(overview?.totals.revenue ?? 0)}
           icon={DollarSign}
-          trend={{ value: revenueTrendVsPreviousPeriod() }}
+          trend={overview ? { value: overview.revenueTrendVsPreviousPeriod } : undefined}
         />
         <StatCard
           label="Orders Today"
-          value={String(today.orders)}
+          value={String(today?.orders ?? 0)}
           icon={ShoppingCart}
-          trend={{ value: ordersTrendVsPreviousPeriod(), label: "vs prior period" }}
+          trend={overview ? { value: overview.ordersTrendVsPreviousPeriod, label: "vs prior period" } : undefined}
         />
-        <StatCard label="Conversion Rate" value={`${conversionRate}%`} icon={Percent} tone="neutral" />
+        <StatCard label="Avg. Order Value" value={formatCurrency(overview?.averageOrderValue ?? 0)} icon={Receipt} tone="neutral" />
         <StatCard
           label="Low Stock Items"
           value={String(lowStockVariants.length)}
@@ -95,13 +95,17 @@ export default function AdminDashboardPage() {
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">
             Revenue Trend (30 Days)
           </h2>
-          <RevenueTrendChart data={dailyMetrics} />
+          <RevenueTrendChart data={overview?.dailyMetrics ?? []} />
         </div>
         <div className="rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-overlay/50">
             Top Selling Products
           </h2>
-          <TopProductsChart data={topProducts} />
+          {overview && overview.topProducts.length > 0 ? (
+            <TopProductsChart data={overview.topProducts} />
+          ) : (
+            <p className="py-8 text-center text-sm text-overlay/40">No product sales in this period yet.</p>
+          )}
         </div>
       </div>
 

@@ -1,27 +1,48 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { Banner } from "@/types";
-import { banners as seedBanners } from "@/lib/mock-data/banners";
+import { apiClient } from "@/lib/api-client";
 
 interface BannersState {
   banners: Banner[];
-  addBanner: (banner: Banner) => void;
-  updateBanner: (id: string, patch: Partial<Banner>) => void;
-  deleteBanner: (id: string) => void;
-  toggleActive: (id: string) => void;
+  loading: boolean;
+  fetchBanners: () => Promise<void>;
+  addBanner: (banner: Banner) => Promise<void>;
+  updateBanner: (id: string, patch: Partial<Banner>) => Promise<void>;
+  deleteBanner: (id: string) => Promise<void>;
+  toggleActive: (id: string) => Promise<void>;
 }
 
-export const useBannersStore = create<BannersState>()(
-  persist(
-    (set) => ({
-      banners: seedBanners,
-      addBanner: (banner) => set((state) => ({ banners: [banner, ...state.banners] })),
-      updateBanner: (id, patch) =>
-        set((state) => ({ banners: state.banners.map((b) => (b.id === id ? { ...b, ...patch } : b)) })),
-      deleteBanner: (id) => set((state) => ({ banners: state.banners.filter((b) => b.id !== id) })),
-      toggleActive: (id) =>
-        set((state) => ({ banners: state.banners.map((b) => (b.id === id ? { ...b, active: !b.active } : b)) })),
-    }),
-    { name: "rg-scents-banners" }
-  )
-);
+export const useBannersStore = create<BannersState>()((set) => ({
+  banners: [],
+  loading: false,
+
+  fetchBanners: async () => {
+    set({ loading: true });
+    try {
+      const banners = await apiClient.banners.list();
+      set({ banners, loading: false });
+    } catch {
+      set({ loading: false });
+    }
+  },
+
+  addBanner: async (banner) => {
+    const created = await apiClient.adminBanners.create(banner);
+    set((state) => ({ banners: [created, ...state.banners] }));
+  },
+
+  updateBanner: async (id, patch) => {
+    const updated = await apiClient.adminBanners.update(id, patch);
+    set((state) => ({ banners: state.banners.map((b) => (b.id === id ? updated : b)) }));
+  },
+
+  deleteBanner: async (id) => {
+    await apiClient.adminBanners.delete(id);
+    set((state) => ({ banners: state.banners.filter((b) => b.id !== id) }));
+  },
+
+  toggleActive: async (id) => {
+    const updated = await apiClient.adminBanners.toggleActive(id);
+    set((state) => ({ banners: state.banners.map((b) => (b.id === id ? updated : b)) }));
+  },
+}));

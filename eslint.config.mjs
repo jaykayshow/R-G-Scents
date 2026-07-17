@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // NestJS backend has its own lint setup — not part of the Next.js app.
+    "server/**",
   ]),
 ]);
 

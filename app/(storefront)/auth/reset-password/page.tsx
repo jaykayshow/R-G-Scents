@@ -26,6 +26,7 @@ function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";
+  const token = searchParams.get("token") ?? "";
   const resetPassword = useAuthStore((s) => s.resetPassword);
   const [done, setDone] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -36,8 +37,8 @@ function ResetPasswordForm() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-  function onSubmit(values: FormValues) {
-    const result = resetPassword(email, values.password);
+  async function onSubmit(values: FormValues) {
+    const result = await resetPassword(token, values.password);
     if (!result.success) {
       setServerError(result.message);
       return;

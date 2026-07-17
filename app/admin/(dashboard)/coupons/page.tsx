@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { DataTable, DataTableColumn } from "@/components/admin/data-table";
@@ -9,11 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Input, Label, Select } from "@/components/ui/input";
 import { useCouponsStore } from "@/lib/store/coupons-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { Coupon, CouponType } from "@/types";
 import { formatDate } from "@/lib/utils";
+import { ApiError } from "@/lib/api-client";
 
 function blankCoupon(): Coupon {
   return {
@@ -26,18 +25,26 @@ function blankCoupon(): Coupon {
   };
 }
 
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
+
 export default function AdminCouponsPage() {
   const coupons = useCouponsStore((s) => s.coupons);
+  const loading = useCouponsStore((s) => s.loading);
+  const fetchCoupons = useCouponsStore((s) => s.fetchCoupons);
   const addCoupon = useCouponsStore((s) => s.addCoupon);
   const updateCoupon = useCouponsStore((s) => s.updateCoupon);
   const deleteCoupon = useCouponsStore((s) => s.deleteCoupon);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCode, setEditingCode] = useState<string | null>(null);
   const [draft, setDraft] = useState<Coupon>(blankCoupon());
+
+  useEffect(() => {
+    fetchCoupons();
+  }, [fetchCoupons]);
 
   function openCreate() {
     setDraft(blankCoupon());
@@ -51,33 +58,38 @@ export default function AdminCouponsPage() {
     setModalOpen(true);
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!draft.code.trim() || !draft.description.trim()) {
       showToast("Code and description are required.", "error");
       return;
     }
     const normalized: Coupon = { ...draft, code: draft.code.trim().toUpperCase() };
-    if (editingCode) {
-      updateCoupon(editingCode, normalized);
-      log({ actor: currentAdmin?.name ?? "Admin", action: "Updated coupon", target: normalized.code, category: "Coupon" });
-      showToast(`Coupon ${normalized.code} updated.`);
-    } else {
-      if (coupons.some((c) => c.code === normalized.code)) {
-        showToast("A coupon with this code already exists.", "error");
-        return;
+    try {
+      if (editingCode) {
+        await updateCoupon(editingCode, normalized);
+        showToast(`Coupon ${normalized.code} updated.`);
+      } else {
+        if (coupons.some((c) => c.code === normalized.code)) {
+          showToast("A coupon with this code already exists.", "error");
+          return;
+        }
+        await addCoupon(normalized);
+        showToast(`Coupon ${normalized.code} created.`);
       }
-      addCoupon(normalized);
-      log({ actor: currentAdmin?.name ?? "Admin", action: "Created coupon", target: normalized.code, category: "Coupon" });
-      showToast(`Coupon ${normalized.code} created.`);
+      setModalOpen(false);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
     }
-    setModalOpen(false);
   }
 
-  function handleDelete(code: string) {
+  async function handleDelete(code: string) {
     if (!confirm(`Delete coupon "${code}"?`)) return;
-    deleteCoupon(code);
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Deleted coupon", target: code, category: "Coupon" });
-    showToast(`Coupon ${code} deleted.`);
+    try {
+      await deleteCoupon(code);
+      showToast(`Coupon ${code} deleted.`);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   const columns: DataTableColumn<Coupon>[] = [
@@ -117,7 +129,12 @@ export default function AdminCouponsPage() {
           </Button>
         }
       />
-      <DataTable columns={columns} rows={coupons} getRowId={(c) => c.code} emptyMessage="No coupons yet." />
+      <DataTable
+        columns={columns}
+        rows={coupons}
+        getRowId={(c) => c.code}
+        emptyMessage={loading ? "Loading coupons…" : "No coupons yet."}
+      />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
         <h3 className="mb-6 font-serif text-xl text-fg">{editingCode ? "Edit Coupon" : "Create Coupon"}</h3>

@@ -1,44 +1,42 @@
 "use client";
 
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
+import { useAuthStore } from "@/lib/store/auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
+import { NotificationPreferences, ApiError } from "@/lib/api-client";
 
-const initialPrefs = {
-  orderUpdates: true,
-  shippingAlerts: true,
-  promotions: true,
-  vipEarlyAccess: true,
-  restockAlerts: false,
-  productReviewRequests: true,
-  accountSecurity: true,
+const labels: Record<keyof NotificationPreferences, { title: string; description: string }> = {
+  notifyOrderUpdates: { title: "Order Updates", description: "Confirmation, processing, and delivery status." },
+  notifyShippingAlerts: { title: "Shipping Alerts", description: "Tracking updates from our courier partners." },
+  notifyPromotions: { title: "Promotions & Discounts", description: "Sales, seasonal offers, and coupon codes." },
+  notifyVipEarlyAccess: { title: "VIP Early Access", description: "First access to limited edition drops." },
+  notifyRestockAlerts: { title: "Restock Alerts", description: "Notify me when a wishlist item is back in stock." },
+  notifyReviewRequests: { title: "Review Requests", description: "Reminders to review your recent purchases." },
 };
 
-const labels: Record<keyof typeof initialPrefs, { title: string; description: string }> = {
-  orderUpdates: { title: "Order Updates", description: "Confirmation, processing, and delivery status." },
-  shippingAlerts: { title: "Shipping Alerts", description: "Tracking updates from our courier partners." },
-  promotions: { title: "Promotions & Discounts", description: "Sales, seasonal offers, and coupon codes." },
-  vipEarlyAccess: { title: "VIP Early Access", description: "First access to limited edition drops." },
-  restockAlerts: { title: "Restock Alerts", description: "Notify me when a wishlist item is back in stock." },
-  productReviewRequests: { title: "Review Requests", description: "Reminders to review your recent purchases." },
-  accountSecurity: { title: "Account & Security", description: "Password changes and login alerts (cannot be disabled)." },
-};
+const keys = Object.keys(labels) as (keyof NotificationPreferences)[];
 
 export default function NotificationsPage() {
-  const [prefs, setPrefs] = useState(initialPrefs);
+  const currentUser = useAuthStore((s) => s.currentUser);
+  const updateNotificationPreferences = useAuthStore((s) => s.updateNotificationPreferences);
   const showToast = useToastStore((s) => s.show);
 
-  function toggle(key: keyof typeof initialPrefs) {
-    if (key === "accountSecurity") return;
-    setPrefs((prev) => ({ ...prev, [key]: !prev[key] }));
-    showToast("Notification preferences updated.");
+  if (!currentUser) return null;
+
+  async function toggle(key: keyof NotificationPreferences) {
+    try {
+      await updateNotificationPreferences({ [key]: !currentUser![key] });
+      showToast("Notification preferences updated.");
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : "Could not update preferences.", "error");
+    }
   }
 
   return (
     <div>
       <h2 className="mb-6 font-serif text-xl text-fg">Notification Preferences</h2>
       <Card className="divide-y divide-overlay/10">
-        {(Object.keys(prefs) as (keyof typeof initialPrefs)[]).map((key) => (
+        {keys.map((key) => (
           <div key={key} className="flex items-center justify-between p-5">
             <div>
               <p className="text-sm font-medium text-fg">{labels[key].title}</p>
@@ -46,19 +44,27 @@ export default function NotificationsPage() {
             </div>
             <button
               onClick={() => toggle(key)}
-              disabled={key === "accountSecurity"}
-              className={`relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-50 ${
-                prefs[key] ? "bg-gold" : "bg-overlay/20"
+              className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+                currentUser[key] ? "bg-gold" : "bg-overlay/20"
               }`}
             >
               <span
                 className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
-                  prefs[key] ? "translate-x-5" : "translate-x-0.5"
+                  currentUser[key] ? "translate-x-5" : "translate-x-0.5"
                 }`}
               />
             </button>
           </div>
         ))}
+        <div className="flex items-center justify-between p-5">
+          <div>
+            <p className="text-sm font-medium text-fg">Account & Security</p>
+            <p className="text-xs text-overlay/40">Password changes and login alerts (cannot be disabled).</p>
+          </div>
+          <button disabled className="relative h-6 w-11 shrink-0 rounded-full bg-gold opacity-50">
+            <span className="absolute top-0.5 h-5 w-5 translate-x-5 rounded-full bg-white shadow-sm" />
+          </button>
+        </div>
       </Card>
     </div>
   );

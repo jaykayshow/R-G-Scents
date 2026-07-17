@@ -1,33 +1,47 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { Coupon } from "@/types";
-import { coupons as seedCoupons, validateCouponAgainst } from "@/lib/mock-data/coupons";
+import { apiClient } from "@/lib/api-client";
 
 interface CouponsState {
   coupons: Coupon[];
-  addCoupon: (coupon: Coupon) => void;
-  updateCoupon: (code: string, patch: Partial<Coupon>) => void;
-  deleteCoupon: (code: string) => void;
-  incrementUsage: (code: string) => void;
-  validate: (code: string, subtotal: number) => { valid: boolean; coupon?: Coupon; message: string };
+  loading: boolean;
+  error: string | null;
+  fetchCoupons: () => Promise<void>;
+  addCoupon: (coupon: Coupon) => Promise<void>;
+  updateCoupon: (code: string, patch: Partial<Coupon>) => Promise<void>;
+  deleteCoupon: (code: string) => Promise<void>;
+  validate: (code: string, subtotal: number) => Promise<{ valid: boolean; coupon?: Coupon; message: string }>;
 }
 
-export const useCouponsStore = create<CouponsState>()(
-  persist(
-    (set, get) => ({
-      coupons: seedCoupons,
-      addCoupon: (coupon) => set((state) => ({ coupons: [coupon, ...state.coupons] })),
-      updateCoupon: (code, patch) =>
-        set((state) => ({
-          coupons: state.coupons.map((c) => (c.code === code ? { ...c, ...patch } : c)),
-        })),
-      deleteCoupon: (code) => set((state) => ({ coupons: state.coupons.filter((c) => c.code !== code) })),
-      incrementUsage: (code) =>
-        set((state) => ({
-          coupons: state.coupons.map((c) => (c.code === code ? { ...c, usageCount: c.usageCount + 1 } : c)),
-        })),
-      validate: (code, subtotal) => validateCouponAgainst(get().coupons, code, subtotal),
-    }),
-    { name: "rg-scents-coupons" }
-  )
-);
+export const useCouponsStore = create<CouponsState>()((set) => ({
+  coupons: [],
+  loading: false,
+  error: null,
+
+  fetchCoupons: async () => {
+    set({ loading: true, error: null });
+    try {
+      const coupons = await apiClient.adminCoupons.list();
+      set({ coupons, loading: false });
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : "Failed to load coupons.", loading: false });
+    }
+  },
+
+  addCoupon: async (coupon) => {
+    const created = await apiClient.adminCoupons.create(coupon);
+    set((state) => ({ coupons: [created, ...state.coupons] }));
+  },
+
+  updateCoupon: async (code, patch) => {
+    const updated = await apiClient.adminCoupons.update(code, patch);
+    set((state) => ({ coupons: state.coupons.map((c) => (c.code === code ? updated : c)) }));
+  },
+
+  deleteCoupon: async (code) => {
+    await apiClient.adminCoupons.delete(code);
+    set((state) => ({ coupons: state.coupons.filter((c) => c.code !== code) }));
+  },
+
+  validate: async (code, subtotal) => apiClient.coupons.validate(code, subtotal),
+}));

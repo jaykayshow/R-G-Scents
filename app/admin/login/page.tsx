@@ -28,8 +28,9 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const login = useAdminAuthStore((s) => s.login);
   const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
+  const checked = useAdminAuthStore((s) => s.checked);
+  const fetchMe = useAdminAuthStore((s) => s.fetchMe);
   const [serverError, setServerError] = useState("");
-  const [hydrated, setHydrated] = useState(false);
 
   const {
     register,
@@ -38,16 +39,18 @@ export default function AdminLoginPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-  useEffect(() => setHydrated(true), []);
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
 
   useEffect(() => {
-    if (hydrated && currentAdmin) {
+    if (checked && currentAdmin) {
       router.replace("/admin");
     }
-  }, [hydrated, currentAdmin, router]);
+  }, [checked, currentAdmin, router]);
 
-  function onSubmit(values: FormValues) {
-    const result = login(values.email, values.password);
+  async function onSubmit(values: FormValues) {
+    const result = await login(values.email, values.password);
     if (!result.success) {
       setServerError(result.message);
       return;

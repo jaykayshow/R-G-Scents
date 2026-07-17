@@ -8,26 +8,30 @@ import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useCollectionsStore } from "@/lib/store/collections-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { CollectionMeta } from "@/types";
+import { ApiError } from "@/lib/api-client";
+
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
 
 export default function AdminCollectionsPage() {
   const collections = useCollectionsStore((s) => s.collections);
   const updateCollection = useCollectionsStore((s) => s.updateCollection);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
 
   const [editing, setEditing] = useState<CollectionMeta | null>(null);
 
-  function handleSave() {
+  async function handleSave() {
     if (!editing) return;
-    updateCollection(editing.slug, editing);
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Updated collection", target: editing.name, category: "Product" });
-    showToast(`${editing.name} collection updated.`);
-    setEditing(null);
+    try {
+      await updateCollection(editing.slug, editing);
+      showToast(`${editing.name} collection updated.`);
+      setEditing(null);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   return (

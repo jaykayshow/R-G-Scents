@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/input";
@@ -14,8 +14,14 @@ const statusVariant = (status: OrderStatus) =>
 
 export default function OrdersPage() {
   const orders = useOrdersStore((s) => s.orders);
+  const loading = useOrdersStore((s) => s.loading);
+  const fetchMine = useOrdersStore((s) => s.fetchMine);
   const [filter, setFilter] = useState<"all" | OrderStatus>("all");
   const filtered = filter === "all" ? orders : orders.filter((o) => o.status === filter);
+
+  useEffect(() => {
+    fetchMine();
+  }, [fetchMine]);
 
   return (
     <div>
@@ -34,7 +40,9 @@ export default function OrdersPage() {
 
       <div className="space-y-4">
         {filtered.length === 0 ? (
-          <Card className="p-6 text-sm text-overlay/50">No orders match this filter.</Card>
+          <Card className="p-6 text-sm text-overlay/50">
+            {loading ? "Loading orders…" : "No orders match this filter."}
+          </Card>
         ) : (
           filtered.map((order) => (
             <Card key={order.id} className="p-5">

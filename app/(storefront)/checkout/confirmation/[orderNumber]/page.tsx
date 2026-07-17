@@ -17,12 +17,19 @@ export default function OrderConfirmationPage({
   params: Promise<{ orderNumber: string }>;
 }) {
   const { orderNumber } = use(params);
-  const [hydrated, setHydrated] = useState(false);
+  const [checked, setChecked] = useState(false);
   const order = useOrdersStore((s) => s.getByNumber(orderNumber));
+  const fetchByNumber = useOrdersStore((s) => s.fetchByNumber);
 
-  useEffect(() => setHydrated(true), []);
+  useEffect(() => {
+    if (order) {
+      setChecked(true);
+      return;
+    }
+    fetchByNumber(orderNumber).finally(() => setChecked(true));
+  }, [order, orderNumber, fetchByNumber]);
 
-  if (!hydrated) return <div className="min-h-[60vh]" />;
+  if (!checked) return <div className="min-h-[60vh]" />;
   if (!order) notFound();
 
   return (

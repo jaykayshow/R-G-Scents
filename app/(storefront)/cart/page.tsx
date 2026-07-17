@@ -33,9 +33,9 @@ export default function CartPage() {
 
   const totals = computeOrderTotals(subtotal, appliedCoupon);
 
-  function handleApplyCoupon(e: React.FormEvent) {
+  async function handleApplyCoupon(e: React.FormEvent) {
     e.preventDefault();
-    const result = validateCouponCode(couponInput, subtotal);
+    const result = await validateCouponCode(couponInput, subtotal);
     if (!result.valid || !result.coupon) {
       setCouponError(result.message);
       return;

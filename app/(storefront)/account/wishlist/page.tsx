@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, ShoppingBag } from "lucide-react";
@@ -15,10 +16,15 @@ import { formatCurrency } from "@/lib/utils";
 export default function WishlistPage() {
   const wishlistIds = useWishlistStore((s) => s.productIds);
   const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const fetchWishlist = useWishlistStore((s) => s.fetchWishlist);
   const addItem = useCartStore((s) => s.addItem);
   const showToast = useToastStore((s) => s.show);
   const products = useProductsStore((s) => s.products);
   const wishlistProducts = products.filter((p) => wishlistIds.includes(p.id));
+
+  useEffect(() => {
+    fetchWishlist();
+  }, [fetchWishlist]);
 
   return (
     <div>
@@ -68,8 +74,8 @@ export default function WishlistPage() {
                 <Button
                   variant="secondary"
                   size="sm"
-                  onClick={() => {
-                    toggleWishlist(product.id);
+                  onClick={async () => {
+                    await toggleWishlist(product.id);
                     showToast("Removed from wishlist.", "info");
                   }}
                 >

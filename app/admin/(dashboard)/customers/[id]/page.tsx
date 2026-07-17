@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Ban, CheckCircle2, Mail, Phone } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
@@ -9,22 +9,42 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
 import { useCustomersStore } from "@/lib/store/customers-store";
 import { useOrdersStore } from "@/lib/store/orders-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { ApiError } from "@/lib/api-client";
+
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
 
 export default function AdminCustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const customer = useCustomersStore((s) => s.customers.find((c) => c.id === id));
+  const fetchCustomer = useCustomersStore((s) => s.fetchCustomer);
   const toggleStatus = useCustomersStore((s) => s.toggleStatus);
   const setNotes = useCustomersStore((s) => s.setNotes);
   const orders = useOrdersStore((s) => s.orders);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
+  const fetchAllOrders = useOrdersStore((s) => s.fetchAllForAdmin);
   const showToast = useToastStore((s) => s.show);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    fetchAllOrders();
+    if (customer) {
+      setChecked(true);
+      return;
+    }
+    fetchCustomer(id).finally(() => setChecked(true));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const [notesDraft, setNotesDraft] = useState(customer?.notes ?? "");
+
+  useEffect(() => {
+    setNotesDraft(customer?.notes ?? "");
+  }, [customer?.notes]);
+
+  if (!checked) return <div className="min-h-[40vh]" />;
 
   if (!customer) {
     return (
@@ -39,21 +59,22 @@ export default function AdminCustomerDetailPage({ params }: { params: Promise<{ 
 
   const customerOrders = orders.filter((o) => o.shippingAddress.fullName === customer.name);
 
-  function handleToggleStatus() {
-    toggleStatus(customer!.id);
-    log({
-      actor: currentAdmin?.name ?? "Admin",
-      action: customer!.status === "Active" ? "Suspended customer account" : "Reactivated customer account",
-      target: customer!.email,
-      category: "Customer",
-    });
-    showToast(`${customer!.name} is now ${customer!.status === "Active" ? "Suspended" : "Active"}.`);
+  async function handleToggleStatus() {
+    try {
+      await toggleStatus(customer!.id);
+      showToast(`${customer!.name} is now ${customer!.status === "Active" ? "Suspended" : "Active"}.`);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  function handleSaveNotes() {
-    setNotes(customer!.id, notesDraft);
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Updated customer notes", target: customer!.email, category: "Customer" });
-    showToast("Customer notes saved.");
+  async function handleSaveNotes() {
+    try {
+      await setNotes(customer!.id, notesDraft);
+      showToast("Customer notes saved.");
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   return (

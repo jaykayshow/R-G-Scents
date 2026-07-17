@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Check, X, Reply, BadgeCheck } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
@@ -10,11 +10,10 @@ import { StarRating } from "@/components/ui/star-rating";
 import { Textarea } from "@/components/ui/input";
 import { useReviewsStore } from "@/lib/store/reviews-store";
 import { useProductsStore } from "@/lib/store/products-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { ReviewStatus } from "@/types";
 import { formatDate } from "@/lib/utils";
+import { ApiError } from "@/lib/api-client";
 
 const tabs: { key: ReviewStatus | "all"; label: string }[] = [
   { key: "pending", label: "Pending" },
@@ -23,18 +22,26 @@ const tabs: { key: ReviewStatus | "all"; label: string }[] = [
   { key: "all", label: "All" },
 ];
 
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
+
 export default function AdminReviewsPage() {
   const reviews = useReviewsStore((s) => s.reviews);
+  const loading = useReviewsStore((s) => s.loading);
+  const fetchAllForAdmin = useReviewsStore((s) => s.fetchAllForAdmin);
   const setStatus = useReviewsStore((s) => s.setStatus);
   const reply = useReviewsStore((s) => s.reply);
   const products = useProductsStore((s) => s.products);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
 
   const [tab, setTab] = useState<ReviewStatus | "all">("pending");
   const [replyingId, setReplyingId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
+
+  useEffect(() => {
+    fetchAllForAdmin();
+  }, [fetchAllForAdmin]);
 
   const filtered = useMemo(
     () => (tab === "all" ? reviews : reviews.filter((r) => r.status === tab)),
@@ -49,25 +56,34 @@ export default function AdminReviewsPage() {
     return products.find((p) => p.id === productId)?.slug ?? "";
   }
 
-  function handleApprove(id: string, author: string) {
-    setStatus(id, "approved");
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Approved review", target: `Review by ${author}`, category: "Review" });
-    showToast("Review approved and now visible on the storefront.");
+  async function handleApprove(id: string) {
+    try {
+      await setStatus(id, "approved");
+      showToast("Review approved and now visible on the storefront.");
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  function handleReject(id: string, author: string) {
-    setStatus(id, "rejected");
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Rejected review", target: `Review by ${author}`, category: "Review" });
-    showToast("Review rejected.", "info");
+  async function handleReject(id: string) {
+    try {
+      await setStatus(id, "rejected");
+      showToast("Review rejected.", "info");
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  function handleReply(id: string) {
+  async function handleReply(id: string) {
     if (!replyText.trim()) return;
-    reply(id, replyText.trim());
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Replied to review", target: id, category: "Review" });
-    showToast("Reply posted.");
-    setReplyingId(null);
-    setReplyText("");
+    try {
+      await reply(id, replyText.trim());
+      showToast("Reply posted.");
+      setReplyingId(null);
+      setReplyText("");
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   const pendingCount = reviews.filter((r) => r.status === "pending").length;
@@ -97,7 +113,9 @@ export default function AdminReviewsPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="py-12 text-center text-sm text-overlay/40">No reviews in this view.</p>
+        <p className="py-12 text-center text-sm text-overlay/40">
+          {loading ? "Loading reviews…" : "No reviews in this view."}
+        </p>
       ) : (
         <div className="space-y-4">
           {filtered.map((review) => (
@@ -136,7 +154,7 @@ export default function AdminReviewsPage() {
 
               <div className="mt-4 flex flex-wrap gap-2">
                 {review.status !== "approved" && (
-                  <Button size="sm" onClick={() => handleApprove(review.id, review.author)}>
+                  <Button size="sm" onClick={() => handleApprove(review.id)}>
                     <Check size={13} /> Approve
                   </Button>
                 )}
@@ -144,7 +162,7 @@ export default function AdminReviewsPage() {
                   <Button
                     size="sm"
                     variant="secondary"
-                    onClick={() => handleReject(review.id, review.author)}
+                    onClick={() => handleReject(review.id)}
                     className="border-red-400/40 text-red-300 hover:bg-red-400 hover:text-ink"
                   >
                     <X size={13} /> Reject

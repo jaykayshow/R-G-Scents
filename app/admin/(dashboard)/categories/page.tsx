@@ -8,10 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { useCategoriesStore } from "@/lib/store/categories-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { Category } from "@/types";
+import { ApiError } from "@/lib/api-client";
 
 function slugify(value: string) {
   return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -21,13 +20,16 @@ function blankCategory(): Category {
   return { id: `cat-${Date.now()}`, name: "", slug: "", description: "" };
 }
 
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
+
 export default function AdminCategoriesPage() {
   const categories = useCategoriesStore((s) => s.categories);
+  const loading = useCategoriesStore((s) => s.loading);
   const addCategory = useCategoriesStore((s) => s.addCategory);
   const updateCategory = useCategoriesStore((s) => s.updateCategory);
   const deleteCategory = useCategoriesStore((s) => s.deleteCategory);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -46,29 +48,34 @@ export default function AdminCategoriesPage() {
     setModalOpen(true);
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!draft.name.trim()) {
       showToast("Category name is required.", "error");
       return;
     }
     const normalized = { ...draft, slug: slugify(draft.name) };
-    if (editingId) {
-      updateCategory(editingId, normalized);
-      log({ actor: currentAdmin?.name ?? "Admin", action: "Updated category", target: normalized.name, category: "Product" });
-      showToast(`${normalized.name} updated.`);
-    } else {
-      addCategory(normalized);
-      log({ actor: currentAdmin?.name ?? "Admin", action: "Created category", target: normalized.name, category: "Product" });
-      showToast(`${normalized.name} created.`);
+    try {
+      if (editingId) {
+        await updateCategory(editingId, normalized);
+        showToast(`${normalized.name} updated.`);
+      } else {
+        await addCategory(normalized);
+        showToast(`${normalized.name} created.`);
+      }
+      setModalOpen(false);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
     }
-    setModalOpen(false);
   }
 
-  function handleDelete(category: Category) {
+  async function handleDelete(category: Category) {
     if (!confirm(`Delete category "${category.name}"?`)) return;
-    deleteCategory(category.id);
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Deleted category", target: category.name, category: "Product" });
-    showToast(`${category.name} deleted.`);
+    try {
+      await deleteCategory(category.id);
+      showToast(`${category.name} deleted.`);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   const columns: DataTableColumn<Category>[] = [
@@ -103,7 +110,12 @@ export default function AdminCategoriesPage() {
           </Button>
         }
       />
-      <DataTable columns={columns} rows={categories} getRowId={(c) => c.id} emptyMessage="No categories yet." />
+      <DataTable
+        columns={columns}
+        rows={categories}
+        getRowId={(c) => c.id}
+        emptyMessage={loading ? "Loading categories…" : "No categories yet."}
+      />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
         <h3 className="mb-6 font-serif text-xl text-fg">{editingId ? "Edit Category" : "Add Category"}</h3>

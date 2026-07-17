@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Ban, CheckCircle2 } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { DataTable, DataTableColumn } from "@/components/admin/data-table";
@@ -8,21 +8,30 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Input, Label, Select } from "@/components/ui/input";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
+import { useAdminAuthStore, AdminSession } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { ADMIN_ROLES } from "@/lib/admin-permissions";
-import { AdminAccount, AdminRole } from "@/types";
+import { AdminRole } from "@/types";
 import { formatDate } from "@/lib/utils";
+import { ApiError } from "@/lib/api-client";
+
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
 
 export default function AdminUsersPage() {
   const admins = useAdminAuthStore((s) => s.admins);
+  const adminsLoading = useAdminAuthStore((s) => s.adminsLoading);
+  const fetchAdmins = useAdminAuthStore((s) => s.fetchAdmins);
   const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const addAdmin = useAdminAuthStore((s) => s.addAdmin);
-  const updateAdmin = useAdminAuthStore((s) => s.updateAdmin);
+  const updateAdminRole = useAdminAuthStore((s) => s.updateAdminRole);
   const toggleActive = useAdminAuthStore((s) => s.toggleActive);
-  const log = useAuditLogStore((s) => s.log);
   const showToast = useToastStore((s) => s.show);
+
+  useEffect(() => {
+    fetchAdmins();
+  }, [fetchAdmins]);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [name, setName] = useState("");
@@ -30,17 +39,16 @@ export default function AdminUsersPage() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<AdminRole>("Support");
 
-  function handleCreate() {
+  async function handleCreate() {
     if (!name.trim() || !email.trim() || password.length < 6) {
       showToast("Please fill in all fields (password must be 6+ characters).", "error");
       return;
     }
-    const result = addAdmin({ name: name.trim(), email: email.trim(), password, role });
+    const result = await addAdmin({ name: name.trim(), email: email.trim(), password, role });
     if (!result.success) {
       showToast(result.message, "error");
       return;
     }
-    log({ actor: currentAdmin?.name ?? "Admin", action: `Created admin account (${role})`, target: email, category: "User" });
     showToast(result.message);
     setModalOpen(false);
     setName("");
@@ -49,28 +57,29 @@ export default function AdminUsersPage() {
     setRole("Support");
   }
 
-  function handleToggle(admin: AdminAccount) {
+  async function handleToggle(admin: AdminSession) {
     if (admin.id === currentAdmin?.id) {
       showToast("You cannot deactivate your own account.", "error");
       return;
     }
-    toggleActive(admin.id);
-    log({
-      actor: currentAdmin?.name ?? "Admin",
-      action: admin.active ? "Deactivated admin account" : "Reactivated admin account",
-      target: admin.email,
-      category: "User",
-    });
-    showToast(`${admin.name} is now ${admin.active ? "inactive" : "active"}.`);
+    try {
+      await toggleActive(admin.id);
+      showToast(`${admin.name} is now ${admin.active ? "inactive" : "active"}.`);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  function handleRoleChange(admin: AdminAccount, newRole: AdminRole) {
-    updateAdmin(admin.id, { role: newRole });
-    log({ actor: currentAdmin?.name ?? "Admin", action: `Changed role to ${newRole}`, target: admin.email, category: "User" });
-    showToast(`${admin.name}'s role updated to ${newRole}.`);
+  async function handleRoleChange(admin: AdminSession, newRole: AdminRole) {
+    try {
+      await updateAdminRole(admin.id, newRole);
+      showToast(`${admin.name}'s role updated to ${newRole}.`);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  const columns: DataTableColumn<AdminAccount>[] = [
+  const columns: DataTableColumn<AdminSession>[] = [
     { key: "name", label: "Name", sortValue: (a) => a.name, render: (a) => <span className="font-medium text-fg">{a.name}</span> },
     { key: "email", label: "Email", render: (a) => <span className="text-overlay/60">{a.email}</span> },
     {
@@ -121,7 +130,12 @@ export default function AdminUsersPage() {
           </Button>
         }
       />
-      <DataTable columns={columns} rows={admins} getRowId={(a) => a.id} />
+      <DataTable
+        columns={columns}
+        rows={admins}
+        getRowId={(a) => a.id}
+        emptyMessage={adminsLoading ? "Loading admin users…" : "No admin users yet."}
+      />
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
         <h3 className="mb-6 font-serif text-xl text-fg">Add Admin User</h3>

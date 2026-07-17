@@ -1,106 +1,147 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { User } from "@/types";
-import { mockUser } from "@/lib/mock-data/misc";
-
-interface RegisteredAccount {
-  email: string;
-  password: string;
-  user: User;
-}
+import { apiClient, ApiError, NotificationPreferences } from "@/lib/api-client";
 
 interface AuthState {
   currentUser: User | null;
-  accounts: RegisteredAccount[];
+  checked: boolean;
+  loading: boolean;
+  fetchMe: () => Promise<void>;
   register: (data: {
     firstName: string;
     lastName: string;
     email: string;
     password: string;
-  }) => { success: boolean; message: string };
-  login: (email: string, password: string) => { success: boolean; message: string };
-  logout: () => void;
-  requestPasswordReset: (email: string) => { success: boolean; message: string };
-  resetPassword: (email: string, newPassword: string) => { success: boolean; message: string };
-  verifyEmail: (email: string) => void;
+  }) => Promise<{ success: boolean; message: string; devVerificationToken?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
+  logout: () => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<{ success: boolean; message: string; devResetToken?: string }>;
+  resetPassword: (token: string, newPassword: string) => Promise<{ success: boolean; message: string }>;
+  verifyEmail: (token: string) => Promise<{ success: boolean; message: string }>;
+  updateNotificationPreferences: (patch: Partial<NotificationPreferences>) => Promise<void>;
+  updateProfile: (data: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+  }) => Promise<{ success: boolean; message: string }>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; message: string }>;
+  deleteAccount: () => Promise<{ success: boolean; message: string }>;
 }
 
-const seedAccounts: RegisteredAccount[] = [
-  { email: mockUser.email, password: "Billionaire123!", user: mockUser },
-];
+function errorMessage(err: unknown, fallback: string) {
+  return err instanceof ApiError ? err.message : fallback;
+}
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set, get) => ({
-      currentUser: null,
-      accounts: seedAccounts,
-      register: ({ firstName, lastName, email, password }) => {
-        const exists = get().accounts.some(
-          (a) => a.email.toLowerCase() === email.toLowerCase()
-        );
-        if (exists) {
-          return { success: false, message: "An account with this email already exists." };
-        }
-        const newUser: User = {
-          id: `u-${Date.now()}`,
-          firstName,
-          lastName,
-          email,
-          emailVerified: false,
-          createdAt: new Date().toISOString(),
-          rewardPoints: 0,
-          referralCode: `${firstName.toUpperCase()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
-        };
-        set((state) => ({
-          accounts: [...state.accounts, { email, password, user: newUser }],
-          currentUser: newUser,
-        }));
-        return { success: true, message: "Account created. Please verify your email." };
-      },
-      login: (email, password) => {
-        const account = get().accounts.find(
-          (a) => a.email.toLowerCase() === email.toLowerCase() && a.password === password
-        );
-        if (!account) {
-          return { success: false, message: "Invalid email or password." };
-        }
-        set({ currentUser: account.user });
-        return { success: true, message: "Welcome back." };
-      },
-      logout: () => set({ currentUser: null }),
-      requestPasswordReset: (email) => {
-        const exists = get().accounts.some((a) => a.email.toLowerCase() === email.toLowerCase());
-        if (!exists) {
-          return { success: false, message: "No account found with that email." };
-        }
-        return { success: true, message: "Password reset instructions sent to your email." };
-      },
-      resetPassword: (email, newPassword) => {
-        const found = get().accounts.some((a) => a.email.toLowerCase() === email.toLowerCase());
-        if (!found) {
-          return { success: false, message: "No account found with that email." };
-        }
-        set((state) => ({
-          accounts: state.accounts.map((a) =>
-            a.email.toLowerCase() === email.toLowerCase() ? { ...a, password: newPassword } : a
-          ),
-        }));
-        return { success: true, message: "Password updated successfully." };
-      },
-      verifyEmail: (email) => {
-        set((state) => ({
-          accounts: state.accounts.map((a) =>
-            a.email.toLowerCase() === email.toLowerCase()
-              ? { ...a, user: { ...a.user, emailVerified: true } }
-              : a
-          ),
-          currentUser:
-            state.currentUser && state.currentUser.email.toLowerCase() === email.toLowerCase()
-              ? { ...state.currentUser, emailVerified: true }
-              : state.currentUser,
-        }));
-      },
-    }),
-    { name: "rg-scents-auth" }
-  )
-);
+export const useAuthStore = create<AuthState>()((set) => ({
+  currentUser: null,
+  checked: false,
+  loading: false,
+
+  fetchMe: async () => {
+    try {
+      const user = await apiClient.auth.me();
+      set({ currentUser: user, checked: true });
+    } catch {
+      set({ currentUser: null, checked: true });
+    }
+  },
+
+  register: async ({ firstName, lastName, email, password }) => {
+    set({ loading: true });
+    try {
+      const { user, devVerificationToken } = await apiClient.auth.register({
+        firstName,
+        lastName,
+        email,
+        password,
+      });
+      set({ currentUser: user, checked: true, loading: false });
+      return { success: true, message: "Account created. Please verify your email.", devVerificationToken };
+    } catch (err) {
+      set({ loading: false });
+      return { success: false, message: errorMessage(err, "Could not create account.") };
+    }
+  },
+
+  login: async (email, password) => {
+    set({ loading: true });
+    try {
+      const user = await apiClient.auth.login(email, password);
+      set({ currentUser: user, checked: true, loading: false });
+      return { success: true, message: "Welcome back." };
+    } catch (err) {
+      set({ loading: false });
+      return { success: false, message: errorMessage(err, "Invalid email or password.") };
+    }
+  },
+
+  logout: async () => {
+    try {
+      await apiClient.auth.logout();
+    } finally {
+      set({ currentUser: null });
+    }
+  },
+
+  requestPasswordReset: async (email) => {
+    try {
+      const res = await apiClient.auth.forgotPassword(email);
+      return { success: true, message: res.message, devResetToken: res.devResetToken };
+    } catch (err) {
+      return { success: false, message: errorMessage(err, "Could not send reset instructions.") };
+    }
+  },
+
+  resetPassword: async (token, newPassword) => {
+    try {
+      const res = await apiClient.auth.resetPassword(token, newPassword);
+      return { success: true, message: res.message };
+    } catch (err) {
+      return { success: false, message: errorMessage(err, "Could not reset password.") };
+    }
+  },
+
+  verifyEmail: async (token) => {
+    try {
+      const res = await apiClient.auth.verifyEmail(token);
+      return { success: true, message: res.message };
+    } catch (err) {
+      return { success: false, message: errorMessage(err, "Could not verify email.") };
+    }
+  },
+
+  updateNotificationPreferences: async (patch) => {
+    const user = await apiClient.notificationPreferences.update(patch);
+    set({ currentUser: user });
+  },
+
+  updateProfile: async (data) => {
+    try {
+      const user = await apiClient.auth.updateProfile(data);
+      set({ currentUser: user });
+      return { success: true, message: "Profile updated successfully." };
+    } catch (err) {
+      return { success: false, message: errorMessage(err, "Could not update profile.") };
+    }
+  },
+
+  changePassword: async (currentPassword, newPassword) => {
+    try {
+      const res = await apiClient.auth.changePassword(currentPassword, newPassword);
+      return { success: true, message: res.message };
+    } catch (err) {
+      return { success: false, message: errorMessage(err, "Could not change password.") };
+    }
+  },
+
+  deleteAccount: async () => {
+    try {
+      const res = await apiClient.auth.deleteAccount();
+      set({ currentUser: null });
+      return { success: true, message: res.message };
+    } catch (err) {
+      return { success: false, message: errorMessage(err, "Could not delete account.") };
+    }
+  },
+}));

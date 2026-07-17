@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Trash2, Pencil } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -8,10 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Input, Label, Select } from "@/components/ui/input";
 import { useBannersStore } from "@/lib/store/banners-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { Banner } from "@/types";
+import { ApiError } from "@/lib/api-client";
 
 function blankBanner(): Banner {
   return {
@@ -25,15 +24,23 @@ function blankBanner(): Banner {
   };
 }
 
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
+
 export default function AdminBannersPage() {
   const banners = useBannersStore((s) => s.banners);
+  const loading = useBannersStore((s) => s.loading);
+  const fetchBanners = useBannersStore((s) => s.fetchBanners);
   const addBanner = useBannersStore((s) => s.addBanner);
   const updateBanner = useBannersStore((s) => s.updateBanner);
   const deleteBanner = useBannersStore((s) => s.deleteBanner);
   const toggleActive = useBannersStore((s) => s.toggleActive);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
+
+  useEffect(() => {
+    fetchBanners();
+  }, [fetchBanners]);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -51,39 +58,42 @@ export default function AdminBannersPage() {
     setModalOpen(true);
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!draft.title.trim()) {
       showToast("Banner title is required.", "error");
       return;
     }
-    if (editingId) {
-      updateBanner(editingId, draft);
-      log({ actor: currentAdmin?.name ?? "Admin", action: "Updated banner", target: draft.title, category: "Banner" });
-      showToast(`Banner "${draft.title}" updated.`);
-    } else {
-      addBanner(draft);
-      log({ actor: currentAdmin?.name ?? "Admin", action: "Created banner", target: draft.title, category: "Banner" });
-      showToast(`Banner "${draft.title}" created.`);
+    try {
+      if (editingId) {
+        await updateBanner(editingId, draft);
+        showToast(`Banner "${draft.title}" updated.`);
+      } else {
+        await addBanner(draft);
+        showToast(`Banner "${draft.title}" created.`);
+      }
+      setModalOpen(false);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
     }
-    setModalOpen(false);
   }
 
-  function handleToggle(banner: Banner) {
-    toggleActive(banner.id);
-    log({
-      actor: currentAdmin?.name ?? "Admin",
-      action: banner.active ? "Deactivated banner" : "Activated banner",
-      target: banner.title,
-      category: "Banner",
-    });
-    showToast(`Banner "${banner.title}" is now ${banner.active ? "inactive" : "active"}.`);
+  async function handleToggle(banner: Banner) {
+    try {
+      await toggleActive(banner.id);
+      showToast(`Banner "${banner.title}" is now ${banner.active ? "inactive" : "active"}.`);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
-  function handleDelete(banner: Banner) {
+  async function handleDelete(banner: Banner) {
     if (!confirm(`Delete banner "${banner.title}"?`)) return;
-    deleteBanner(banner.id);
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Deleted banner", target: banner.title, category: "Banner" });
-    showToast(`Banner "${banner.title}" deleted.`);
+    try {
+      await deleteBanner(banner.id);
+      showToast(`Banner "${banner.title}" deleted.`);
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   return (

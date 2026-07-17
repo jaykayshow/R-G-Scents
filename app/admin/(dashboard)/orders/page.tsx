@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
@@ -8,11 +8,10 @@ import { DataTable, DataTableColumn } from "@/components/admin/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/input";
 import { useOrdersStore } from "@/lib/store/orders-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { Order, OrderStatus } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { ApiError } from "@/lib/api-client";
 
 const orderStatuses: OrderStatus[] = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Refunded"];
 
@@ -21,13 +20,17 @@ const statusVariant = (status: OrderStatus) =>
 
 export default function AdminOrdersPage() {
   const orders = useOrdersStore((s) => s.orders);
+  const loading = useOrdersStore((s) => s.loading);
+  const fetchAllForAdmin = useOrdersStore((s) => s.fetchAllForAdmin);
   const updateStatus = useOrdersStore((s) => s.updateStatus);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
 
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | OrderStatus>("all");
+
+  useEffect(() => {
+    fetchAllForAdmin();
+  }, [fetchAllForAdmin]);
 
   const filtered = useMemo(() => {
     return orders.filter((o) => {
@@ -37,15 +40,13 @@ export default function AdminOrdersPage() {
     });
   }, [orders, query, statusFilter]);
 
-  function handleStatusChange(orderNumber: string, status: OrderStatus) {
-    updateStatus(orderNumber, status);
-    log({
-      actor: currentAdmin?.name ?? "Admin",
-      action: `Changed order status to ${status}`,
-      target: orderNumber,
-      category: "Order",
-    });
-    showToast(`Order ${orderNumber} marked as ${status}.`);
+  async function handleStatusChange(orderNumber: string, status: OrderStatus) {
+    try {
+      await updateStatus(orderNumber, status);
+      showToast(`Order ${orderNumber} marked as ${status}.`);
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : "Could not update order status.", "error");
+    }
   }
 
   const columns: DataTableColumn<Order>[] = [
@@ -109,7 +110,12 @@ export default function AdminOrdersPage() {
         </Select>
       </div>
 
-      <DataTable columns={columns} rows={filtered} getRowId={(o) => o.id} emptyMessage="No orders match your filters." />
+      <DataTable
+        columns={columns}
+        rows={filtered}
+        getRowId={(o) => o.id}
+        emptyMessage={loading ? "Loading orders…" : "No orders match your filters."}
+      />
     </div>
   );
 }

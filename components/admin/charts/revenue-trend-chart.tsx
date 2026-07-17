@@ -9,7 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { DailyMetric } from "@/lib/mock-data/analytics";
+import { AnalyticsDailyMetric } from "@/lib/api-client";
 import { formatCurrency } from "@/lib/utils";
 
 const gridStroke = "color-mix(in oklab, var(--color-overlay) 6%, transparent)";
@@ -17,7 +17,7 @@ const axisStroke = "color-mix(in oklab, var(--color-overlay) 30%, transparent)";
 const labelColor = "color-mix(in oklab, var(--color-fg) 60%, transparent)";
 const tooltipBorder = "1px solid color-mix(in oklab, var(--color-overlay) 10%, transparent)";
 
-export function RevenueTrendChart({ data, height = 280 }: { data: DailyMetric[]; height?: number }) {
+export function RevenueTrendChart({ data, height = 280 }: { data: AnalyticsDailyMetric[]; height?: number }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <AreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>

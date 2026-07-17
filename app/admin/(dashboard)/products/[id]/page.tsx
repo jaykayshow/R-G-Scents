@@ -7,11 +7,14 @@ import { AdminPageHeader } from "@/components/admin/page-header";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea } from "@/components/ui/input";
 import { useProductsStore } from "@/lib/store/products-store";
-import { useAuditLogStore } from "@/lib/store/audit-log-store";
-import { useAdminAuthStore } from "@/lib/store/admin-auth-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { Product, ProductVariant, CollectionSlug, Gender } from "@/types";
+import { ApiError } from "@/lib/api-client";
 import Link from "next/link";
+
+function errorMessage(err: unknown) {
+  return err instanceof ApiError ? err.message : "Something went wrong. Please try again.";
+}
 
 const emptyVariant = (): ProductVariant => ({
   id: `v-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -64,12 +67,12 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
   const router = useRouter();
 
   const products = useProductsStore((s) => s.products);
+  const productsLoading = useProductsStore((s) => s.loading);
   const addProduct = useProductsStore((s) => s.addProduct);
   const updateProduct = useProductsStore((s) => s.updateProduct);
   const deleteProduct = useProductsStore((s) => s.deleteProduct);
-  const log = useAuditLogStore((s) => s.log);
-  const currentAdmin = useAdminAuthStore((s) => s.currentAdmin);
   const showToast = useToastStore((s) => s.show);
+  const [saving, setSaving] = useState(false);
 
   const existing = isNew ? undefined : products.find((p) => p.id === id);
   const [draft, setDraft] = useState<Product>(existing ?? blankProduct());
@@ -81,8 +84,24 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
   const [ingredients, setIngredients] = useState(existing?.ingredients.join(", ") ?? "");
   const [imagesText, setImagesText] = useState(existing?.images.join("\n") ?? "/products/legacy.png");
   const [errors, setErrors] = useState<string[]>([]);
+  const [hydratedFrom, setHydratedFrom] = useState<string | undefined>(existing?.id);
+
+  if (!isNew && existing && hydratedFrom !== existing.id) {
+    setHydratedFrom(existing.id);
+    setDraft(existing);
+    setNotesTop(existing.notes.top.join(", "));
+    setNotesMiddle(existing.notes.middle.join(", "));
+    setNotesBase(existing.notes.base.join(", "));
+    setOccasion(existing.occasion.join(", "));
+    setSeason(existing.season.join(", "));
+    setIngredients(existing.ingredients.join(", "));
+    setImagesText(existing.images.join("\n"));
+  }
 
   if (!isNew && !existing) {
+    if (productsLoading) {
+      return <div className="min-h-[40vh]" />;
+    }
     return (
       <div className="flex flex-col items-center gap-4 py-24 text-center">
         <p className="text-overlay/50">Product not found.</p>
@@ -108,7 +127,7 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
     setDraft((d) => ({ ...d, variants: d.variants.filter((_, i) => i !== index) }));
   }
 
-  function handleSave() {
+  async function handleSave() {
     const validationErrors: string[] = [];
     if (!draft.name.trim()) validationErrors.push("Product name is required.");
     const slug = slugify(draft.slug || draft.name);
@@ -141,25 +160,32 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
       stock: draft.variants.reduce((sum, v) => sum + v.stock, 0),
     };
 
-    if (isNew) {
-      addProduct(finalProduct);
-      log({ actor: currentAdmin?.name ?? "Admin", action: "Created product", target: finalProduct.name, category: "Product" });
-      showToast(`${finalProduct.name} created.`);
-    } else {
-      updateProduct(finalProduct.id, finalProduct);
-      log({ actor: currentAdmin?.name ?? "Admin", action: "Updated product", target: finalProduct.name, category: "Product" });
-      showToast(`${finalProduct.name} updated.`);
+    setSaving(true);
+    try {
+      if (isNew) {
+        await addProduct(finalProduct);
+        showToast(`${finalProduct.name} created.`);
+      } else {
+        await updateProduct(finalProduct.id, finalProduct);
+        showToast(`${finalProduct.name} updated.`);
+      }
+      router.push("/admin/products");
+    } catch (err) {
+      setErrors([errorMessage(err)]);
+      setSaving(false);
     }
-    router.push("/admin/products");
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!existing) return;
     if (!confirm(`Delete "${existing.name}"? This cannot be undone.`)) return;
-    deleteProduct(existing.id);
-    log({ actor: currentAdmin?.name ?? "Admin", action: "Deleted product", target: existing.name, category: "Product" });
-    showToast(`${existing.name} deleted.`);
-    router.push("/admin/products");
+    try {
+      await deleteProduct(existing.id);
+      showToast(`${existing.name} deleted.`);
+      router.push("/admin/products");
+    } catch (err) {
+      showToast(errorMessage(err), "error");
+    }
   }
 
   return (
@@ -177,8 +203,8 @@ export default function ProductEditorPage({ params }: { params: Promise<{ id: st
                 <Trash2 size={14} /> Delete
               </Button>
             )}
-            <Button size="sm" onClick={handleSave}>
-              <Save size={14} /> Save Product
+            <Button size="sm" onClick={handleSave} disabled={saving}>
+              <Save size={14} /> {saving ? "Saving…" : "Save Product"}
             </Button>
           </>
         }

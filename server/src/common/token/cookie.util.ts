@@ -1,15 +1,14 @@
 import { CookieOptions } from "express";
 
 export function accessCookieOptions(maxAgeMs: number): CookieOptions {
-  const isProduction = process.env.NODE_ENV === "production";
   return {
     httpOnly: true,
-    // Production splits the frontend (Vercel) and API (Render) across different
-    // domains, which browsers treat as cross-site — that requires SameSite=None
-    // (and Secure, which None mandates). Local dev keeps Lax since both sides
-    // are on localhost (same site regardless of port).
-    secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
+    // The frontend proxies all API calls through its own origin (see
+    // next.config.ts rewrites), so the browser always sees this as a
+    // same-site request — Lax is correct and safer than None in both
+    // dev and production.
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     path: "/",
     maxAge: maxAgeMs,
   };

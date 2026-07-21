@@ -17,13 +17,6 @@ const schema = z.object({
 });
 type FormValues = z.infer<typeof schema>;
 
-const demoAccounts = [
-  { role: "Super Admin", email: "superadmin@rgscents.com", password: "Billionaire123!" },
-  { role: "Admin", email: "admin@rgscents.com", password: "Admin123!" },
-  { role: "Support", email: "support@rgscents.com", password: "Support123!" },
-  { role: "Content Editor", email: "editor@rgscents.com", password: "Editor123!" },
-];
-
 export default function AdminLoginPage() {
   const router = useRouter();
   const login = useAdminAuthStore((s) => s.login);
@@ -35,7 +28,6 @@ export default function AdminLoginPage() {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
@@ -56,11 +48,6 @@ export default function AdminLoginPage() {
       return;
     }
     router.push("/admin");
-  }
-
-  function fillDemo(email: string, password: string) {
-    setValue("email", email);
-    setValue("password", password);
   }
 
   return (
@@ -100,25 +87,6 @@ export default function AdminLoginPage() {
               <Lock size={14} /> Sign In
             </Button>
           </form>
-        </div>
-
-        <div className="mt-6 rounded-md border border-overlay/10 bg-overlay/[0.02] p-5">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-overlay/40">
-            Demo Accounts (click to fill)
-          </p>
-          <div className="space-y-2">
-            {demoAccounts.map((acc) => (
-              <button
-                key={acc.email}
-                type="button"
-                onClick={() => fillDemo(acc.email, acc.password)}
-                className="flex w-full items-center justify-between rounded-sm border border-overlay/10 px-3 py-2 text-left text-xs transition-colors hover:border-gold/40"
-              >
-                <span className="text-overlay/70">{acc.role}</span>
-                <span className="text-overlay/30">{acc.email}</span>
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </div>

@@ -14,7 +14,8 @@ import { Button } from "@/components/ui/button";
 import { QuantityInput } from "@/components/ui/quantity-input";
 import { Accordion } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { formatCurrency, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useWishlistStore } from "@/lib/store/wishlist-store";
 import { useAuthStore } from "@/lib/store/auth-store";
@@ -93,7 +94,7 @@ export function ProductDetail({
             <span className="text-xs text-overlay/40">({product.reviewCount} reviews)</span>
           </div>
 
-          <p className="mt-6 font-serif text-3xl text-fg">{formatCurrency(variant.price)}</p>
+          <Price amount={variant.price} className="mt-6 block font-serif text-3xl text-fg" />
 
           <p className="mt-6 text-sm leading-relaxed text-overlay/70">{product.shortDescription}</p>
 
@@ -161,7 +162,7 @@ export function ProductDetail({
 
           <div className="mt-6 flex flex-col gap-2 border-t border-overlay/10 pt-6 text-xs text-overlay/50">
             <p className="flex items-center gap-2"><ShieldCheck size={14} className="text-gold" /> Secure checkout via PCI-DSS compliant gateways</p>
-            <p className="flex items-center gap-2"><Truck size={14} className="text-gold" /> Free shipping within Nigeria on orders over $200</p>
+            <p className="flex items-center gap-2"><Truck size={14} className="text-gold" /> Free shipping within Nigeria on orders over ₦300,000</p>
           </div>
         </div>
       </div>

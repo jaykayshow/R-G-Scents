@@ -10,6 +10,7 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { useOrdersStore } from "@/lib/store/orders-store";
 import { downloadInvoice } from "@/lib/invoice";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 
 export default function OrderConfirmationPage({
   params,
@@ -71,7 +72,7 @@ export default function OrderConfirmationPage({
             <div className="flex justify-between text-gold"><span>Discount</span><span>-{formatCurrency(order.discount)}</span></div>
           )}
           <div className="flex justify-between border-t border-overlay/10 pt-2 font-serif text-lg text-fg">
-            <span>Total</span><span>{formatCurrency(order.total)}</span>
+            <span>Total</span><Price amount={order.total} />
           </div>
         </div>
       </Card>

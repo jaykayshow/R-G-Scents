@@ -11,7 +11,7 @@ import { useWishlistStore } from "@/lib/store/wishlist-store";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { useProductsStore } from "@/lib/store/products-store";
-import { formatCurrency } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 
 export default function WishlistPage() {
   const wishlistIds = useWishlistStore((s) => s.productIds);
@@ -48,7 +48,7 @@ export default function WishlistPage() {
                 <p className="mt-4 font-serif text-lg text-fg hover:text-gold">{product.name}</p>
               </Link>
               <StarRating rating={product.rating} className="mt-1" />
-              <p className="mt-2 font-serif text-fg">{formatCurrency(product.price)}</p>
+              <Price amount={product.price} className="mt-2 block font-serif text-fg" />
               <div className="mt-4 flex gap-2">
                 <Button
                   size="sm"

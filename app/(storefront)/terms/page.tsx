@@ -9,7 +9,7 @@ const sections = [
   },
   {
     title: "Orders & Payment",
-    body: "All orders are subject to product availability. Prices are listed in USD/NGN and may be updated without notice. Payment is processed at the time of order via your selected gateway.",
+    body: "All orders are subject to product availability. Prices are listed in Nigerian Naira (₦) and may be updated without notice. Payment is processed at the time of order via your selected gateway.",
   },
   {
     title: "Shipping & Returns",

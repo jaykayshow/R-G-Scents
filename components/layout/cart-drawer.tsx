@@ -6,6 +6,7 @@ import { QuantityInput } from "@/components/ui/quantity-input";
 import { ButtonLink } from "@/components/ui/button";
 import { useCartStore } from "@/lib/store/cart-store";
 import { formatCurrency } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 import { X } from "lucide-react";
 
 export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -62,7 +63,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
           <div className="border-t border-overlay/10 px-6 py-6">
             <div className="mb-4 flex items-center justify-between text-sm">
               <span className="text-overlay/60">Subtotal</span>
-              <span className="font-serif text-lg text-fg">{formatCurrency(subtotal)}</span>
+              <Price amount={subtotal} className="font-serif text-lg text-fg" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <ButtonLink href="/cart" variant="secondary" onClick={onClose}>

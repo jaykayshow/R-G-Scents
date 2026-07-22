@@ -18,6 +18,7 @@ import { useAddressesStore } from "@/lib/store/addresses-store";
 import { useToastStore } from "@/lib/store/toast-store";
 import { computeOrderTotals } from "@/lib/order-totals";
 import { formatCurrency } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 import { ApiError } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
@@ -461,7 +462,7 @@ export default function CheckoutPage() {
             )}
           </div>
           <div className="mt-4 flex justify-between border-t border-overlay/10 pt-4 font-serif text-xl text-fg">
-            <span>Total</span><span>{formatCurrency(totals.total)}</span>
+            <span>Total</span><Price amount={totals.total} />
           </div>
         </div>
       </div>

@@ -193,8 +193,8 @@ const SEED_PRODUCTS: SeedProduct[] = [
     longDescription:
       "Legacy opens with a sharp, confident burst of bergamot and black pepper before settling into a heart of smoked oud and leather. The base is pure gravity: amber, dark woods, and a whisper of tobacco that lingers long after the room has emptied. This is the scent of decisions made in boardrooms and remembered for years.",
     gender: "MEN",
-    price: 285,
-    compareAtPrice: 340,
+    price: 430000,
+    compareAtPrice: 510000,
     images: ["/products/legacy.png"],
     notesTop: ["Bergamot", "Black Pepper", "Cardamom"],
     notesMiddle: ["Smoked Oud", "Leather", "Saffron"],
@@ -211,8 +211,8 @@ const SEED_PRODUCTS: SeedProduct[] = [
     isLimitedEdition: false,
     createdAt: new Date("2025-01-10"),
     variants: [
-      { size: "50ml", sku: "RG-LEG-50", barcode: "6920100050", price: 285, stock: 42 },
-      { size: "100ml", sku: "RG-LEG-100", barcode: "6920100100", price: 410, stock: 27 },
+      { size: "50ml", sku: "RG-LEG-50", barcode: "6920100050", price: 430000, stock: 42 },
+      { size: "100ml", sku: "RG-LEG-100", barcode: "6920100100", price: 615000, stock: 27 },
     ],
   },
   {
@@ -224,7 +224,7 @@ const SEED_PRODUCTS: SeedProduct[] = [
     longDescription:
       "Reserve is quiet confidence in a bottle. Cardamom and pink pepper open into a heart of tonka bean and iris, resting on a base of vanilla, cashmere musk, and sandalwood. Understated, warm, and unmistakably expensive — the fragrance equivalent of a well-cut suit.",
     gender: "MEN",
-    price: 265,
+    price: 400000,
     images: ["/products/reserve.jpeg"],
     notesTop: ["Pink Pepper", "Cardamom", "Bitter Orange"],
     notesMiddle: ["Tonka Bean", "Iris", "Cedarwood"],
@@ -241,8 +241,8 @@ const SEED_PRODUCTS: SeedProduct[] = [
     isLimitedEdition: false,
     createdAt: new Date("2025-02-18"),
     variants: [
-      { size: "50ml", sku: "RG-RES-50", barcode: "6920200050", price: 265, stock: 55 },
-      { size: "100ml", sku: "RG-RES-100", barcode: "6920200100", price: 385, stock: 31 },
+      { size: "50ml", sku: "RG-RES-50", barcode: "6920200050", price: 400000, stock: 55 },
+      { size: "100ml", sku: "RG-RES-100", barcode: "6920200100", price: 580000, stock: 31 },
     ],
   },
   {
@@ -254,7 +254,7 @@ const SEED_PRODUCTS: SeedProduct[] = [
     longDescription:
       "Royale is crisp authority — bergamot, bright neroli, and a sliver of blue lotus over an aromatic heart of iris and lavender. The base settles into vetiver, ambergris, and soft musk, giving it the polish of ceremony without ever feeling heavy. Built for the man who enters a room, not the one who waits to be noticed.",
     gender: "MEN",
-    price: 295,
+    price: 445000,
     images: ["/products/royale.png"],
     notesTop: ["Bergamot", "Neroli", "Blue Lotus"],
     notesMiddle: ["Iris", "Lavender", "Violet Leaf"],
@@ -271,8 +271,8 @@ const SEED_PRODUCTS: SeedProduct[] = [
     isLimitedEdition: false,
     createdAt: new Date("2026-04-02"),
     variants: [
-      { size: "50ml", sku: "RG-ROY-50", barcode: "6920300050", price: 295, stock: 38 },
-      { size: "100ml", sku: "RG-ROY-100", barcode: "6920300100", price: 420, stock: 19 },
+      { size: "50ml", sku: "RG-ROY-50", barcode: "6920300050", price: 445000, stock: 38 },
+      { size: "100ml", sku: "RG-ROY-100", barcode: "6920300100", price: 630000, stock: 19 },
     ],
   },
   {
@@ -284,7 +284,7 @@ const SEED_PRODUCTS: SeedProduct[] = [
     longDescription:
       "Elite is the unexpected one — bright pink pepper and juicy fig lead into a heart of Turkish rose and jasmine sambac, before melting into creamy sandalwood and soft musk. Unisex by design, it's worn by those who don't need to follow the rules to belong at the table.",
     gender: "UNISEX",
-    price: 255,
+    price: 385000,
     images: ["/products/elite.jpeg"],
     notesTop: ["Pink Pepper", "Fig", "Mandarin"],
     notesMiddle: ["Turkish Rose", "Jasmine Sambac", "Peony"],
@@ -301,8 +301,8 @@ const SEED_PRODUCTS: SeedProduct[] = [
     isLimitedEdition: false,
     createdAt: new Date("2026-05-20"),
     variants: [
-      { size: "50ml", sku: "RG-ELI-50", barcode: "6920400050", price: 255, stock: 47 },
-      { size: "100ml", sku: "RG-ELI-100", barcode: "6920400100", price: 365, stock: 22 },
+      { size: "50ml", sku: "RG-ELI-50", barcode: "6920400050", price: 385000, stock: 47 },
+      { size: "100ml", sku: "RG-ELI-100", barcode: "6920400100", price: 550000, stock: 22 },
     ],
   },
   {
@@ -314,7 +314,7 @@ const SEED_PRODUCTS: SeedProduct[] = [
     longDescription:
       "Noir is a late-night fragrance for men who own the room after midnight. Espresso and dark cacao intertwine with a heart of incense and black leather, resting on a base of patchouli, oud, and dark musk. Intense, magnetic, and deliberately unforgettable.",
     gender: "MEN",
-    price: 310,
+    price: 465000,
     images: ["/products/noir.png"],
     notesTop: ["Espresso", "Dark Cacao", "Pink Pepper"],
     notesMiddle: ["Incense", "Black Leather", "Clove"],
@@ -331,8 +331,8 @@ const SEED_PRODUCTS: SeedProduct[] = [
     isLimitedEdition: true,
     createdAt: new Date("2024-11-05"),
     variants: [
-      { size: "50ml", sku: "RG-NOI-50", barcode: "6920500050", price: 310, stock: 21 },
-      { size: "100ml", sku: "RG-NOI-100", barcode: "6920500100", price: 445, stock: 12 },
+      { size: "50ml", sku: "RG-NOI-50", barcode: "6920500050", price: 465000, stock: 21 },
+      { size: "100ml", sku: "RG-NOI-100", barcode: "6920500100", price: 670000, stock: 12 },
     ],
   },
 ];
@@ -371,9 +371,9 @@ async function seedProducts() {
 async function seedCoupons() {
   const coupons = [
     { code: "BILLIONAIRE10", type: "PERCENTAGE" as const, value: 10, description: "10% off your order", active: true, usageCount: 142 },
-    { code: "WELCOME20", type: "PERCENTAGE" as const, value: 20, description: "20% off your first order", minSubtotal: 100, active: true, usageCount: 89, usageLimit: 500 },
+    { code: "WELCOME20", type: "PERCENTAGE" as const, value: 20, description: "20% off your first order", minSubtotal: 150000, active: true, usageCount: 89, usageLimit: 500 },
     { code: "FREESHIP", type: "FREE_SHIPPING" as const, value: 0, description: "Free shipping on this order", active: true, usageCount: 211 },
-    { code: "LEGACY50", type: "FIXED" as const, value: 50, description: "$50 off orders over $250", minSubtotal: 250, active: true, usageCount: 34, usageLimit: 100 },
+    { code: "LEGACY50", type: "FIXED" as const, value: 75000, description: "₦75,000 off orders over ₦375,000", minSubtotal: 375000, active: true, usageCount: 34, usageLimit: 100 },
     { code: "SUMMER25", type: "PERCENTAGE" as const, value: 25, description: "Summer promo — expired", active: false, usageCount: 78, expiresAt: new Date("2026-06-30") },
   ];
 
@@ -442,7 +442,7 @@ async function seedBanners() {
   const banners = [
     {
       title: "Free Worldwide Shipping This Week",
-      subtitle: "On all orders over $200 — no code needed.",
+      subtitle: "On all orders over ₦300,000 — no code needed.",
       ctaLabel: "Shop Now",
       ctaHref: "/shop",
       active: true,
@@ -477,8 +477,8 @@ async function seedSettings() {
       supportPhone: "+234 803 000 1122",
       maintenanceMode: false,
       taxRatePercent: 5,
-      flatShippingRate: 15,
-      freeShippingThreshold: 200,
+      flatShippingRate: 22500,
+      freeShippingThreshold: 300000,
       codEnabled: true,
       bankTransferEnabled: true,
       stripeEnabled: true,
@@ -830,7 +830,7 @@ async function seedDemoCustomer(products: Record<string, { id: string; variants:
       data: [
         { userId: user.id, type: "EARN", points: 285, description: "Order RG-100234", createdAt: new Date("2026-07-01") },
         { userId: user.id, type: "EARN", points: 955, description: "Order RG-100519", createdAt: new Date("2026-07-10") },
-        { userId: user.id, type: "REDEEM", points: -200, description: "Redeemed for $10 off", createdAt: new Date("2026-07-11") },
+        { userId: user.id, type: "REDEEM", points: -200, description: "Redeemed for ₦15,000 off", createdAt: new Date("2026-07-11") },
         { userId: user.id, type: "EARN", points: 295, description: "Order RG-100822", createdAt: new Date("2026-07-14") },
       ],
     });

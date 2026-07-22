@@ -12,6 +12,7 @@ import { useToastStore } from "@/lib/store/toast-store";
 import { useCouponsStore } from "@/lib/store/coupons-store";
 import { computeOrderTotals } from "@/lib/order-totals";
 import { formatCurrency } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 
 export default function CartPage() {
   const [hydrated, setHydrated] = useState(false);
@@ -104,9 +105,7 @@ export default function CartPage() {
                     onChange={(q) => updateQuantity(item.variantId, q)}
                     max={item.stock}
                   />
-                  <span className="font-serif text-lg text-fg">
-                    {formatCurrency(item.price * item.quantity)}
-                  </span>
+                  <Price amount={item.price * item.quantity} className="font-serif text-lg text-fg" />
                 </div>
               </div>
             </div>
@@ -152,7 +151,7 @@ export default function CartPage() {
             )}
           </div>
           <div className="mt-4 flex justify-between border-t border-overlay/10 pt-4 font-serif text-xl text-fg">
-            <span>Total</span><span>{formatCurrency(totals.total)}</span>
+            <span>Total</span><Price amount={totals.total} />
           </div>
 
           <Button onClick={handleCheckout} size="lg" className="mt-6 w-full">

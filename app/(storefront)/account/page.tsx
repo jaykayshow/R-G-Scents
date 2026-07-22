@@ -10,7 +10,8 @@ import { useAuthStore } from "@/lib/store/auth-store";
 import { useWishlistStore } from "@/lib/store/wishlist-store";
 import { useOrdersStore } from "@/lib/store/orders-store";
 import { useProductsStore } from "@/lib/store/products-store";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 
 export default function AccountOverviewPage() {
   const user = useAuthStore((s) => s.currentUser);
@@ -58,7 +59,7 @@ export default function AccountOverviewPage() {
               </div>
               <div className="flex items-center gap-4">
                 <Badge variant={order.status === "Delivered" ? "gold" : "outline"}>{order.status}</Badge>
-                <span className="font-serif text-fg">{formatCurrency(order.total)}</span>
+                <Price amount={order.total} className="font-serif text-fg" />
                 <Link href={`/account/orders/${order.orderNumber}`} className="text-xs text-gold hover:underline">
                   Details
                 </Link>

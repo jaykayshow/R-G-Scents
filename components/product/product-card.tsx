@@ -9,6 +9,7 @@ import { Product } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/ui/star-rating";
 import { Button } from "@/components/ui/button";
+import { Price } from "@/components/ui/price";
 import { cn, formatCurrency } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useWishlistStore } from "@/lib/store/wishlist-store";
@@ -122,9 +123,7 @@ export function ProductCard({ product }: { product: Product }) {
                     {formatCurrency(product.compareAtPrice)}
                   </span>
                 )}
-                <span className="font-serif text-base text-fg">
-                  {formatCurrency(product.price)}
-                </span>
+                <Price amount={product.price} className="font-serif text-base text-fg" />
               </div>
             </div>
           </div>

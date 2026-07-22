@@ -32,7 +32,7 @@ export default function RewardsPage() {
         <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-gold">How It Works</h3>
         <ul className="space-y-2 text-sm text-overlay/60">
           <li>• Earn 1 point for every $1 spent on any order.</li>
-          <li>• Redeem 200 points for $10 off at checkout.</li>
+          <li>• Redeem 200 points for ₦15,000 off at checkout.</li>
           <li>• Points are credited once an order is marked as Delivered.</li>
           <li>• VIP Insiders earn 1.5x points on all purchases.</li>
         </ul>

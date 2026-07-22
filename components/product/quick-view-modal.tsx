@@ -8,7 +8,7 @@ import { Modal } from "@/components/ui/modal";
 import { StarRating } from "@/components/ui/star-rating";
 import { Button } from "@/components/ui/button";
 import { QuantityInput } from "@/components/ui/quantity-input";
-import { formatCurrency } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useToastStore } from "@/lib/store/toast-store";
 
@@ -57,7 +57,7 @@ export function QuickViewModal({
             <StarRating rating={product.rating} showValue />
           </div>
           <p className="mt-4 text-sm leading-relaxed text-overlay/70">{product.shortDescription}</p>
-          <p className="mt-4 font-serif text-2xl text-fg">{formatCurrency(variant.price)}</p>
+          <Price amount={variant.price} className="mt-4 block font-serif text-2xl text-fg" />
 
           <div className="mt-5 flex flex-wrap gap-2">
             {product.variants.map((v) => (

@@ -8,6 +8,11 @@ import { CollectionSlug, Gender } from "@/types";
 import { ProductCard } from "@/components/product/product-card";
 import { Select } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/utils";
+
+const PRICE_FILTER_MIN = 300000;
+const PRICE_FILTER_MAX = 700000;
+const PRICE_FILTER_STEP = 5000;
 
 type SortOption = "popularity" | "newest" | "best-selling" | "price-asc" | "price-desc";
 
@@ -36,7 +41,7 @@ export function ShopContent() {
       : []
   );
   const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
-  const [maxPrice, setMaxPrice] = useState(500);
+  const [maxPrice, setMaxPrice] = useState(PRICE_FILTER_MAX);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sort, setSort] = useState<SortOption>("popularity");
   const [page, setPage] = useState(1);
@@ -68,7 +73,7 @@ export function ShopContent() {
   function clearFilters() {
     setSelectedCollections([]);
     setSelectedGenders([]);
-    setMaxPrice(500);
+    setMaxPrice(PRICE_FILTER_MAX);
     setInStockOnly(false);
     setQuery("");
   }
@@ -109,7 +114,7 @@ export function ShopContent() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const activeFilterCount =
-    selectedCollections.length + selectedGenders.length + (inStockOnly ? 1 : 0) + (maxPrice < 500 ? 1 : 0);
+    selectedCollections.length + selectedGenders.length + (inStockOnly ? 1 : 0) + (maxPrice < PRICE_FILTER_MAX ? 1 : 0);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -302,13 +307,13 @@ function FilterPanel({
 
       <div>
         <h4 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gold">
-          Max Price: ${maxPrice}
+          Max Price: {formatCurrency(maxPrice)}
         </h4>
         <input
           type="range"
-          min={200}
-          max={500}
-          step={5}
+          min={PRICE_FILTER_MIN}
+          max={PRICE_FILTER_MAX}
+          step={PRICE_FILTER_STEP}
           value={maxPrice}
           onChange={(e) => setMaxPrice(Number(e.target.value))}
           className="w-full accent-[#c9a24b]"

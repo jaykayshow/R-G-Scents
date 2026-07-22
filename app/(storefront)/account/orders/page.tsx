@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/input";
 import { useOrdersStore } from "@/lib/store/orders-store";
 import { OrderStatus } from "@/types";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 
 const statusVariant = (status: OrderStatus) =>
   status === "Delivered" ? "gold" : status === "Cancelled" || status === "Refunded" ? "danger" : "outline";
@@ -55,7 +56,7 @@ export default function OrdersPage() {
               </div>
               <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-overlay/10 pt-4 text-sm">
                 <span className="text-overlay/60">{order.items.length} item(s)</span>
-                <span className="font-serif text-fg">{formatCurrency(order.total)}</span>
+                <Price amount={order.total} className="font-serif text-fg" />
                 <Link
                   href={`/account/orders/${order.orderNumber}`}
                   className="ml-auto text-xs uppercase tracking-widest text-gold hover:underline"

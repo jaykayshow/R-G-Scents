@@ -8,6 +8,7 @@ import { Check, Download } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate, cn } from "@/lib/utils";
+import { Price } from "@/components/ui/price";
 import { downloadInvoice } from "@/lib/invoice";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useOrdersStore } from "@/lib/store/orders-store";
@@ -145,7 +146,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderNum
             <div className="flex justify-between text-gold"><span>Discount</span><span>-{formatCurrency(order.discount)}</span></div>
           )}
           <div className="flex justify-between border-t border-overlay/10 pt-2 font-serif text-lg text-fg">
-            <span>Total</span><span>{formatCurrency(order.total)}</span>
+            <span>Total</span><Price amount={order.total} />
           </div>
         </div>
       </Card>

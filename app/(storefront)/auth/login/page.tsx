@@ -86,11 +86,6 @@ function LoginForm() {
       </div>
 
       <SocialLoginButtons />
-
-      <p className="mt-6 text-center text-xs text-overlay/30">
-        Demo account: {" "}
-        <span className="text-overlay/50">everhot247@gmail.com / Billionaire123!</span>
-      </p>
     </AuthCard>
   );
 }

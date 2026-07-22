@@ -10,9 +10,9 @@ import { Select } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 
-const PRICE_FILTER_MIN = 300000;
-const PRICE_FILTER_MAX = 700000;
-const PRICE_FILTER_STEP = 5000;
+const PRICE_FILTER_MIN = 50000;
+const PRICE_FILTER_MAX = 105000;
+const PRICE_FILTER_STEP = 1000;
 
 type SortOption = "popularity" | "newest" | "best-selling" | "price-asc" | "price-desc";
 

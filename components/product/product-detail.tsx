@@ -162,7 +162,7 @@ export function ProductDetail({
 
           <div className="mt-6 flex flex-col gap-2 border-t border-overlay/10 pt-6 text-xs text-overlay/50">
             <p className="flex items-center gap-2"><ShieldCheck size={14} className="text-gold" /> Secure checkout via PCI-DSS compliant gateways</p>
-            <p className="flex items-center gap-2"><Truck size={14} className="text-gold" /> Free shipping within Nigeria on orders over ₦300,000</p>
+            <p className="flex items-center gap-2"><Truck size={14} className="text-gold" /> Free shipping within Nigeria on orders over ₦45,000</p>
           </div>
         </div>
       </div>
